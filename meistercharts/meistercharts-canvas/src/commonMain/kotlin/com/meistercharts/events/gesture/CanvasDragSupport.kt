@@ -1,0 +1,359 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.events.gesture
+
+import it.neckar.open.unit.number.Positive
+import com.meistercharts.annotations.Window
+import com.meistercharts.annotations.Zoomed
+import com.meistercharts.canvas.ChartSupport
+import com.meistercharts.canvas.events.CanvasMouseEventHandler
+import com.meistercharts.canvas.events.CanvasTouchEventHandler
+import it.neckar.geometry.Coordinates
+import it.neckar.geometry.Distance
+import it.neckar.open.kotlin.lang.consumeUntil
+import it.neckar.open.kotlin.lang.requireNotNull
+import com.meistercharts.events.EventConsumption
+import com.meistercharts.events.EventConsumption.Consumed
+import com.meistercharts.events.EventConsumption.Ignored
+import it.neckar.events.ModifierCombination
+import it.neckar.events.MouseDownEvent
+import it.neckar.events.MouseDragEvent
+import it.neckar.events.MouseMoveEvent
+import it.neckar.events.MouseUpEvent
+import it.neckar.events.TouchCancelEvent
+import it.neckar.events.TouchEndEvent
+import it.neckar.events.TouchId
+import it.neckar.events.TouchMoveEvent
+import it.neckar.events.TouchStartEvent
+import it.neckar.open.kotlin.lang.asProvider
+import it.neckar.open.unit.other.px
+import it.neckar.open.unit.si.ms
+import kotlin.reflect.KProperty0
+
+/**
+ * Support dragging gestures in context of the canvas.
+ *
+ * Attention!
+ * It is necessary to connect this to the mouse/touch events.
+ * In a layer this can be done like this:
+ *
+ * ```
+ * override val mouseEventHandler: CanvasMouseEventHandler = canvasDragSupport.connectedMouseEventHandler()
+ * override val touchEventHandler: CanvasTouchEventHandler = canvasDragSupport.connectedTouchEventHandler()
+ * ```
+ *
+ * Both of these handlers are then active. So both event sources are supported at the same time
+ */
+class CanvasDragSupport {
+  /**
+   * Is set to true if the mouse is down - and everything is prepared for dragging
+   */
+  var preparedForDragging: Boolean = false
+    private set
+
+  /**
+   * Set to true if currently dragging
+   */
+  var dragging: Boolean = false
+    private set
+
+  /**
+   * The current location of the mouse pointer.
+   * Is updated on every drag
+   */
+  @px
+  @Window
+  var currentLocation: Coordinates? = null
+    private set
+
+  /**
+   * Where the running gesture started - null while none is running. A handler that has to answer with the gesture's
+   * total distance instead of the delta since the last event takes it from here.
+   */
+  @px
+  @Window
+  var gestureStartLocation: Coordinates? = null
+    private set
+
+  /**
+   * When [currentLocation] has been updated
+   */
+  @ms
+  var currentLocationUpdateTime: Double = 0.0
+    private set
+
+  /**
+   * Used to calculate the pointer speeds while dragging
+   */
+  val dragSpeedCalculator: MouseSpeedCalculator = MouseSpeedCalculator()
+
+  /**
+   * This method is called on down event
+   */
+  fun prepareForDragging(coordinates: Coordinates, eventTime: @ms Double, chartSupport: ChartSupport): EventConsumption {
+    //Reset everything. This may be necessary if the mouse up event happened outside the canvas
+    reset()
+
+    //Remember the start time
+    updateDragLocation(coordinates, eventTime)
+    gestureStartLocation = coordinates
+
+    val draggingAllowed = handlers.consumeUntil {
+      it.isDraggingAllowedFromHere(this, coordinates, chartSupport)
+    }
+
+    return if (draggingAllowed) {
+      preparedForDragging = true
+      Consumed
+    } else {
+      reset()
+      Ignored
+    }
+  }
+
+  /**
+   * Is called when a drag event has been recognized
+   * Returns true if the event should be consumed
+   */
+  fun dragging(coordinates: Coordinates, eventTime: Double, chartSupport: ChartSupport): EventConsumption {
+    if (preparedForDragging.not()) {
+      //No mouse down detected
+      return Ignored
+    }
+
+    dragging = true
+
+    //Notify about drag
+    val location = currentLocation.requireNotNull { "No current mouse location available" }
+
+    @px val distance = coordinates.delta(location)
+    @ms val deltaTime: Double = updateDragLocation(coordinates, eventTime)
+
+    dragSpeedCalculator.add(deltaTime, distance)
+
+    return handlers.consumeUntil(Consumed) { handler ->
+      handler.onDrag(this, coordinates, distance, deltaTime, chartSupport)
+    } ?: Ignored
+  }
+
+  /**
+   * The distance the pointer has covered since the press that started the running gesture. Available in
+   * [Handler.isDraggingAllowedFromHere] and [Handler.onDrag] - [finishDragging] resets before it notifies [Handler.onFinish].
+   */
+  fun totalDistanceTo(location: @Window Coordinates): @Zoomed Distance {
+    return location.delta(gestureStartLocation.requireNotNull { "No gesture is running" })
+  }
+
+  /**
+   * Ends a running gesture. The consumption belongs to the event that ended it, so callers that only need the
+   * side-effect may ignore the return.
+   */
+  @IgnorableReturnValue
+  fun finishDragging(coordinates: Coordinates, chartSupport: ChartSupport): EventConsumption {
+    if (preparedForDragging.not()) {
+      //No press to end - dragging is only ever set after this very flag
+      return Ignored
+    }
+
+    reset()
+
+    //Notify the handlers
+    return handlers.consumeUntil(Consumed) {
+      it.onFinish(this, coordinates, chartSupport)
+    } ?: Ignored
+  }
+
+  fun reset() {
+    preparedForDragging = false
+    dragging = false
+    currentLocation = null
+    gestureStartLocation = null
+    currentLocationUpdateTime = 0.0
+  }
+
+  /**
+   * Updates the drag location.
+   *
+   * Returns the delta time (callers that only need the side-effect may ignore the return).
+   */
+  @IgnorableReturnValue
+  private fun updateDragLocation(coordinates: Coordinates?, eventTime: @ms Double): @ms Double {
+    currentLocation = coordinates
+
+    @ms val delta = eventTime - currentLocationUpdateTime
+    currentLocationUpdateTime = eventTime
+    return delta
+  }
+
+  /**
+   * The handlers
+   */
+  private val handlers: MutableList<Handler> = mutableListOf()
+
+  /**
+   * Registers a drag handler that is notified about drag events
+   */
+  fun handle(handler: Handler) {
+    handlers.add(handler)
+  }
+
+  /**
+   * Callback that is registered at the drag support
+   */
+  interface Handler {
+    /**
+     * Is called on mouse down.
+     * Implementations should return true if dragging may be started at the given location
+     *
+     * @return true if dragging can be started from the given location, false otherwise
+     */
+    fun isDraggingAllowedFromHere(source: CanvasDragSupport, location: @Window Coordinates, chartSupport: ChartSupport): Boolean
+
+    /**
+     * Is called if a drag has been detected
+     */
+    fun onDrag(source: CanvasDragSupport, @Window location: Coordinates, @Zoomed distance: Distance, @ms deltaTime: Double, chartSupport: ChartSupport): EventConsumption
+
+    /**
+     * Is called if a drag has been finished
+     */
+    fun onFinish(source: CanvasDragSupport, @Window location: Coordinates, chartSupport: ChartSupport): EventConsumption {
+      //Usually the event is consumed on finished
+      return Consumed
+    }
+  }
+}
+
+/**
+ * Creates a mouse event handler that can be used to update the drag handler
+ */
+fun CanvasDragSupport.connectedMouseEventHandler(modifierCombination: () -> ModifierCombination = ModifierCombination.None.asProvider()): CanvasMouseEventHandler {
+  return object : CanvasMouseEventHandler {
+    override fun onDown(event: MouseDownEvent, chartSupport: ChartSupport): EventConsumption {
+      if (event.modifierCombination != modifierCombination()) {
+        return Ignored
+      }
+
+      return prepareForDragging(event.coordinates, event.timestamp, chartSupport)
+    }
+
+    /**
+     * A move over the canvas carries no pressed button, so it reports the release of a gesture whose own release
+     * never arrived. A move without coordinates is the pointer leaving, which says nothing about the buttons.
+     */
+    override fun onMove(event: MouseMoveEvent, chartSupport: ChartSupport): EventConsumption {
+      val location = event.coordinates ?: return Ignored
+
+      //The move stays a hover for the handlers behind this one, however the finish was answered
+      finishDragging(location, chartSupport)
+      return Ignored
+    }
+
+    override fun onDrag(event: MouseDragEvent, chartSupport: ChartSupport): EventConsumption {
+      return dragging(event.coordinates, event.timestamp, chartSupport)
+    }
+
+    override fun onUp(event: MouseUpEvent, chartSupport: ChartSupport): EventConsumption {
+      //Ignore the modifier combination on up
+      return finishDragging(event.coordinates, chartSupport)
+    }
+  }
+}
+
+/**
+ * Creates a touch event handler that can be registered to update the drag handler
+ */
+@Deprecated("Touch not supported at the moment")
+fun CanvasDragSupport.connectedTouchEventHandler(
+  /**
+   * The number of touches required to recognize a drag
+   */
+  numberOfTouches: @Positive Int
+): CanvasTouchEventHandler {
+  require(numberOfTouches > 0) {
+    "Need at least one touch but got $numberOfTouches"
+  }
+
+  return object : CanvasTouchEventHandler {
+    /**
+     * The id of the first touch that belongs to the drag-gesture.
+     * The touch is set when a touch start event is detected.
+     *
+     * The corresponding touch is used to calculate the delta
+     */
+    private var firstTouchId: TouchId? = null
+
+    fun reset() {
+      this@connectedTouchEventHandler.reset()
+      firstTouchId = null
+    }
+
+    override fun onStart(event: TouchStartEvent, chartSupport: ChartSupport): EventConsumption {
+      if (event.targetTouchesCount != numberOfTouches) {
+        reset()
+        return Ignored
+      }
+
+      //Remember the *first* touch id
+      val touch = event.touches.first()
+      firstTouchId = touch.touchId
+
+      return prepareForDragging(touch.coordinates, event.timestamp, chartSupport)
+    }
+
+    override fun onMove(event: TouchMoveEvent, chartSupport: ChartSupport): EventConsumption {
+      val touch = event.touches.firstOrNull { it.touchId == firstTouchId }
+
+      if (touch == null) {
+        //Our touch has not been found, just ignore this event
+        return Ignored
+      }
+
+      return dragging(touch.coordinates, event.timestamp, chartSupport)
+    }
+
+    override fun onEnd(event: TouchEndEvent, chartSupport: ChartSupport): EventConsumption {
+      reset()
+      return finishDragging(event.firstChanged.coordinates, chartSupport)
+    }
+
+    override fun onCancel(event: TouchCancelEvent, chartSupport: ChartSupport): EventConsumption {
+      reset()
+      return Ignored
+    }
+  }
+}
+
+
+/**
+ * Returns a delegate that uses the current value of this property to delegate all calls.
+ */
+fun KProperty0<CanvasDragSupport.Handler?>.delegate(): CanvasDragSupport.Handler {
+  val property = this
+  return object : CanvasDragSupport.Handler {
+    override fun isDraggingAllowedFromHere(source: CanvasDragSupport, location: Coordinates, chartSupport: ChartSupport): Boolean {
+      return property.get()?.isDraggingAllowedFromHere(source, location, chartSupport) ?: false
+    }
+
+    override fun onDrag(source: CanvasDragSupport, location: Coordinates, distance: Distance, deltaTime: Double, chartSupport: ChartSupport): EventConsumption {
+      return property.get()?.onDrag(source, location, distance, deltaTime, chartSupport) ?: Ignored
+    }
+
+    override fun onFinish(source: CanvasDragSupport, location: Coordinates, chartSupport: ChartSupport): EventConsumption {
+      return property.get()?.onFinish(source, location, chartSupport) ?: Ignored
+    }
+  }
+}

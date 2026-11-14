@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ThreadExtension.kt:ThreadExtension.DefaultThreadMatcher$isKeepAliveTimer(threadGroupName, threadName) || isProcessReaper(threadGroupName, threadName) || isKeepAliveSocketCleaner(threadGroupName, threadName) || isJava2dDisposer(threadGroupName, threadName) || isKeepAliveTimer2(threadGroupName, threadName) || isAwtRelatedThread(threadName) || isQuantumRenderer(threadGroupName, threadName)</ID>
+    <ID>EmptyFunctionBlock:SwingMemoryLeakVerifier.kt:SwingMemoryLeakVerifier.NoOp${}</ID>
+    <ID>EmptyFunctionBlock:VirtualNowProviderExtension.kt:VirtualNowProviderExtension${ }</ID>
+    <ID>InjectDispatcher:CoroutinesTestExt.kt:Default</ID>
+    <ID>UseOrEmpty:YamlUtils.kt:YamlUtils$actual ?: ""</ID>
+    <ID>UseOrEmpty:YamlUtils.kt:YamlUtils$expected ?: ""</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,59 @@
+{
+  "name": "@neckar-hub/typescript-react-router",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Customizations for react-router library",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.it"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./tailwind-sources.css": "./src/tailwind-sources.css"
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "cn": "catalog:",
+    "react-router": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

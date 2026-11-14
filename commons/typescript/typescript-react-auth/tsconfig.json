@@ -1,0 +1,20 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.dom.json"],
+  "include": [
+    "./.ladle/*",
+    "./src",
+    "./tests/ladle",
+    "./tests/playwright",
+    "./tests/vitest",
+    "tests/vitest/setup.ts",
+    "./eslint.config.mjs",
+    "./playwright.config.ts",
+    "./vitest.config.ts",
+    "./oxfmt.config.ts"
+  ],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist"
+  }
+}

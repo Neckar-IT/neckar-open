@@ -1,0 +1,141 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.loop
+
+import it.neckar.logging.Logger
+import it.neckar.logging.LoggerFactory
+import it.neckar.logging.trace
+import it.neckar.open.annotations.TestOnly
+import it.neckar.open.collections.fastForEach
+import it.neckar.open.dispose.Disposable
+import it.neckar.open.kotlin.lang.ifNaN
+import it.neckar.open.time.monotonicMillis
+import it.neckar.open.time.nowMillis
+import it.neckar.open.unit.number.IsFinite
+import it.neckar.open.unit.number.MayBeNaN
+import it.neckar.open.unit.other.Relative
+import it.neckar.open.unit.si.ms
+
+/**
+ * Render loop support
+ */
+class RenderLoopSupport {
+  /**
+   * The refresh listeners are notified on every refresh (more often than the paint listeners)
+   */
+  internal val renderLoopListeners = mutableListOf<RenderLoopListener>()
+
+  /**
+   * These refresh listeners will be removed before the next call.
+   * Used to avoid concurrent modification exceptions
+   */
+  internal val renderLoopListenersToRemove = mutableListOf<RenderLoopListener>()
+
+
+  /**
+   * Registers a refresh listener that is notified whenever refresh is called
+   * @return A disposable that can be used to unregister the listener
+   */
+  fun onRender(renderLoopListener: RenderLoopListener): Disposable {
+    renderLoopListeners.add(renderLoopListener)
+
+    return Disposable {
+      removeOnRender(renderLoopListener)
+    }
+  }
+
+  /**
+   * Unregisters the refresh listener.
+   *
+   * Attention: The refresh listener is unregistered on the *next* run to avoid concurrent modifications of the listeners list.
+   */
+  fun removeOnRender(renderLoopListener: RenderLoopListener) {
+    //Schedule for removal
+    renderLoopListenersToRemove.add(renderLoopListener)
+  }
+
+  /**
+   * Render the next loop.
+   * This method must not be called manually!
+   *
+   * This method will be called by a timer / animation frame.
+   */
+  fun nextLoop(relativeHighRes: @ms @Relative Double) {
+    @ms val now = nowMillis()
+    @ms val frameMonotonicMillis = monotonicMillis()
+
+    currentFrameTimestampOrNaN = now
+    currentFrameMonotonicMillisOrNaN = frameMonotonicMillis
+
+    //Cleanup
+    renderLoopListeners.removeAll(renderLoopListenersToRemove)
+    renderLoopListenersToRemove.clear()
+
+    try {
+      logger.trace { "Render Loop. relative: $relativeHighRes" }
+
+      renderLoopListeners.fastForEach { it.render(now, frameMonotonicMillis, relativeHighRes) }
+    } finally {
+      //Outside the loop, reset the current frame timestamp
+      currentFrameTimestampOrNaN = Double.NaN
+      currentFrameMonotonicMillisOrNaN = Double.NaN
+    }
+  }
+
+  /**
+   * The backing field for the current frame timestamp.
+   * Will be set to [Double.NaN] when no frame is currently being painted.
+   */
+  private var currentFrameTimestampOrNaN: @ms @MayBeNaN Double = Double.NaN
+
+  /**
+   * The backing field for [currentFrameMonotonicMillis]; NaN when no frame is currently being painted.
+   */
+  private var currentFrameMonotonicMillisOrNaN: @ms @MayBeNaN Double = Double.NaN
+
+  /**
+   * Updates the current frame timestamp. Must only be used for tests
+   */
+  @TestOnly
+  internal fun setCurrentFrameTimestampForTestsOnly(currentFrameTimestamp: @ms @MayBeNaN Double) {
+    currentFrameTimestampOrNaN = currentFrameTimestamp
+  }
+
+  /**
+   * Returns the timestamp of the current frame.
+   * This field can be used as kind of "shortcut" to access the current frame timestamp
+   *
+   * ATTENTION: Will throw an exception if called from outside the frame paint method!
+   */
+  val currentFrameTimestamp: @ms @IsFinite Double
+    get() {
+      return currentFrameTimestampOrNaN.ifNaN { throw IllegalStateException("Not currently in a frame") }
+    }
+
+  /**
+   * Returns the [monotonicMillis] of the current frame - the start for tweens created while painting.
+   *
+   * ATTENTION: Will throw an exception if called from outside the frame paint method!
+   */
+  val currentFrameMonotonicMillis: @ms Double
+    get() {
+      return currentFrameMonotonicMillisOrNaN.ifNaN { throw IllegalStateException("Not currently in a frame") }
+    }
+
+  companion object {
+    private val logger: Logger = LoggerFactory.getLogger("com.meistercharts.loop.RenderLoopSupport")
+  }
+}

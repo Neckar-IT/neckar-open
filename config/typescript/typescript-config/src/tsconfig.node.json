@@ -1,0 +1,20 @@
+// Node configuration: the neutral base, but with Node's own module resolution instead of a
+// bundler's. Extend this from a package that Node resolves at runtime — "NodeNext" makes tsc apply
+// the same ESM/CommonJS rules Node applies, so a missing file extension or a package.json without
+// "type": "module" fails the compile instead of the start.
+//
+// "noEmit": true is inherited from the base. A package that needs the compiled JavaScript sets
+// "noEmit": false plus its own "outDir".
+//
+// The workspace packages Node runs directly extend this: tools/ts-return-types (under tsx),
+// tools/astro (the Astro build script) and a command line tool. Every other one is
+// type-checked with the base's "bundler" resolution. The five standalone MCP
+// servers under tools/mcp/ would fit too, but keep hand-written configs on purpose: they are
+// npm-managed and meant to stay self-contained.
+{
+  "extends": ["./tsconfig.base.json"],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  }
+}

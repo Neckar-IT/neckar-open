@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DomainMustNotBeSerializable:HarvestedAnnotationSpec.kt:HarvestedAnnotationSpec$HarvestedAnnotationSpec</ID>
+    <ID>DomainMustNotBeSerializable:HarvestedClassSpec.kt:HarvestedClassSpec$HarvestedClassSpec</ID>
+    <ID>DomainMustNotBeSerializable:HarvestedPropertySpec.kt:HarvestedPropertySpec$HarvestedPropertySpec</ID>
+    <ID>DomainMustNotBeSerializable:SpecHarvestResult.kt:SpecHarvestResult$SpecHarvestResult</ID>
+  </CurrentIssues>
+</SmellBaseline>

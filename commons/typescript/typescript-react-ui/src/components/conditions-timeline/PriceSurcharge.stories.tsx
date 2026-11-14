@@ -1,0 +1,37 @@
+import type { Story, StoryDefault } from "@ladle/react";
+import type { PriceWithProfit } from "@neckar-hub/typescript-utils/openapi-types";
+import { CodeBlock } from "../data-display/code-block";
+import { PriceSurcharge } from "./PriceSurcharge";
+
+export default {
+  title: "Conditions timeline / PriceSurcharge",
+} satisfies StoryDefault;
+
+interface Case {
+  label: string;
+  price: PriceWithProfit | null | undefined;
+}
+
+const cases: Case[] = [
+  { label: "gain — 50,00 € purchased, 68,00 € sold", price: { inputPrice: 5000, sellingPrice: 6800 } },
+  { label: "sold at cost — surcharge of exactly zero", price: { inputPrice: 5000, sellingPrice: 5000 } },
+  { label: "loss — sold below the purchase price", price: { inputPrice: 5000, sellingPrice: 4000 } },
+  { label: "zero purchase price — rate undefined, profit shown alone", price: { inputPrice: 0, sellingPrice: 6800 } },
+  { label: "both prices zero", price: { inputPrice: 0, sellingPrice: 0 } },
+  { label: "price null — explicitly absent", price: null },
+  { label: "price undefined — still loading", price: undefined },
+];
+
+export const PriceSurchargeStory: Story = () => {
+  return (
+    <div className="grid max-w-xl gap-6">
+      {cases.map((entry) => (
+        <div key={entry.label}>
+          <CodeBlock className="mb-2">{entry.label}</CodeBlock>
+          <PriceSurcharge price={entry.price} />
+        </div>
+      ))}
+    </div>
+  );
+};
+PriceSurchargeStory.storyName = "PriceSurcharge";

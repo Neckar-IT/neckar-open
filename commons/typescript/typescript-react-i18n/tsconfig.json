@@ -1,0 +1,9 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.dom.json"],
+  "include": [".", "tests/vitest/setup.ts", "./oxfmt.config.ts"],
+  "exclude": ["dist", "build", "node_modules", "type-safe-keys.d.ts"],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist"
+  }
+}

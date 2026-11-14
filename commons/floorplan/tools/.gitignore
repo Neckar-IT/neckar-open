@@ -1,0 +1,4 @@
+# Python virtualenv for the render tools
+.venv/
+# Portable QCAD install fetched by setup_qcad.sh (~135 MB, not committed)
+.qcad/

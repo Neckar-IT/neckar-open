@@ -1,0 +1,9 @@
+/*
+ * Tailwind source manifest — see typescript-react-router/src/tailwind-sources.css for the rule and
+ * why "./" must stay this package's src directory.
+ */
+
+/* Tailwind-carrying dependencies of this package. Consumers inherit them through this import. */
+@import "@neckar-hub/typescript-react-ui/tailwind-sources.css";
+
+@source "./";

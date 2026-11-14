@@ -1,0 +1,77 @@
+{
+  "name": "@neckar-hub/typescript-react-ui-primitives",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Unmodified shadcn/ui primitives, written by the shadcn CLI only",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "imports": {
+    "#components": "./src/components",
+    "#hooks": "./src/hooks",
+    "#lib": "./src/lib",
+    "#ui": "./src/components"
+  },
+  "exports": {
+    "./tailwind-sources.css": "./src/tailwind-sources.css",
+    "./ui/*": {
+      "import": "./dist/src/components/*.js",
+      "types": "./dist/src/components/*.d.ts"
+    },
+    "./hooks/*": {
+      "import": "./dist/src/hooks/*.js",
+      "types": "./dist/src/hooks/*.d.ts"
+    },
+    "./lib/*": {
+      "import": "./dist/src/lib/*.js",
+      "types": "./dist/src/lib/*.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "shadcn": "shadcn"
+  },
+  "dependencies": {
+    "class-variance-authority": "catalog:",
+    "cmdk": "catalog:",
+    "cn": "catalog:",
+    "date-fns": "catalog:",
+    "lucide-react": "catalog:",
+    "radix-ui": "catalog:",
+    "react-day-picker": "catalog:",
+    "recharts": "catalog:",
+    "shadcn": "catalog:",
+    "tw-animate-css": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

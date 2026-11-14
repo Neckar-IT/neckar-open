@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:FeatureFlagsResponse.kt:FeatureFlagsResponse$FeatureFlag</ID>
+    <ID>DataViewMustNotReferenceDomain:FeatureFlagsResponse.kt:FeatureFlagsResponse.Good$FeatureFlag</ID>
+    <ID>DomainMustNotBeSerializable:JvmMemoryUsage.kt:JvmMemoryUsage$JvmMemoryUsage</ID>
+    <ID>DomainMustNotBeSerializable:JvmMemoryUsage.kt:JvmMemoryUsage.MemoryUsage$MemoryUsage</ID>
+    <ID>DomainMustNotBeSerializable:JvmStartupParameters.kt:JvmStartupParameters$JvmStartupParameters</ID>
+    <ID>DomainMustNotReferenceDataView:CheckClientVersionNumber.kt:ClientProtocolVersionCheckerConfiguration$ApplicationRequest</ID>
+  </CurrentIssues>
+</SmellBaseline>

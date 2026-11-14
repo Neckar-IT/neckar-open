@@ -1,0 +1,13 @@
+{
+  "product": "open",
+  "version": "10.1.0",
+  "releasedOn": "2026-08-13",
+  "triggeredBy": {
+    "type": "Decision",
+    "by": "Human"
+  },
+  "targets": [
+    "maven-central"
+  ],
+  "predecessor": "open-10.0.1"
+}

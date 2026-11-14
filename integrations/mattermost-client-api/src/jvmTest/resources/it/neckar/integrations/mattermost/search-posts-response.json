@@ -1,0 +1,54 @@
+{
+  "order": [
+    "post-standup",
+    "post-deploy"
+  ],
+  "posts": {
+    "post-deploy": {
+      "id": "post-deploy",
+      "create_at": 1756800000000,
+      "update_at": 1756800000000,
+      "edit_at": 0,
+      "delete_at": 0,
+      "is_pinned": false,
+      "user_id": "user-alice",
+      "channel_id": "channel-dev",
+      "root_id": "",
+      "original_id": "",
+      "message": "The deploy of tender.neckar.it is through.",
+      "type": "",
+      "props": {},
+      "hashtags": "",
+      "reply_count": 0,
+      "metadata": {}
+    },
+    "post-standup": {
+      "id": "post-standup",
+      "create_at": 1756886400000,
+      "update_at": 1756886400000,
+      "edit_at": 0,
+      "delete_at": 0,
+      "is_pinned": false,
+      "user_id": "user-bob",
+      "channel_id": "channel-standup",
+      "root_id": "",
+      "original_id": "",
+      "message": "Standup: the deploy pipeline is green again.",
+      "type": "",
+      "props": {},
+      "hashtags": "",
+      "reply_count": 2,
+      "metadata": {}
+    }
+  },
+  "next_post_id": "",
+  "prev_post_id": "",
+  "matches": {
+    "post-deploy": [
+      "deploy"
+    ],
+    "post-standup": [
+      "deploy"
+    ]
+  }
+}

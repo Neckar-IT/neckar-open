@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:MultiLockTest.kt:MultiLockTest${ }</ID>
+    <ID>ForbiddenMethodCall:FlowExtTest.kt:FlowExtTest$toList()</ID>
+    <ID>ForbiddenPrintCall:AnotherCoroutinesDemo.kt:println</ID>
+    <ID>ForbiddenPrintCall:CoroutineErrorHandlingDemo.kt:println</ID>
+    <ID>ForbiddenPrintCall:CoroutinesDemo.kt:println</ID>
+    <ID>InjectDispatcher:AnotherCoroutinesDemo.kt:Default</ID>
+    <ID>InjectDispatcher:AnotherCoroutinesDemo.kt:IO</ID>
+    <ID>InjectDispatcher:CollectingCoroutineExceptionHandlerTest.kt:CollectingCoroutineExceptionHandlerTest$Default</ID>
+    <ID>InjectDispatcher:CoroutineErrorHandlingDemo.kt:IO</ID>
+    <ID>UnusedPrivateProperty:CycleDetectingLockFactoryDemo.kt:CycleDetectingLockFactoryDemo$private val lock02: ReentrantLock? = null</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,14 @@
+{
+  "name": "@neckar-hub/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "src"
+  ],
+  "exports": {
+    "./*": "./src/*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

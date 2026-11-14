@@ -1,0 +1,9 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "build/.tsbuildinfo"
+  }
+}

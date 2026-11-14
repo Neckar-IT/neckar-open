@@ -1,0 +1,65 @@
+/**
+ * Imports
+ */
+
+import type { Story, StoryDefault } from "@ladle/react";
+import { createQueryClient, QueryClientProvider, useQueryForStaticData } from "@neckar-hub/typescript-react-query";
+import { QueriesData } from "./QueriesData";
+
+/**
+ * Meta Information
+ */
+
+const queryClient = createQueryClient();
+
+const meta: StoryDefault = {
+  title: "Query Handling / QueriesData",
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+
+export default meta;
+
+/**
+ * Type Declarations
+ */
+
+type MockResponse = { type: "good"; data: string } | { type: "bad/NotFound" };
+
+/**
+ * Stories
+ */
+
+export const GoodStory: Story = () => {
+  const queryResult = useQueryForStaticData({
+    queryKey: ["good-query"],
+    queryFn: (): MockResponse => {
+      return {
+        type: "good",
+        data: "This is the data!",
+      };
+    },
+  });
+
+  return <QueriesData queries={[queryResult]}>{([data]) => <div>{data}</div>}</QueriesData>;
+};
+GoodStory.storyName = "good";
+
+export const BadNotFoundStory: Story = () => {
+  const queryResult = useQueryForStaticData({
+    queryKey: ["bad-query"],
+    queryFn: (): MockResponse => {
+      return {
+        type: "bad/NotFound",
+      };
+    },
+  });
+
+  return <QueriesData queries={[queryResult]}>{([data]) => <div>{data}</div>}</QueriesData>;
+};
+BadNotFoundStory.storyName = "bad/NotFound";

@@ -1,0 +1,13 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.dom.json"],
+  "include": ["./.ladle/*", "./src", "./tests", "./playwright.config.ts", "./vitest.config.ts", "./oxlint.config.ts", "./oxfmt.config.ts"],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "paths": {
+      "@test/*": ["./tests/vitest/*"]
+    }
+  }
+}

@@ -1,0 +1,343 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.zoom
+
+import com.meistercharts.annotations.ContentArea
+import com.meistercharts.annotations.DomainRelative
+import com.meistercharts.annotations.Window
+import com.meistercharts.annotations.Zoomed
+import com.meistercharts.calc.ChartCalculator
+import com.meistercharts.model.Insets
+import com.meistercharts.model.Zoom
+import it.neckar.geometry.Direction
+import it.neckar.geometry.Distance
+import it.neckar.geometry.HorizontalAlignment
+import it.neckar.geometry.VerticalAlignment
+import it.neckar.geometry.asDistance
+import it.neckar.open.kotlin.lang.asProvider
+import it.neckar.open.unit.other.pct
+import kotlin.reflect.KProperty0
+
+/**
+ * Provides the default values for zoom and translation when resetting the view (e.g. pressing the "home" button)
+ *
+ */
+interface ZoomAndTranslationDefaults {
+  /**
+   * Returns the default zoom for the current chart state
+   */
+  fun defaultZoom(chartCalculator: ChartCalculator): Zoom
+
+  /**
+   * Returns the default window translation (for [defaultZoom] zoom)
+   */
+  fun defaultTranslation(chartCalculator: ChartCalculator): @Zoomed Distance
+
+
+  companion object {
+    /**
+     * No translation. Origin is at the top left, zoom is set to 1.0/1.0
+     */
+    val noTranslation: NoTranslation = NoTranslation
+
+    /**
+     * 10% overscan on both axis. ContentArea is centered in the window
+     */
+    val tenPercentMargin: ZoomAndTranslationDefaults = FittingWithMarginPercentage(0.1, 0.1)
+
+    /**
+     * 10% overscan *only* on the Y axis, ContentArea is centered in the window
+     */
+    val tenPercentYMargin: ZoomAndTranslationDefaults = FittingWithMarginPercentage(0.0, 0.1)
+  }
+}
+
+/**
+ * No translation. Origin of content area is moved to top left of the window
+ */
+object NoTranslation : ZoomAndTranslationDefaults {
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return Zoom.default
+  }
+
+  override fun defaultTranslation(chartCalculator: ChartCalculator): @Zoomed Distance {
+    return Distance.zero
+  }
+}
+
+/**
+ * Shows the content area with a padding in percent of the content area size
+ */
+open class FittingWithMarginPercentage(
+  /**
+   * The padding percentage for the x axis (applied on left and right)
+   */
+  val marginPercentageX: @pct Double,
+  /**
+   * The padding percentage for the x axis (applied on top and bottom)
+   */
+  val marginPercentageY: @pct Double,
+) : ZoomAndTranslationDefaults {
+  init {
+    require(marginPercentageX < 1.0) { "marginPercentageX must be smaller than 1.0 but was <${marginPercentageX}" }
+    require(marginPercentageY < 1.0) { "marginPercentageY must be smaller than 1.0 but was <${marginPercentageY}" }
+  }
+
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return Zoom.of(1.0 - marginPercentageX, 1.0 - marginPercentageY)
+  }
+
+  override fun defaultTranslation(chartCalculator: ChartCalculator): @Zoomed Distance {
+    return Distance(
+      chartCalculator.contentArea2zoomedX(chartCalculator.chartState.contentAreaWidth * marginPercentageX / 2.0),
+      chartCalculator.contentArea2zoomedY(chartCalculator.chartState.contentAreaHeight * marginPercentageY / 2.0)
+    )
+  }
+}
+
+/**
+ * Returns the smaller factor for both x and y axis
+ */
+class FittingWithMarginPercentageAspectRatio(
+  marginPercentageX: @pct Double,
+  marginPercentageY: @pct Double,
+) : FittingWithMarginPercentage(marginPercentageX, marginPercentageY) {
+
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return super.defaultZoom(chartCalculator).smallerValueForBoth()
+  }
+}
+
+/**
+ * Shows the content area within the content viewport
+ */
+object FittingInContentViewport : FittingWithMargin(
+  alignment = Direction.TopLeft.asProvider(),
+  {
+    it.chartState.contentViewportMargin
+  }
+)
+
+/**
+ * Shows the content area within the content viewport - respects the aspect ratio of the content area
+ */
+class FittingInContentViewportAspectRatio(
+  alignment: () -> Direction = Direction.TopLeft.asProvider(),
+) : FittingWithMarginAspectRatio(
+  alignment = alignment,
+  {
+    it.chartState.contentViewportMargin
+  }
+)
+
+/**
+ * Shows the content area with a margin.
+ *
+ * ATTENTION: Use [FittingInContentViewport] instead in most cases!
+ */
+open class FittingWithMargin(
+  /**
+   * Where the content area is aligned in the window.
+   *
+   * The alignment is relevant if the content area has a different aspect ratio than the window.
+   */
+  val alignment: () -> Direction = Direction.TopLeft.asProvider(),
+
+  /**
+   * The margin
+   */
+  var marginProvider: (chartCalculator: ChartCalculator) -> @Zoomed Insets,
+) : ZoomAndTranslationDefaults {
+
+  constructor(margin: @Zoomed Insets = Insets.empty) : this(marginProvider = { margin })
+
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    val chartState = chartCalculator.chartState
+
+    if (chartState.hasAnyZeroSize) {
+      //width/or height is zero. Zoom factor cannot be calculated
+      return Zoom.default
+    }
+
+    @Zoomed val windowSize = chartState.windowSize
+    @Zoomed val margin = marginProvider(chartCalculator)
+
+    @Zoomed val windowNetWidth = windowSize.width - margin.offsetWidth
+    @Zoomed val windowNetHeight = windowSize.height - margin.offsetHeight
+
+    if (windowNetWidth <= 0.0 || windowNetHeight <= 0.0) {
+      //not enough space for content area: Cannot calculate the zoom factor
+      return Zoom.default
+    }
+
+    @ContentArea val contentAreaSize = chartState.contentAreaSize
+
+    return Zoom.of(
+      1.0 / contentAreaSize.width * windowNetWidth,
+      1.0 / contentAreaSize.height * windowNetHeight
+    )
+  }
+
+  override fun defaultTranslation(chartCalculator: ChartCalculator): @Zoomed Distance {
+    @Zoomed val margin = marginProvider(chartCalculator)
+    val currentAlignment = alignment()
+
+    val translationX = when (currentAlignment.horizontalAlignment) {
+      HorizontalAlignment.Left -> margin.left
+      HorizontalAlignment.Center -> {
+        @Zoomed val windowNetWidth = chartCalculator.chartState.windowWidth - margin.offsetWidth
+        @Zoomed val contentAreaWidth = chartCalculator.contentArea2zoomedX(chartCalculator.chartState.contentAreaWidth)
+        margin.left + (windowNetWidth - contentAreaWidth) / 2.0
+      }
+
+      HorizontalAlignment.Right -> {
+        @Zoomed val windowWidth = chartCalculator.chartState.windowWidth
+        @Zoomed val windowNetWidth = windowWidth - margin.offsetWidth
+        @Zoomed val contentAreaWidth = chartCalculator.contentArea2zoomedX(chartCalculator.chartState.contentAreaWidth)
+        windowWidth - margin.right - contentAreaWidth
+      }
+    }
+
+    val translationY = when (currentAlignment.verticalAlignment) {
+      VerticalAlignment.Top -> margin.top
+      VerticalAlignment.Baseline,
+      VerticalAlignment.Center,
+        -> {
+        val windowHeight = chartCalculator.chartState.windowHeight
+        @Zoomed val windowNetHeight = windowHeight - margin.offsetHeight
+        @Zoomed val contentAreaHeight = chartCalculator.contentArea2zoomedY(chartCalculator.chartState.contentAreaHeight)
+        margin.top + (windowNetHeight - contentAreaHeight) / 2.0
+      }
+
+      VerticalAlignment.Bottom -> {
+        @Zoomed val windowHeight = chartCalculator.chartState.windowHeight
+        @Zoomed val contentAreaHeight = chartCalculator.contentArea2zoomedY(chartCalculator.chartState.contentAreaHeight)
+
+        windowHeight - margin.bottom - contentAreaHeight
+      }
+    }
+
+    return Distance(
+      translationX,
+      translationY
+    )
+  }
+}
+
+/**
+ * Fits with margin - keeps both zoom factors the same
+ *
+ * Use [FittingInContentViewportAspectRatio] instead in most cases!
+ */
+open class FittingWithMarginAspectRatio(
+  alignment: () -> Direction = Direction.TopLeft.asProvider(),
+  /**
+   * The margin provider
+   */
+  marginProvider: (chartCalculator: ChartCalculator) -> @Zoomed Insets = { Insets.empty },
+) : FittingWithMargin(alignment, marginProvider) {
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return super.defaultZoom(chartCalculator).smallerValueForBoth()
+  }
+}
+
+/**
+ * Resets the zoom to defaults - moves the
+ */
+open class Offset(val provider: (chartCalculator: ChartCalculator) -> Distance) : ZoomAndTranslationDefaults {
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return Zoom.default
+  }
+
+  override fun defaultTranslation(chartCalculator: ChartCalculator): Distance {
+    return provider(chartCalculator)
+  }
+}
+
+/**
+ * Moves the top left corner to the content viewport.
+ * Does *not* modify the zoom
+ */
+object OriginToContentViewport : Offset({ chartCalculator ->
+  chartCalculator.chartState.contentViewportMargin.topLeft.asDistance()
+})
+
+/**
+ * Ensures that a domain value is moved to a specific window location.
+ * This is useful e.g. to ensure in context with a cross wire
+ */
+open class MoveDomainValueToLocation(
+  /**
+   * The zoom to be used as default zoom
+   */
+  val defaultZoomProvider: (chartCalculator: ChartCalculator) -> Zoom = { Zoom.default },
+  /**
+   * Returns the domain value that is moved to the location returned by [targetLocationProvider]
+   */
+  val domainRelativeValueProvider: DomainRelativeValueProvider,
+  /**
+   * Returns the target location the value provided by [domainRelativeValueProvider] is moved to.
+   */
+  val targetLocationProvider: TargetLocationProvider,
+) : ZoomAndTranslationDefaults {
+  override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+    return defaultZoomProvider(chartCalculator)
+  }
+
+  override fun defaultTranslation(chartCalculator: ChartCalculator): @Zoomed Distance {
+    val chartState = chartCalculator.chartState
+    if (chartState.hasAnyZeroSize) {
+      return Distance.zero
+    }
+
+    //The value that will be moved to the target location
+    @DomainRelative val domainRelativeValue = domainRelativeValueProvider(chartCalculator)
+    @Zoomed val distanceX = chartCalculator.domainRelative2zoomedX(domainRelativeValue)
+
+    @Window val targetLocation = targetLocationProvider(chartCalculator)
+
+    //Center the y-axis
+    @Zoomed val translationY = chartCalculator.contentArea2zoomedY(chartCalculator.chartState.contentAreaHeight * (1.0 - chartCalculator.chartState.zoomY) / 2.0)
+    return Distance(-distanceX + targetLocation, translationY)
+  }
+}
+
+/**
+ * Provides the target location in window coordinates used in [MoveDomainValueToLocation]
+ */
+typealias TargetLocationProvider = (chartCalculator: ChartCalculator) -> @Window Double
+
+/**
+ * Provides the domain value that is used in [MoveDomainValueToLocation]
+ */
+typealias DomainRelativeValueProvider = (chartCalculator: ChartCalculator) -> @DomainRelative Double
+
+
+/**
+ * Returns a delegate that uses the current value of this property to delegate all calls.
+ */
+fun KProperty0<ZoomAndTranslationDefaults>.delegate(): ZoomAndTranslationDefaults {
+  val property = this
+  return object : ZoomAndTranslationDefaults {
+    override fun defaultZoom(chartCalculator: ChartCalculator): Zoom {
+      return property.get().defaultZoom(chartCalculator)
+    }
+
+    override fun defaultTranslation(chartCalculator: ChartCalculator): Distance {
+      return property.get().defaultTranslation(chartCalculator)
+    }
+  }
+}

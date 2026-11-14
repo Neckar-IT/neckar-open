@@ -1,0 +1,7 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["./*.ts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}

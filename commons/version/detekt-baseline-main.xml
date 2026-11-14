@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>UseRequire:Version.kt:Version.Companion$throw IllegalArgumentException("Cannot parse &lt;$version>")</ID>
+    <ID>UseRequire:VersionRange.kt:VersionRange$throw IllegalArgumentException("Max &lt;$max> is smaller than min &lt;$min>")</ID>
+  </CurrentIssues>
+</SmellBaseline>

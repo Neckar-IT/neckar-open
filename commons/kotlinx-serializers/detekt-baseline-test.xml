@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:KotlinxSerializationBasicsTest.kt:KotlinxSerializationBasicsTest$println</ID>
+    <ID>ForbiddenPrintCall:ReproduceSerializationBug.kt:MySimpleSerializer$println</ID>
+    <ID>ForbiddenPrintCall:ReproduceSerializationBug.kt:println</ID>
+    <ID>NoNameShadowing:ToJsonElementKtTest.kt:ToJsonElementKtTest${ requireNotNull(it) assertThat(it).isInstanceOf(JsonObject::class) require(it is JsonObject) it["c"].let { requireNotNull(it) assertThat(it).isInstanceOf(JsonPrimitive::class) } it["d"].let { requireNotNull(it) require(it is JsonPrimitive) assertThat(it.isString).isTrue() assertThat(it.content).isEqualTo("foobar") } }</ID>
+    <ID>NoNameShadowing:ToJsonElementKtTest.kt:ToJsonElementKtTest${ requireNotNull(it) assertThat(it).isInstanceOf(JsonPrimitive::class) }</ID>
+    <ID>NoNameShadowing:ToJsonElementKtTest.kt:ToJsonElementKtTest${ requireNotNull(it) require(it is JsonPrimitive) assertThat(it.isString).isTrue() assertThat(it.content).isEqualTo("foobar") }</ID>
+  </CurrentIssues>
+</SmellBaseline>

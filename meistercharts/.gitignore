@@ -1,0 +1,3 @@
+# ignore the content of the snapshot-folder but keep the placeholder-file
+meistercharts-snapshot
+!meistercharts-snapshot/.placeholder

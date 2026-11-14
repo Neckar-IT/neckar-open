@@ -1,0 +1,49 @@
+// Neutral base configuration for every TypeScript project (Node and browser alike).
+// It deliberately carries no DOM lib — browser projects extend tsconfig.dom.json
+// (or the tsconfig.vite.json / tsconfig.astro.json app variants) instead.
+//
+// Options implied by another option are deliberately absent, so there is exactly one place
+// that decides each behaviour: "strictNullChecks" (part of "strict"),
+// "allowSyntheticDefaultImports" (implied by "esModuleInterop") and "useDefineForClassFields"
+// (already true for "target" >= ES2022).
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    // Unreachable code and unused labels are editor hints by default; "false" turns them into compile errors.
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "isolatedModules": true,
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // if we set "outDir" in here, the generated folder will be relative to this file,
+    // so we need to set "noEmit": false and "outDir" in every project that requires a tsc compiler output
+    "noEmit": true,
+    // Complements the oxlint rules switch-exhaustiveness-check and default-case: those catch a
+    // missing union case and a missing "default:", this catches a forgotten "break".
+    "noFallthroughCasesInSwitch": true,
+    // An overriding method carries "override", so renaming the method in the base class
+    // fails the subclass instead of silently leaving it behind.
+    "noImplicitOverride": true,
+    // Every code path of a function with a return value returns explicitly, so a forgotten
+    // "return" in one branch fails the build instead of yielding undefined.
+    "noImplicitReturns": true,
+    // Indexing an array or record yields "T | undefined". Without it "strict" still lets
+    // items[0].name through on an empty array.
+    "noUncheckedIndexedAccess": true,
+    // A side-effect import of a missing file (a bare "import" of a CSS file) fails instead of being skipped.
+    "noUncheckedSideEffectImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2023",
+    //disabled to avoid "type" check for imports
+    "verbatimModuleSyntax": false
+  }
+}

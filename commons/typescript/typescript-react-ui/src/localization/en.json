@@ -1,0 +1,405 @@
+{
+  "example": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "sidebarToggleButton": {
+    "collapse": "Collapse menu",
+    "expand": "Expand menu"
+  },
+  "themeSwitcher": {
+    "openMenu": "Switch theme",
+    "theme": "Theme",
+    "colorMode": "Color mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "pagination": {
+    "itemsPerPage": "Items per Page",
+    "page": "Page {{pageNumber}} of {{pageCount}}",
+    "goToFirstPage": "Go to first Page",
+    "goToPreviousPage": "Go to previous Page",
+    "goToNextPage": "Go to next Page",
+    "goToLastPage": "Go to last Page"
+  },
+  "priceSummary": {
+    "current": "Current price",
+    "nextChange": "Next change",
+    "since": "since",
+    "from": "from",
+    "addNow": "Add now"
+  },
+  "priceTimeline": {
+    "fields": {
+      "timing": "Price from",
+      "price": "Price"
+    }
+  },
+  "timeline": {
+    "fields": {
+      "validFrom": "Valid from",
+      "status": "Status"
+    },
+    "status": {
+      "past": "Past",
+      "current": "Current",
+      "future": "Future"
+    },
+    "timing": {
+      "now": "Immediately",
+      "scheduled": "A specific date",
+      "tomorrow": "Tomorrow",
+      "nextWeek": "Next week",
+      "nextMonth": "Next month"
+    },
+    "since": "since",
+    "from": "from"
+  },
+  "conditionsSummary": {
+    "current": "Current conditions",
+    "nextChange": "Next change",
+    "addNow": "Add now"
+  },
+  "conditionsTimeline": {
+    "fields": {
+      "timing": "Conditions from",
+      "purchasePrice": "Purchase price",
+      "sellingPrice": "Selling price",
+      "unit": "Unit",
+      "unitPlaceholder": "piece",
+      "withAccessory": "Specify accessory",
+      "withAccessoryDescription": "Capture the price of the accessory / small material supplied with the article.",
+      "accessoryPurchasePrice": "Accessory purchase price",
+      "accessorySellingPrice": "Accessory selling price",
+      "withInstallationTime": "Specify installation time",
+      "withInstallationTimeDescription": "Capture the estimated person-hours for the installation.",
+      "installationTime": "Installation time"
+    },
+    "priceOverview": {
+      "title": "Conditions overview",
+      "placeholder": "Calculating …",
+      "position": "Position",
+      "purchasePrice": "Purchase",
+      "sellingPrice": "Selling",
+      "surcharge": "Surcharge",
+      "part": "Part",
+      "accessory": "Accessory",
+      "labour": "Labour",
+      "customerPrice": "Customer price",
+      "perPiece": "All amounts per piece, net.",
+      "perUnit": "All amounts per {{unit}}, net."
+    },
+    "table": {
+      "partHint": "Purchase price, surcharge on the purchase price and selling price of the part, net per unit of the entry.",
+      "accessoryHint": "Purchase price, surcharge on the purchase price and selling price of the accessory supplied with it, net per unit of the entry.",
+      "labourHint": "Installation time times hourly rate gives the labour price, net per unit of the entry. The hourly rate is the current one, for past and future entries alike."
+    }
+  },
+  "quote": {
+    "fields": {
+      "position": "Position",
+      "description": "Description",
+      "amount": "Quantity",
+      "unitPrice": "Unit price",
+      "vat": "VAT",
+      "lineTotal": "Line total"
+    },
+    "internalLine": "Internal line: the customer does not see it, and its price is included in the parent line.",
+    "optional": {
+      "tooltip": "Optional item: not included in the total, can be added on request"
+    },
+    "units": {
+      "none": "pcs.",
+      "hours": "h",
+      "kiloMeters": "km",
+      "meters": "m",
+      "squareMeters": "m²"
+    },
+    "sums": {
+      "preDiscountNet": "Subtotal",
+      "discount": "Discount",
+      "net": "Net total",
+      "vatOnNet": "plus VAT <rate/> on <net/>",
+      "gross": "Gross total"
+    }
+  },
+  "columnHeaderWithHint": {
+    "showHint": "Show hint"
+  },
+  "dataContainer": {
+    "items": "{{filteredElementsCount}} Item(s) of {{totalElementsCount}} Items total",
+    "noItemsFound": "There are no items that match your criteria.",
+    "invalidPagination": "You are trying to access a page that does not exist.",
+    "loading": "Loading ..."
+  },
+  "listContainer": {
+    "items": "{{filteredElementsCount}} Item(s) of {{totalElementsCount}} Items total",
+    "noItemsFound": "There are no items that match your criteria.",
+    "invalidPagination": "You are trying to access a page that does not exist.",
+    "fetching": "Updating Data ..."
+  },
+  "datePicker": {
+    "clearSelection": "Clear",
+    "placeholder": "Pick a Date"
+  },
+  "dateRangePicker": {
+    "clearSelection": "Clear",
+    "placeholder": "Pick a Period"
+  },
+  "loadingIndicator": {
+    "label": "Loading ..."
+  },
+  "errorIndicator": {
+    "label": "An Error occured!"
+  },
+  "notFoundIndicator": {
+    "label": "Not Found!",
+    "entityNotFound": "{{entityLabel}} not found",
+    "goBack": "Go Back"
+  },
+  "offlineFallbackProvider": {
+    "offline": "You are offline!",
+    "checkConnection": "Please check your internet connection."
+  },
+  "deploymentInfo": {
+    "title": "About",
+    "description": "Which build runs on which deployment — for support requests.",
+    "notInjected": "not injected",
+    "assumedStage": "The application assumes the {{stage}} stage.",
+    "copy": "Copy as JSON",
+    "close": "Close"
+  },
+  "multiStep": {
+    "cancel": "Cancel",
+    "previous": "Back",
+    "next": "Next",
+    "finish": "Save"
+  },
+  "combobox": {
+    "placeholder": "Search Items ...",
+    "search": "Filter Items ...",
+    "empty": "No Items found."
+  },
+  "confirmationDialog": {
+    "title": "Confirm action",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "destructiveConfirmationDialog": {
+    "confirm": "Delete",
+    "description": "This action cannot be undone."
+  },
+  "simpleDialog": {
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "imageUpload": {
+    "input": "Select File"
+  },
+  "tagPicker": {
+    "placeholder": "Select Tags",
+    "search": "Find Tags ...",
+    "empty": "No Tags found."
+  },
+  "textList": {
+    "add": "Add entry",
+    "remove": "Remove entry"
+  },
+  "descriptionList": {
+    "noValue": "n.a."
+  },
+  "singleLineList": {
+    "more_one": "{{count}} more",
+    "more_other": "{{count}} more"
+  },
+  "emptyState": {
+    "noEntities": "There are no {{entities}} yet."
+  },
+  "dataSliceView": {
+    "noData": "There is no data available yet.",
+    "nothingFound": "No Items match your filters.",
+    "invalidPagination": "You are trying to access a page that does not exist.",
+    "items": "{{filteredElementsCount}} Item(s) of {{totalElementsCount}} Items total"
+  },
+  "addButton": {
+    "label": "Add Item"
+  },
+  "inlineValueObjectList": {
+    "add": "Add Item",
+    "edit": "Edit",
+    "remove": "Remove"
+  },
+  "select": {
+    "placeholder": "Please select"
+  },
+  "submitButton": {
+    "label": "Save"
+  },
+  "cancelButton": {
+    "label": "Cancel"
+  },
+  "adjustableValueFormField": {
+    "calculatedValueLabel": "Calculated Value:"
+  },
+  "adjustableValueAddress": {
+    "heading": "Address",
+    "override": "Override the calculated address",
+    "reset": "Return to the calculated address",
+    "showCalculated": "Show the calculated address"
+  },
+  "addressForms": {
+    "street": "Street",
+    "houseNumber": "House Number",
+    "zipCode": "Zip Code",
+    "city": "City",
+    "country": "Country",
+    "confirm": "Confirm Address"
+  },
+  "fileInput": {
+    "placeholder": "Choose file ..."
+  },
+  "fileSlot": {
+    "empty": "No file",
+    "pick": "Choose file",
+    "upload": "Upload",
+    "replace": "Replace",
+    "remove": "Remove",
+    "uploadedAt": "uploaded"
+  },
+  "fileUploadSlot": {
+    "pick": "Choose file",
+    "dropHint": "Drag a file here or choose one from your computer",
+    "hintWithMaximum": "{{hint}} · max. {{maximum}}",
+    "uploading": "Uploading file",
+    "processing": "Processing file",
+    "cancelUploadLabel": "Cancel upload",
+    "cancelUpload": "Cancel",
+    "bytesOfTotal": "{{loaded}} of {{total}}",
+    "tooLarge": "{{fileName}} is {{size}}; the maximum is {{maximum}}."
+  },
+  "imageSlot": {
+    "empty": "No image yet",
+    "wrongType": "{{fileName}} is not an accepted type; allowed are {{types}}.",
+    "actions": "Image actions",
+    "open": "Open {{alt}} in full size",
+    "replace": "Replace",
+    "delete": "Delete"
+  },
+  "pdfSlot": {
+    "onlyPdf": "PDF only",
+    "open": "Open {{fileName}}",
+    "pageOfPages": "Page {{page}} / {{pages}}",
+    "kind": "PDF document",
+    "kindWithPages_one": "PDF document · {{count}} page",
+    "kindWithPages_other": "PDF document · {{count}} pages",
+    "fileName": "File name",
+    "size": "File size",
+    "uploadedAt": "Uploaded on",
+    "download": "Download",
+    "replace": "Replace",
+    "remove": "Delete"
+  },
+  "archiveState": {
+    "Archived": "Archived"
+  },
+  "archivedBanner": {
+    "title": "Archived entry",
+    "description": "This entry is archived. It is hidden in standard views.",
+    "editLocked": "Archived — unarchive it to edit."
+  },
+  "confirmationStatus": {
+    "Draft": "Draft",
+    "Confirmed": "Confirmed"
+  },
+  "filterByConfirmationStatus": {
+    "placeholder": "Confirmation"
+  },
+  "validation": {
+    "preventConfirmation": "You cannot confirm because of the following issues:",
+    "errorOccurred": "An error occurred"
+  },
+  "versionConflict": {
+    "title": "Changed meanwhile",
+    "description": "Somebody saved this entry while you were editing it. Your changes are not saved yet.",
+    "reload": "Discard and reload",
+    "saveAnyway": "Save anyway"
+  },
+  "confirmation": {
+    "title": "Confirm all Details?",
+    "description": "You hereby confirm that all information is correct.",
+    "descriptionNote": "If changes are made later, the information must be reconfirmed.",
+    "reconfirmAfterSave": "After saving, you must confirm all details again.",
+    "versionConflict": "The entry was changed meanwhile. Reload the page and confirm again.",
+    "cascadingReset": {
+      "title": "Already confirmed!",
+      "description": "This entry has already been confirmed. The requested changes will reset this confirmation.",
+      "dependenciesNote": "The confirmation is also reset in the following dependencies:",
+      "saveAnyway": "Save anyway"
+    },
+    "buttonLabel": "Confirm"
+  },
+  "archiveScope": {
+    "OnlyActive": "Active",
+    "Archived": "Archived",
+    "All": "All"
+  },
+  "filterBar": {
+    "filters": "Filters",
+    "filtersActive": "Filters, {{count}} active",
+    "clear": "Clear",
+    "removeFilter": "Remove {{label}}",
+    "reset": "Reset",
+    "clearSearch": "Clear search",
+    "archive": "Archive",
+    "confirmationStatus": "Confirmation",
+    "rangeFrom": "from {{value}}",
+    "rangeTo": "until {{value}}",
+    "rangeBetween": "{{from}} – {{to}}",
+    "lowerBound": "{{label}} from",
+    "upperBound": "{{label}} until",
+    "itemsSelected": "{{count}} selected",
+    "noOptionsFound": "No items found.",
+    "selectEntity": "Select",
+    "previewMissing": "Not found",
+    "previewPending": "…",
+    "presets": {
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days",
+      "thisMonth": "This month"
+    }
+  },
+  "clearButton": {
+    "label": "Clear"
+  },
+  "numberInput": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "formFeedback": {
+    "saveFailed": "Saving failed.",
+    "invalidForm": "The form contains invalid fields — please check your input."
+  },
+  "actionFeedback": {
+    "failed": "{{action}} failed.",
+    "activeUsage_one": "1 active record still depends on the archived record.",
+    "activeUsage_other": "{{count}} active records still depend on the archived record."
+  },
+  "entitySelectTable": {
+    "select": "Select"
+  },
+  "unknownOutcome": {
+    "title": "‘{{action}}’: outcome unclear",
+    "titleWithoutAction": "Outcome unclear",
+    "text": "It is not certain whether your change was saved. Your input stays in the form.",
+    "textOutsideForm": "It is not certain whether your change was saved.",
+    "textAfterReload": "State as of {{time}}: if your change is there, close the form. Otherwise send it again.",
+    "reloadState": "Load current state",
+    "sendAgain": "Send again",
+    "closeForm": "Close form"
+  },
+  "unavailableService": {
+    "unreachable": "Not saved. The application cannot be reached right now.",
+    "notReady": "Not saved. The application is unavailable right now."
+  }
+}

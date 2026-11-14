@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:ChromeProcessKillerTest.kt:ChromeProcessKillerTest${ }</ID>
+    <ID>ForbiddenPrintCall:SystemOutExtensionTest.kt:SystemOutExtensionTest$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

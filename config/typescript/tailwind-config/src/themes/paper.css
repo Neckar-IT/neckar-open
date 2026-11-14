@@ -1,0 +1,82 @@
+/**
+ * Paper theme — warm, literary light aesthetic: warm off-white background,
+ * bordeaux accent, Fraunces serif for display text, Nunito Sans for body text.
+ *
+ * This theme only overrides the raw token values defined in main.css — components
+ * keep using the semantic Tailwind utilities (bg-background, text-foreground, …)
+ * and are not affected by the theme in any other way.
+ *
+ * The theme has a fixed light color scheme: activate it by setting both
+ * `data-theme="paper"` and the `light` class on the <html> element
+ * (the ThemeProvider from typescript-react-ui does this automatically for
+ * themes declared with `colorScheme: "light"`).
+ *
+ * Usage in an app's styles.css (after the main.css import):
+ *
+ *   @import "@neckar-hub/tailwind-config/themes/paper.css";
+ */
+
+@import "@fontsource-variable/fraunces/index.css";
+@import "@fontsource-variable/nunito-sans/index.css";
+
+html[data-theme="paper"] {
+  color-scheme: light;
+
+  --radius: 0.375rem;
+
+  --theme-font-sans: "Nunito Sans Variable", system-ui, sans-serif;
+  --theme-font-body: "Nunito Sans Variable", system-ui, sans-serif;
+  --theme-font-display: "Fraunces Variable", Georgia, serif;
+
+  --background: #faf7f2;
+  --foreground: #2a211b;
+
+  --card: #fffdf9;
+  --card-foreground: #2a211b;
+
+  --popover: #fffdf9;
+  --popover-foreground: #2a211b;
+
+  --overlay: rgba(42, 33, 27, 0.5);
+
+  --primary: #8c2f39;
+  --primary-foreground: #fdf6f0;
+
+  --secondary: #f0e9df;
+  --secondary-foreground: #3d3128;
+
+  --muted: #f0e9df;
+  --muted-foreground: #6f6257;
+
+  --accent: #ece2d4;
+  --accent-foreground: #3d3128;
+
+  --destructive: #c03530;
+  --destructive-foreground: #fdf6f0;
+
+  --border: #e3d9ca;
+
+  --input: #e3d9ca;
+
+  --ring: #8c2f39;
+
+  --sidebar: #f4efe6;
+  --sidebar-foreground: #4a3e33;
+  --sidebar-primary: #8c2f39;
+  --sidebar-primary-foreground: #fdf6f0;
+  --sidebar-accent: #eae1d3;
+  --sidebar-accent-foreground: #3d3128;
+  --sidebar-border: #e0d5c4;
+  --sidebar-ring: #8c2f39;
+
+  --chart-1: #8c2f39;
+  --chart-2: #b5803a;
+  --chart-3: #4f6d4f;
+  --chart-4: #31556f;
+  --chart-5: #a4675e;
+  --chart-6: #7d6b53;
+}
+
+html[data-theme="paper"] ::selection {
+  background: rgba(140, 47, 57, 0.2);
+}

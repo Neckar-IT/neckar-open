@@ -1,0 +1,1 @@
+description = """ typescript-react-i18n """

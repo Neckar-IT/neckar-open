@@ -1,0 +1,49 @@
+# Commons Task Catalog
+
+schema_version: "1.0"
+
+use_cases:
+  - name: "Build"
+    description: "Build all Commons modules (Kotlin + TypeScript)"
+    tasks:
+      - id: build
+        path: "."
+        type: gradle
+        task: "build"
+        description: "Build all modules including TypeScript packages"
+
+  - name: "Test"
+    description: "Execute test suites"
+    tasks:
+      - id: test
+        path: "."
+        type: gradle
+        task: "test"
+        description: "Run all Kotlin unit tests"
+
+      - id: test-typescript
+        path: "typescript-unit-tests"
+        type: pnpm
+        script: "test"
+        description: "Run TypeScript unit tests"
+
+      - id: integration-test-react-ui
+        path: "typescript/typescript-react-ui"
+        type: gradle
+        task: "integrationTest"
+        description: "Run the Playwright integration tests of the component library"
+
+  - name: "Local Development"
+    description: "Browse and develop the shared React component library"
+    tasks:
+      - id: run-react-ui
+        path: "typescript/typescript-react-ui"
+        type: gradle
+        task: "run"
+        description: "Build the component library, then serve its Ladle story browser on http://localhost:61000"
+
+task_types:
+  gradle:
+    description: "Gradle build tasks (executed from monorepo root)"
+  pnpm:
+    description: "pnpm package scripts (executed in package directory)"

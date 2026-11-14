@@ -1,0 +1,269 @@
+[
+  {
+    "packageName": "it.neckar.ksp.spec.harvest.sample",
+    "qualifiedName": "it.neckar.ksp.spec.harvest.sample.CustomerPayload",
+    "simpleName": "CustomerPayload",
+    "type": "CLASS",
+    "modifiers": [
+      "DATA",
+      "INTERNAL"
+    ],
+    "superTypes": [
+      "kotlin.Any"
+    ],
+    "documentation": "Represents a customer payload returned by the API.",
+    "annotations": [
+      {
+        "name": "kotlinx.serialization.Serializable",
+        "arguments": {
+          "with": "kotlinx.serialization.KSerializer"
+        },
+        "metaAnnotations": [
+          {
+            "name": "kotlin.annotation.MustBeDocumented",
+            "arguments": {},
+            "metaAnnotations": []
+          },
+          {
+            "name": "kotlin.annotation.Target",
+            "arguments": {
+              "allowedTargets": "[kotlin.annotation.AnnotationTarget.PROPERTY, kotlin.annotation.AnnotationTarget.CLASS, kotlin.annotation.AnnotationTarget.TYPE]"
+            },
+            "metaAnnotations": []
+          }
+        ]
+      },
+      {
+        "name": "kotlin.Deprecated",
+        "arguments": {
+          "message": "Use CustomerPayloadV2",
+          "replaceWith": "@ReplaceWith",
+          "level": "kotlin.DeprecationLevel.WARNING"
+        },
+        "metaAnnotations": [
+          {
+            "name": "kotlin.annotation.Target",
+            "arguments": {
+              "allowedTargets": "[kotlin.annotation.AnnotationTarget.CLASS, kotlin.annotation.AnnotationTarget.FUNCTION, kotlin.annotation.AnnotationTarget.PROPERTY, kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS, kotlin.annotation.AnnotationTarget.CONSTRUCTOR, kotlin.annotation.AnnotationTarget.PROPERTY_SETTER, kotlin.annotation.AnnotationTarget.PROPERTY_GETTER, kotlin.annotation.AnnotationTarget.TYPEALIAS]"
+            },
+            "metaAnnotations": []
+          },
+          {
+            "name": "kotlin.annotation.MustBeDocumented",
+            "arguments": {},
+            "metaAnnotations": []
+          }
+        ]
+      }
+    ],
+    "typeParameters": [],
+    "properties": [
+      {
+        "name": "age",
+        "type": "kotlin.Int?",
+        "isNullable": true,
+        "isMutable": false,
+        "hasDefault": true,
+        "documentation": "Optional customer age when known.",
+        "annotations": [],
+        "typeAnnotations": [
+          {
+            "name": "it.neckar.ksp.spec.harvest.sample.W",
+            "arguments": {},
+            "metaAnnotations": [
+              {
+                "name": "kotlin.annotation.MustBeDocumented",
+                "arguments": {},
+                "metaAnnotations": []
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.Unit",
+                "arguments": {},
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.Power",
+                "arguments": {},
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.Name",
+                "arguments": {
+                  "value": "watt"
+                },
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.SiDerivedUnit",
+                "arguments": {
+                  "baseUnits": "[it.neckar.ksp.spec.harvest.sample.Joule, it.neckar.ksp.spec.harvest.sample.Second]"
+                },
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.Symbol",
+                "arguments": {
+                  "value": "W"
+                },
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "it.neckar.ksp.spec.harvest.sample.Definition",
+                "arguments": {
+                  "expressions": "[J/s, N*m/s, kg*m²/s³, VA]"
+                },
+                "metaAnnotations": [
+                  {
+                    "name": "kotlin.annotation.Target",
+                    "arguments": {
+                      "allowedTargets": "[kotlin.annotation.AnnotationTarget.ANNOTATION_CLASS]"
+                    },
+                    "metaAnnotations": []
+                  }
+                ]
+              },
+              {
+                "name": "kotlin.annotation.Target",
+                "arguments": {
+                  "allowedTargets": "[kotlin.annotation.AnnotationTarget.TYPE]"
+                },
+                "metaAnnotations": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "id",
+        "type": "kotlin.String",
+        "isNullable": false,
+        "isMutable": false,
+        "hasDefault": false,
+        "documentation": "Unique customer identifier.",
+        "annotations": [
+          {
+            "name": "kotlinx.serialization.SerialName",
+            "arguments": {
+              "value": "id_value"
+            },
+            "metaAnnotations": [
+              {
+                "name": "kotlin.annotation.MustBeDocumented",
+                "arguments": {},
+                "metaAnnotations": []
+              },
+              {
+                "name": "kotlin.annotation.Target",
+                "arguments": {
+                  "allowedTargets": "[kotlin.annotation.AnnotationTarget.PROPERTY, kotlin.annotation.AnnotationTarget.CLASS]"
+                },
+                "metaAnnotations": []
+              }
+            ]
+          }
+        ],
+        "typeAnnotations": []
+      },
+      {
+        "name": "tags",
+        "type": "kotlin.collections.List<kotlin.String>",
+        "isNullable": false,
+        "isMutable": false,
+        "hasDefault": true,
+        "documentation": "Tags describing the customer in more detail.",
+        "annotations": [],
+        "typeAnnotations": []
+      }
+    ],
+    "enumEntries": []
+  },
+  {
+    "packageName": "it.neckar.ksp.spec.harvest.sample",
+    "qualifiedName": "it.neckar.ksp.spec.harvest.sample.Wrapper",
+    "simpleName": "Wrapper",
+    "type": "CLASS",
+    "modifiers": [
+      "INTERNAL"
+    ],
+    "superTypes": [
+      "kotlin.Any"
+    ],
+    "documentation": "Wrapper class that references another serializable type.",
+    "annotations": [
+      {
+        "name": "kotlinx.serialization.Serializable",
+        "arguments": {
+          "with": "kotlinx.serialization.KSerializer"
+        },
+        "metaAnnotations": [
+          {
+            "name": "kotlin.annotation.MustBeDocumented",
+            "arguments": {},
+            "metaAnnotations": []
+          },
+          {
+            "name": "kotlin.annotation.Target",
+            "arguments": {
+              "allowedTargets": "[kotlin.annotation.AnnotationTarget.PROPERTY, kotlin.annotation.AnnotationTarget.CLASS, kotlin.annotation.AnnotationTarget.TYPE]"
+            },
+            "metaAnnotations": []
+          }
+        ]
+      }
+    ],
+    "typeParameters": [],
+    "properties": [
+      {
+        "name": "payload",
+        "type": "it.neckar.ksp.spec.harvest.sample.CustomerPayload",
+        "isNullable": false,
+        "isMutable": false,
+        "hasDefault": false,
+        "documentation": null,
+        "annotations": [],
+        "typeAnnotations": []
+      }
+    ],
+    "enumEntries": []
+  }
+]

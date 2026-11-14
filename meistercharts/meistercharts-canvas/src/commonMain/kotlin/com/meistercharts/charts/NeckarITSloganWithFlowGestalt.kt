@@ -1,0 +1,78 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.charts
+
+import com.meistercharts.algorithms.layers.FillBackgroundLayer
+import com.meistercharts.algorithms.layers.NeckarItFlowLayer
+import com.meistercharts.algorithms.layers.SloganLayer
+import com.meistercharts.algorithms.layers.addClearBackground
+import com.meistercharts.algorithms.layers.addFillCanvasBackground
+import com.meistercharts.algorithms.layers.debug.addVersionNumberHidden
+import com.meistercharts.color.Color
+import com.meistercharts.color.RadialGradient
+import com.meistercharts.canvas.MeisterchartBuilder
+import com.meistercharts.canvas.ConfigurationDsl
+
+/**
+ * Configuration for a slogan above the Neckar IT 'flow'
+ */
+class NeckarITSloganWithFlowGestalt(
+  val configuration: Configuration = Configuration(),
+  val additionalConfiguration: Configuration.() -> Unit = {}
+) : ChartGestalt {
+
+  init {
+    configuration.additionalConfiguration()
+  }
+
+  val sloganLayer: SloganLayer = SloganLayer {
+    keepSloganInBounds = true
+    glowScaleX = 1.4
+    glowGradient = RadialGradient(
+      Color.rgba(255, 255, 255, 0.15),
+      Color.rgba(255, 255, 255, 0.0)
+    )
+  }
+
+  val flowLayer: NeckarItFlowLayer = NeckarItFlowLayer()
+
+  val backgroundLayer: FillBackgroundLayer = FillBackgroundLayer {
+    secondary()
+  }
+
+  override fun configure(meisterChartBuilder: MeisterchartBuilder) {
+    meisterChartBuilder.apply {
+      enableZoomAndTranslation = false
+
+      configure {
+        layers.addClearBackground()
+        layers.addFillCanvasBackground()
+        layers.addLayer(backgroundLayer)
+        layers.addLayer(flowLayer)
+        layers.addLayer(sloganLayer)
+
+        layers.addVersionNumberHidden()
+      }
+    }
+  }
+
+  /**
+   * Configuration for this gestalt. Currently has no configurable properties;
+   * kept as the extension point for future slogan/flow configuration.
+   */
+  @ConfigurationDsl
+  open class Configuration
+}

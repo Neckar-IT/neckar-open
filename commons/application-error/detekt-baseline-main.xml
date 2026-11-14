@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DomainMustNotBeSerializable:ApplicationError.kt:ApplicationError$ApplicationError</ID>
+    <ID>DomainMustNotBeSerializable:ExpectedApplicationError.kt:ExpectedApplicationError$ExpectedApplicationError</ID>
+    <ID>DomainMustNotBeSerializable:UnexpectedApplicationError.kt:UnexpectedApplicationError$UnexpectedApplicationError</ID>
+  </CurrentIssues>
+</SmellBaseline>

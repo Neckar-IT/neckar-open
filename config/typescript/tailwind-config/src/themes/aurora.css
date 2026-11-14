@@ -1,0 +1,124 @@
+/**
+ * Aurora theme — dark night-violet aesthetic with a mint (northern lights)
+ * accent, Space Grotesk typography, and a faint radial aurora glow at the top
+ * of the page.
+ *
+ * This theme only overrides the raw token values defined in main.css — components
+ * keep using the semantic Tailwind utilities (bg-background, text-foreground, …)
+ * and are not affected by the theme in any other way.
+ *
+ * The theme has a fixed dark color scheme: activate it by setting both
+ * `data-theme="aurora"` and the `dark` class on the <html> element
+ * (the ThemeProvider from typescript-react-ui does this automatically for
+ * themes declared with `colorScheme: "dark"`).
+ *
+ * Usage in an app's styles.css (after the main.css import):
+ *
+ *   @import "@neckar-hub/tailwind-config/themes/aurora.css";
+ */
+
+@import "@fontsource-variable/space-grotesk/index.css";
+
+html[data-theme="aurora"] {
+  color-scheme: dark;
+
+  --radius: 0.75rem;
+
+  --theme-font-sans: "Space Grotesk Variable", system-ui, sans-serif;
+  --theme-font-body: "Space Grotesk Variable", system-ui, sans-serif;
+  --theme-font-display: "Space Grotesk Variable", system-ui, sans-serif;
+
+  --background: #110c1d;
+  --foreground: #ece8f6;
+
+  --card: #1a1329;
+  --card-foreground: #ece8f6;
+
+  --popover: #171126;
+  --popover-foreground: #ece8f6;
+
+  --overlay: rgba(8, 5, 18, 0.7);
+
+  --primary: #6ee7b7;
+  --primary-foreground: #06281c;
+
+  --secondary: #2a2140;
+  --secondary-foreground: #ece8f6;
+
+  --muted: #221a35;
+  --muted-foreground: #a79cc4;
+
+  --accent: #2a2140;
+  --accent-foreground: #ece8f6;
+
+  --destructive: #be123c;
+  --destructive-foreground: #fff1f2;
+
+  --border: #2a2140;
+
+  --input: #2a2140;
+
+  --ring: #6ee7b7;
+
+  --sidebar: #150f24;
+  --sidebar-foreground: #d5cde8;
+  --sidebar-primary: #6ee7b7;
+  --sidebar-primary-foreground: #06281c;
+  --sidebar-accent: #1f1834;
+  --sidebar-accent-foreground: #ece8f6;
+  --sidebar-border: #221a35;
+  --sidebar-ring: #6ee7b7;
+
+  --state-success: #4ade80;
+  --state-success-foreground: #052e16;
+  --state-neutral: #818cf8;
+  --state-neutral-foreground: #1e1b4b;
+  --state-warning: #fbbf24;
+  --state-warning-foreground: #422006;
+  --state-critical: #fb923c;
+  --state-critical-foreground: #431407;
+  --state-error: #fb7185;
+  --state-error-foreground: #4c0519;
+  --state-unknown: #8b85a0;
+  --state-unknown-foreground: #16121f;
+
+  --confirmed: #4ade80;
+  --confirmed-foreground: #052e16;
+  --draft: #8b85a0;
+  --draft-foreground: #f8fafc;
+
+  --chart-1: #6ee7b7;
+  --chart-2: #a78bfa;
+  --chart-3: #f472b6;
+  --chart-4: #818cf8;
+  --chart-5: #fbbf24;
+  --chart-6: #7dd3fc;
+  --chart-7: #fb7185;
+}
+
+/* Faint aurora glow — mint and violet radial gradients bleeding in from the top */
+html[data-theme="aurora"] body {
+  background-image:
+    radial-gradient(ellipse 80% 40% at 20% -10%, rgba(110, 231, 183, 0.07), transparent),
+    radial-gradient(ellipse 70% 35% at 80% -10%, rgba(167, 139, 250, 0.08), transparent);
+  background-attachment: fixed;
+}
+
+html[data-theme="aurora"] ::selection {
+  background: rgba(110, 231, 183, 0.3);
+}
+
+html[data-theme="aurora"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html[data-theme="aurora"] ::-webkit-scrollbar-track {
+  background: #110c1d;
+}
+html[data-theme="aurora"] ::-webkit-scrollbar-thumb {
+  background: #2a2140;
+  border-radius: 4px;
+}
+html[data-theme="aurora"] ::-webkit-scrollbar-thumb:hover {
+  background: #453a63;
+}

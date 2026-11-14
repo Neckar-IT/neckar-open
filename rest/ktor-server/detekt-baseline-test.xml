@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:MicrometerDemo.kt:MicrometerDemo$println</ID>
+    <ID>ForbiddenPrintCall:MicrometerDemo.kt:println</ID>
+    <ID>ForbiddenPrintCall:MicrometerTest.kt:MicrometerTest$println</ID>
+    <ID>ForbiddenPrintCall:OpenApiJsonGeneratorCollectionsTest.kt:OpenApiJsonGeneratorCollectionsTest$println</ID>
+    <ID>ForbiddenPrintCall:OpenApiJsonGeneratorMoreComplexTest.kt:OpenApiJsonGeneratorMoreComplexTest$println</ID>
+    <ID>NoNameShadowing:MicrometerTest.kt:MicrometerTest$response</ID>
+    <ID>UnusedPrivateProperty:CallIdTest.kt:CallIdTest.Companion$private val logger: Logger = LoggerFactory.getLogger("it.neckar.ktor.CallIdTest")</ID>
+  </CurrentIssues>
+</SmellBaseline>

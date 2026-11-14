@@ -1,0 +1,1 @@
+export { BadgeBar } from "./BadgeBar";

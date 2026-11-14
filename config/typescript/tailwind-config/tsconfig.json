@@ -1,0 +1,7 @@
+// We need a tsconfig file here, because gradle requires each pnpm project to have a tsconfig file.
+
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules", ".gradle"]
+}

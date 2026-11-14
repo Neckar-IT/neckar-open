@@ -1,0 +1,72 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:Suppress("RETURN_VALUE_NOT_USED") // Test/demo-scope discards: builder-style mutator returns, event-notifier returns, subscription discards
+
+package com.meistercharts.canvas.animation
+
+import it.neckar.open.unit.si.ms
+import assertk.*
+import assertk.assertions.*
+import org.junit.jupiter.api.Test
+
+class SequentialAnimationsTest {
+  @ms
+  private val start: Double = 1_000.0
+
+  @Test
+  fun testIt() {
+    val sequentialAnimations = SequentialAnimations(
+      listOf(
+        animation(10.0),
+        animation(20.0),
+        animation(30.0),
+      )
+    )
+
+    assertThat(sequentialAnimations.animations).hasSize(3)
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(0)
+
+    sequentialAnimations.animationFrame(start + 1.0).let {
+      assertThat(it).isEqualTo(AnimationState.Active)
+    }
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(0)
+
+    sequentialAnimations.animationFrame(start + 10.0)
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(0)
+    sequentialAnimations.animationFrame(start + 10.1)
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(1)
+
+    sequentialAnimations.animationFrame(start + 20.1).let {
+      assertThat(it).isEqualTo(AnimationState.Active)
+    }
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(2)
+
+    //Does *NOT* reset!
+    sequentialAnimations.animationFrame(start + 0.1)
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(2)
+
+    //Does *NOT* reset!
+    sequentialAnimations.animationFrame(start + 30.1).let {
+      assertThat(it).isEqualTo(AnimationState.Finished)
+    }
+    assertThat(sequentialAnimations.currentAnimationIndex).isEqualTo(3)
+
+  }
+
+  private fun animation(finishedAfter: Double): Animated = Animated { frameMonotonicMillis ->
+    AnimationState.finishedIf(frameMonotonicMillis > start + finishedAfter)
+  }
+}

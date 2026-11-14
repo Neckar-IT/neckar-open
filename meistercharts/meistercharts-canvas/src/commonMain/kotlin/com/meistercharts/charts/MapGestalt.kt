@@ -1,0 +1,196 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.charts
+
+import com.meistercharts.algorithms.layers.MouseWheelWithoutModifierMessageLayer
+import com.meistercharts.algorithms.layers.addClearBackground
+import com.meistercharts.algorithms.layers.addFillCanvasBackground
+import com.meistercharts.algorithms.layers.addMouseWheelWithoutModifierHint
+import com.meistercharts.algorithms.layers.slippymap.OpenStreetMap
+import com.meistercharts.algorithms.layers.slippymap.OpenStreetMapDe
+import com.meistercharts.algorithms.layers.slippymap.SlippyMapLayer
+import com.meistercharts.algorithms.layers.slippymap.SlippyMapProvider
+import com.meistercharts.algorithms.layers.text.TextLayer
+import com.meistercharts.algorithms.layers.toolbar.ToolbarLayer
+import com.meistercharts.algorithms.layers.visibleIf
+import com.meistercharts.algorithms.layers.visibleIfWithState
+import com.meistercharts.annotations.Zoomed
+import com.meistercharts.canvas.ConfigurationDsl
+import com.meistercharts.canvas.MeisterchartBuilder
+import com.meistercharts.canvas.paintable.Button
+import com.meistercharts.canvas.paintable.ButtonColorProvider
+import com.meistercharts.canvas.paintable.DefaultButtonColorProvider
+import com.meistercharts.canvas.paintable.SingleButtonColorProvider
+import com.meistercharts.canvas.paintable.ZoomButtons
+import com.meistercharts.color.Color
+import com.meistercharts.font.FontDescriptorFragment
+import com.meistercharts.geometry.DirectionBasedBasePointProvider
+import com.meistercharts.maps.SlippyMapCenter
+import com.meistercharts.zoom.UpdateReason
+import com.meistercharts.zoom.delegate
+import it.neckar.geometry.AxisSelection
+import it.neckar.geometry.Direction
+import it.neckar.geometry.Orientation
+import it.neckar.open.kotlin.lang.asProvider
+import it.neckar.open.observable.ObservableObject
+
+/**
+ * Gestalt for Slippy Map
+ *
+ */
+class MapGestalt(
+  val configuration: Configuration,
+  additionalConfiguration: Configuration.() -> Unit = {}
+) : ChartGestalt {
+
+  constructor(
+    chartId: ChartId,
+    additionalConfiguration: Configuration.() -> Unit = {}
+  ): this(Configuration(chartId), additionalConfiguration)
+
+  val slippyMapLayer: SlippyMapLayer = SlippyMapLayer(configuration.chartId, OpenStreetMapDe) {
+  }
+
+  val zoomInToolbarButton: Button = Button({ paintingContext, state, width, height ->
+    val gc = paintingContext.gc
+
+    gc.lineWidth = ToolbarButtonSymbolLineWidth
+    gc.fill(configuration.toolbarButtonBackgroundProvider(state))
+    gc.stroke(configuration.toolbarButtonForegroundProvider(state))
+
+    ZoomButtons.paintZoomIn(gc, ToolbarButtonSymbolSize, width, height)
+  }, ToolbarButtonWidth, ToolbarButtonHeight)
+
+  val zoomOutToolbarButton: Button = Button({ paintingContext, state, width, height ->
+    val gc = paintingContext.gc
+    gc.fill(configuration.toolbarButtonBackgroundProvider(state))
+    gc.fillRect(0.0, 0.0, width, height)
+    gc.stroke(configuration.toolbarButtonForegroundProvider(state))
+    gc.lineWidth = ToolbarButtonSymbolLineWidth
+
+    ZoomButtons.paintZoomOut(gc, ToolbarButtonSymbolSize, width, height)
+  }, ToolbarButtonWidth, ToolbarButtonHeight)
+
+  val toolbarLayer: ToolbarLayer = ToolbarLayer(listOf(zoomInToolbarButton, zoomOutToolbarButton)) {
+    gap = 20.0
+    buttonGap = 5.0
+    anchorDirection = Direction.BottomRight
+    layoutOrientation = Orientation.Vertical
+  }
+
+  /**
+   * Shows the legal notice if configured in the style
+   * see https://www.openstreetmap.org/copyright/en
+   * TODO add a Link-Layer
+   */
+  val legalNoticeLayer: TextLayer = TextLayer({ _, _ -> listOf(slippyMapLayer.configuration.slippyMapProvider.legalNotice.orEmpty()) }) {
+    textColor = Color.gray
+    font = FontDescriptorFragment(10.0).asProvider()
+    anchorDirection = Direction.BottomLeft
+    anchorPointProvider = DirectionBasedBasePointProvider(anchorDirection)
+  }
+
+  /** Kept on the instance so the subscription's lifetime is tied to this gestalt. */
+  @Suppress("unused")
+  private val slippyMapProviderSubscription = configuration.slippyMapProviderProperty.consumeImmediately {
+    slippyMapLayer.configuration.slippyMapProvider = it
+    slippyMapLayer.tileProvider.clear()
+  }
+
+  init {
+    configuration.additionalConfiguration()
+  }
+
+  override fun configure(meisterChartBuilder: MeisterchartBuilder) {
+    with(meisterChartBuilder) {
+
+      SlippyMapBaseGestalt().configure(meisterChartBuilder)
+
+      zoomAndTranslationDefaults(configuration::slippyMapCenter.delegate())
+
+      configure {
+        zoomInToolbarButton.action {
+          chartSupport.zoomAndTranslationSupport.modifyZoom(true, AxisSelection.Both, reason = UpdateReason.UserInteraction)
+        }
+
+        zoomOutToolbarButton.action {
+          chartSupport.zoomAndTranslationSupport.modifyZoom(false, AxisSelection.Both, reason = UpdateReason.UserInteraction)
+        }
+
+        layers.addClearBackground()
+        layers.addFillCanvasBackground()
+        layers.addLayer(slippyMapLayer)
+        layers.addLayer(legalNoticeLayer.visibleIf { configuration.showCopyrightMarker })
+        layers.addLayer(toolbarLayer.visibleIf { configuration.showToolbar })
+
+        layers.addMouseWheelWithoutModifierHint(listOf(MouseWheelWithoutModifierMessageLayer.textKeyUseCtrlZoom))
+      }
+    }
+  }
+
+  @ConfigurationDsl
+  class Configuration(
+    val chartId: ChartId
+    ) {
+    /**
+     * The center that is used when resetting the zoom
+     */
+    var slippyMapCenter: SlippyMapCenter = SlippyMapCenter.neckarItCenter
+
+    /**
+     * Provides the slippy map
+     */
+    val slippyMapProviderProperty: ObservableObject<SlippyMapProvider> = ObservableObject(OpenStreetMap)
+
+    /**
+     * Provides the slippy map
+     */
+    var slippyMapProvider: SlippyMapProvider by slippyMapProviderProperty
+
+    /**
+     * If set to true the copy right marker is shown at the bottom left
+     */
+    var showCopyrightMarker: Boolean = true
+
+    /**
+     * Whether to show the toolbar or not
+     */
+    var showToolbar: Boolean = true
+
+    /**
+     * Provides the color to be used as background for toolbar buttons
+     */
+    var toolbarButtonBackgroundProvider: ButtonColorProvider = DefaultButtonColorProvider(
+      disabledColor = Color("#A3AAAE"),
+      pressedColor = Color("rgba(116, 126, 131, 1.0)"),
+      hoverColor = Color("rgba(116, 126, 131, 0.9)"),
+      focusedColor = Color("rgba(116, 126, 131, 0.9)"),
+      defaultColor = Color("rgba(116, 126, 131, 0.75)")
+    )
+
+    /**
+     * Provides the color to be used as foreground for toolbar buttons
+     */
+    var toolbarButtonForegroundProvider: ButtonColorProvider = SingleButtonColorProvider(Color.white)
+  }
+
+  companion object {
+    private const val ToolbarButtonWidth: @Zoomed Double = 20.0
+    private const val ToolbarButtonHeight: @Zoomed Double = 20.0
+    private const val ToolbarButtonSymbolSize: @Zoomed Double = 8.0
+    private const val ToolbarButtonSymbolLineWidth: @Zoomed Double = 2.0
+  }
+}

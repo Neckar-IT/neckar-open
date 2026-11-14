@@ -1,0 +1,1 @@
+export { TableFrame } from "./TableFrame";

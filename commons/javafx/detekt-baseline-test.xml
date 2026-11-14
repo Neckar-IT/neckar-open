@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:AdvancedTextFieldDemo.kt:AdvancedTextFieldDemo$println</ID>
+    <ID>ForbiddenPrintCall:CanvasMultipleTabsVisibleDemo.kt:MyNode$println</ID>
+    <ID>ForbiddenPrintCall:CanvasRunner.kt:CanvasRunner$println</ID>
+    <ID>ForbiddenPrintCall:ComboBoxWithOptionalDemo.kt:ComboBoxWithOptionalDemo$println</ID>
+    <ID>ForbiddenPrintCall:ControlRunner.kt:ControlRunner$println</ID>
+    <ID>ForbiddenPrintCall:CustomerTest.kt:CustomerTest$println</ID>
+    <ID>ForbiddenPrintCall:EmptyPrimaryStageApplicationDemo.kt:println</ID>
+    <ID>ForbiddenPrintCall:JavaFxRunner.kt:JavaFxRunner$println</ID>
+    <ID>ForbiddenPrintCall:JavaFxTimerTest.kt:JavaFxTimerTest$println</ID>
+    <ID>ForbiddenPrintCall:SliderDemo.kt:SliderDemo$println</ID>
+    <ID>ForbiddenPrintCall:SpinnerDemo.kt:SpinnerDemo$println</ID>
+    <ID>ForbiddenPrintCall:VFlowRunner.kt:VFlowRunner$println</ID>
+    <ID>ForbiddenVoid:ControlRunner.kt:ControlRunner$Void</ID>
+  </CurrentIssues>
+</SmellBaseline>

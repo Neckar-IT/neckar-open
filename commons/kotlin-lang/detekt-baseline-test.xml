@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:CollectionExtKtTest.kt:CollectionExtKtTest$println</ID>
+    <ID>ForbiddenPrintCall:NormalizedDemo.kt:NormalizedDemo$print</ID>
+    <ID>ForbiddenPrintCall:NormalizedDemo.kt:NormalizedDemo$println</ID>
+    <ID>ForbiddenPrintCall:StringExtKtTest.kt:StringExtKtTest$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

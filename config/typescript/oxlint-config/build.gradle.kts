@@ -1,0 +1,1 @@
+description = "oxlint configuration"

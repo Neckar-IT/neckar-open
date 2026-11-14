@@ -1,0 +1,58 @@
+{
+  "name": "@neckar-hub/typescript-utils",
+  "version": "0.0.0",
+  "private": true,
+  "description": "TypeScript utilities",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "exports": {
+    "./*": {
+      "types": "./dist/src/*/index.d.ts",
+      "import": "./dist/src/*/index.js"
+    }
+  },
+  "scripts": {
+    "openapi:merge": "bash ./openapi-merge.sh",
+    "openapi:convert": "orval --config ./orval.config.ts",
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run openapi:merge && pnpm run openapi:convert && pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run openapi:merge && pnpm run openapi:convert && pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run openapi:merge && pnpm run openapi:convert && pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "dayjs": "catalog:",
+    "nanoid": "catalog:",
+    "react-hook-form": "catalog:",
+    "uuid": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/orval-config": "workspace:*",
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@orval/core": "catalog:",
+    "@redocly/cli": "catalog:",
+    "jsdom": "catalog:",
+    "orval": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

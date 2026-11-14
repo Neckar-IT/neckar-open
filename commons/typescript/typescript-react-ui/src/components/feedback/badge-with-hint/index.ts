@@ -1,0 +1,1 @@
+export { BadgeWithHint } from "./BadgeWithHint";

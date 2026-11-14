@@ -1,0 +1,179 @@
+/*
+ * Copyright (C) 2013-2026 Neckar IT GmbH, Mössingen, Germany
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Linking this library statically or dynamically with other modules is
+ * making a combined work based on this library. Thus, the terms and
+ * conditions of the GNU General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this library give you
+ * permission to link this library with independent modules, regardless of
+ * the license terms of these independent modules, and to copy and distribute
+ * the resulting combined work under terms of your choice, provided that every
+ * copy of the combined work is accompanied by a complete copy of the source
+ * code of this library.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+@file:Suppress("RETURN_VALUE_NOT_USED") // Test-scope subscriptions don't need lifecycle management
+
+package it.neckar.open.observable
+
+import assertk.*
+import assertk.assertions.*
+import org.junit.jupiter.api.Test
+
+class ObservableBooleanTest {
+  @Test
+  internal fun testConstructor() {
+    assertThat(ObservableBoolean(false).value).isFalse()
+    assertThat(ObservableBoolean(true).value).isTrue()
+  }
+
+  @Test
+  internal fun testIt() {
+    val observableBoolean = ObservableBoolean(false)
+    assertThat(observableBoolean.value).isFalse()
+
+
+    var called = false
+    observableBoolean.consumeChanges { oldValue, newValue ->
+      assertThat(called).isFalse()
+      called = true
+      assertThat(oldValue).isFalse()
+      assertThat(newValue).isTrue()
+    }
+
+    assertThat(called).isFalse()
+
+    //Nothing should happen since the value has not changed
+    observableBoolean.value = false
+    assertThat(called).isFalse()
+
+    observableBoolean.value = true
+    assertThat(called).isTrue()
+  }
+
+  @Test
+  internal fun testOr() {
+    val o1 = ObservableBoolean(false)
+    val o2 = ObservableBoolean(false)
+
+    val or = o1 or o2
+    val and = o1 and o2
+
+    assertThat(or.value).isFalse()
+    assertThat(and.value).isFalse()
+    o1.value = true
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isFalse()
+    o2.value = true
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isTrue()
+
+    o1.value = false
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isFalse()
+    o2.value = false
+    assertThat(or.value).isFalse()
+    assertThat(and.value).isFalse()
+  }
+
+  @Test
+  internal fun testMultipleOrAnd() {
+    val o1 = ObservableBoolean(false)
+    val o2 = ObservableBoolean(false)
+    val o3 = ObservableBoolean(false)
+
+    val or = o1.or(o2, o3)
+    val and = o1.and(o2, o3)
+
+    assertThat(or.value).isFalse()
+    assertThat(and.value).isFalse()
+
+    o1.value = true
+    o2.value = true
+    o3.value = true
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isTrue()
+
+    o1.value = false
+    o2.value = false
+    o3.value = true
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isFalse()
+
+    o1.value = true
+    o2.value = false
+    o3.value = false
+    assertThat(or.value).isTrue()
+    assertThat(and.value).isFalse()
+
+    o1.value = false
+    o2.value = false
+    o3.value = false
+    assertThat(or.value).isFalse()
+    assertThat(and.value).isFalse()
+  }
+
+  @Test
+  internal fun testListOr() {
+    val o1 = ObservableBoolean(false)
+    val o2 = ObservableBoolean(false)
+    val o3 = ObservableBoolean(false)
+
+    val list = listOf(o1, o2, o3)
+
+    val or = list.or()
+    assertThat(or.value).isFalse()
+
+    o1.value = true
+    assertThat(or.value).isTrue()
+
+    o2.value = true
+    assertThat(or.value).isTrue()
+
+    o1.value = false
+    assertThat(or.value).isTrue()
+  }
+
+  @Test
+  internal fun testListAnd() {
+    val o1 = ObservableBoolean(false)
+    val o2 = ObservableBoolean(false)
+    val o3 = ObservableBoolean(false)
+
+    val list = listOf(o1, o2, o3)
+
+    val and = list.and()
+    assertThat(and.value).isFalse()
+
+    o1.value = true
+    assertThat(and.value).isFalse()
+    o2.value = true
+    assertThat(and.value).isFalse()
+    o3.value = true
+    assertThat(and.value).isTrue()
+  }
+
+  @Test
+  internal fun testEmptyListOr() {
+    val list = listOf<ObservableBoolean>()
+    assertFailure {
+      list.or()
+    }
+    assertFailure {
+      list.and().value
+    }
+  }
+}

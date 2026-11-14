@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NestedBlockDepth:Noise.kt:Noise$@JvmStatic fun cellularFunction6D: Unit</ID>
+  </CurrentIssues>
+</SmellBaseline>

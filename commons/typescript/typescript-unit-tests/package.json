@@ -1,0 +1,31 @@
+{
+  "name": "@neckar-hub/typescript-unit-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Unit Tests to see how tpyescript modules and dependencies behave",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.it"
+  },
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "lint": "oxlint .",
+    "lint:fix": "pnpm run lint -- --fix",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "dayjs": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

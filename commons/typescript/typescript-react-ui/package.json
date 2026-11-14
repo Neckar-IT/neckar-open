@@ -1,0 +1,197 @@
+{
+  "name": "@neckar-hub/typescript-react-ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reusable React UI Components",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.it"
+  },
+  "type": "module",
+  "exports": {
+    "./actions": {
+      "import": "./dist/src/components/actions/index.js",
+      "types": "./dist/src/components/actions/index.d.ts"
+    },
+    "./query-handling": {
+      "import": "./dist/src/query-handling/index.js",
+      "types": "./dist/src/query-handling/index.d.ts"
+    },
+    "./draft-confirmed": {
+      "import": "./dist/src/components/draft-confirmed/index.js",
+      "types": "./dist/src/components/draft-confirmed/index.d.ts"
+    },
+    "./optimistic-locking": {
+      "import": "./dist/src/components/optimistic-locking/index.js",
+      "types": "./dist/src/components/optimistic-locking/index.d.ts"
+    },
+    "./entities": {
+      "import": "./dist/src/components/entities/index.js",
+      "types": "./dist/src/components/entities/index.d.ts"
+    },
+    "./price-timeline": {
+      "import": "./dist/src/components/price-timeline/index.js",
+      "types": "./dist/src/components/price-timeline/index.d.ts"
+    },
+    "./value-timeline": {
+      "import": "./dist/src/components/value-timeline/index.js",
+      "types": "./dist/src/components/value-timeline/index.d.ts"
+    },
+    "./conditions-timeline": {
+      "import": "./dist/src/components/conditions-timeline/index.js",
+      "types": "./dist/src/components/conditions-timeline/index.d.ts"
+    },
+    "./conditions-timeline-test-support": {
+      "import": "./dist/src/components/conditions-timeline/conditionsTimelineTestSupport.js",
+      "types": "./dist/src/components/conditions-timeline/conditionsTimelineTestSupport.d.ts"
+    },
+    "./quote": {
+      "import": "./dist/src/components/quote/index.js",
+      "types": "./dist/src/components/quote/index.d.ts"
+    },
+    "./inputs": {
+      "import": "./dist/src/components/inputs/index.js",
+      "types": "./dist/src/components/inputs/index.d.ts"
+    },
+    "./filters": {
+      "import": "./dist/src/components/filters/index.js",
+      "types": "./dist/src/components/filters/index.d.ts"
+    },
+    "./forms": {
+      "import": "./dist/src/components/forms/index.js",
+      "types": "./dist/src/components/forms/index.d.ts"
+    },
+    "./data-display": {
+      "import": "./dist/src/components/data-display/index.js",
+      "types": "./dist/src/components/data-display/index.d.ts"
+    },
+    "./feedback": {
+      "import": "./dist/src/components/feedback/index.js",
+      "types": "./dist/src/components/feedback/index.d.ts"
+    },
+    "./navigation": {
+      "import": "./dist/src/components/navigation/index.js",
+      "types": "./dist/src/components/navigation/index.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/src/components/layout/index.js",
+      "types": "./dist/src/components/layout/index.d.ts"
+    },
+    "./overlays": {
+      "import": "./dist/src/components/overlays/index.js",
+      "types": "./dist/src/components/overlays/index.d.ts"
+    },
+    "./overlays-test-support": {
+      "import": "./dist/src/components/overlays/overlaysTestSupport.js",
+      "types": "./dist/src/components/overlays/overlaysTestSupport.d.ts"
+    },
+    "./media": {
+      "import": "./dist/src/components/media/index.js",
+      "types": "./dist/src/components/media/index.d.ts"
+    },
+    "./text": {
+      "import": "./dist/src/components/text/index.js",
+      "types": "./dist/src/components/text/index.d.ts"
+    },
+    "./pages/*": {
+      "import": "./dist/src/components/pages/*/index.js",
+      "types": "./dist/src/components/pages/*/index.d.ts"
+    },
+    "./providers/*": {
+      "import": "./dist/src/providers/*/index.js",
+      "types": "./dist/src/providers/*/index.d.ts"
+    },
+    "./quantities": {
+      "import": "./dist/src/components/quantities/index.js",
+      "types": "./dist/src/components/quantities/index.d.ts"
+    },
+    "./tailwind-sources.css": "./src/tailwind-sources.css"
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "integration-test": "playwright install chromium && playwright test",
+    "catalog:generate": "node scripts/generate-catalog.ts",
+    "ladle": "ladle serve",
+    "ladle:build": "ladle build --outDir build/ladle",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@neckar-hub/typescript-react-i18n": "workspace:*",
+    "@neckar-hub/typescript-react-query": "workspace:*",
+    "@neckar-hub/typescript-react-router": "workspace:*",
+    "@neckar-hub/typescript-react-ui-primitives": "workspace:*",
+    "@neckar-hub/typescript-react-utils": "workspace:*",
+    "@neckar-hub/typescript-utils": "workspace:*",
+    "class-variance-authority": "catalog:",
+    "cn": "catalog:",
+    "date-fns": "catalog:",
+    "jotai": "catalog:",
+    "lodash": "catalog:",
+    "lucide-react": "catalog:",
+    "radix-ui": "catalog:",
+    "react-day-picker": "catalog:",
+    "react-highlight-words": "catalog:",
+    "react-hook-form": "catalog:",
+    "react-icons": "catalog:",
+    "react-router": "catalog:",
+    "recharts": "catalog:",
+    "sonner": "catalog:"
+  },
+  "devDependencies": {
+    "@hookform/resolvers": "catalog:",
+    "@ladle/react": "catalog:",
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/playwright-config": "workspace:*",
+    "@neckar-hub/tailwind-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/lodash": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/sync-fetch": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "axios": "catalog:",
+    "es-toolkit": "catalog:",
+    "jsdom": "catalog:",
+    "msw": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "recharts": "catalog:",
+    "sync-fetch": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vite": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,9 @@
+/*
+ * Tailwind source manifest — see typescript-react-router/src/tailwind-sources.css for the rule and
+ * why "./" must stay this package's src directory.
+ */
+
+/* Custom variants, keyframes and base styles of the shadcn style the primitives are written in. */
+@import "./shadcn-theme.css";
+
+@source "./";

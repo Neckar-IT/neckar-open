@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--
+  Defines the container format. Every writer and reader of internal/open/commons/container follows this page.
+-->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Container-Format</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card: #f5f6f8;
+      --border: #d9dde4;
+      --text: #1d2129;
+      --muted: #5c6575;
+      --accent: #2f6fd6;
+      --code-bg: #eceff3;
+      --container-bg: #dce8ff;
+      --container-border: #2f6fd6;
+      --app-bg: #ddf3e4;
+      --app-border: #2e9b57;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1115;
+        --card: #191c24;
+        --border: #2a2f3a;
+        --text: #e6e8ee;
+        --muted: #9aa3b2;
+        --accent: #6ea8fe;
+        --code-bg: #232734;
+        --container-bg: #1c2a44;
+        --container-border: #6ea8fe;
+        --app-bg: #183526;
+        --app-border: #57c98a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    main { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    h1 { font-size: 1.55rem; margin: 0 0 .25rem; }
+    .sub { color: var(--muted); margin: 0 0 1.75rem; }
+    h2 { font-size: 1.1rem; margin: 2.25rem 0 .5rem; color: var(--accent); }
+    .note { font-size: .78rem; color: var(--muted); margin-left: 1.5rem; }
+    h3 { font-size: 1rem; margin: 1.5rem 0 .4rem; }
+    p, li { margin: .45rem 0; }
+    code { background: var(--code-bg); padding: .1rem .35rem; border-radius: 4px; font-size: .88em; }
+    pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: .85rem 1rem; overflow-x: auto; font-size: .85rem; }
+    pre code { background: none; padding: 0; }
+    .container, .app { display: block; padding: .1rem .5rem; margin: .1rem 0; border-left: 4px solid; border-radius: 3px; }
+    .container { background: var(--container-bg); border-color: var(--container-border); }
+    .app { background: var(--app-bg); border-color: var(--app-border); }
+    .legend { display: flex; flex-wrap: wrap; gap: .75rem; margin: .75rem 0; font-size: .9rem; }
+    .app-value { background: var(--app-bg); outline: 1px solid var(--app-border); border-radius: 3px; padding: 0 .15rem; }
+    code.container-inline { background: var(--container-bg); outline: 1px solid var(--container-border); }
+    code.app-inline { background: var(--app-bg); outline: 1px solid var(--app-border); }
+    .legend span { display: inline-block; padding: .2rem .6rem; border-left: 4px solid; border-radius: 3px; }
+    .legend .container, .legend .app { display: inline-block; margin: 0; }
+  </style>
+</head>
+<body>
+<main>
+
+<h1>Container-Format</h1>
+<p class="sub">Aufbau einer Container-Datei</p>
+
+<h2>Prinzip</h2>
+<p>Ein Container ist eine ZIP-Datei mit Einträgen in fester Reihenfolge:</p>
+<ol>
+  <li><code class="container-inline">meta/version</code> nennt die Version des Container-Formats.</li>
+  <li><code class="container-inline">meta/type/&lt;version&gt;</code> nennt als JSON die Art des Inhalts und deren Version.</li>
+  <li>Die Daten-Einträge der Anwendung folgen, jeder als <code>&lt;name&gt;/&lt;version&gt;</code>.</li>
+</ol>
+<p>Jede Version ist eine SemVer-Version <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>. Ein Reader liest eine Version, deren Major er kennt.</p>
+<div class="legend"><span class="container">Pflicht-Inhalt jedes Containers</span><span class="app">Inhalt der Anwendung</span></div>
+
+<h2>Beispiel: Backup-Archiv</h2>
+<p>Einträge eines Backup-Archivs in Schreibreihenfolge:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 2.3.0</span></span></span><span class="app">mongodb/1.0.0</span><span class="app">volume/2.1.0</span></code></pre>
+
+<p>Inhalt von <code class="container-inline">meta/version</code>:</p>
+<pre><code><span class="container">1.0.0</span></code></pre>
+
+<p>Inhalt von <code class="container-inline">meta/type/1.0.0</code>:</p>
+<pre><code><span class="container">{
+  "name": <span class="app-value">"it.neckar.backup.archive"</span>,
+  "version": <span class="app-value">"2.3.0"</span>
+}</span></code></pre>
+<p>Das Container-Format schreibt die Felder vor. Die Anwendung wählt die Werte.</p>
+<ul>
+  <li><code>name</code>: Art des Inhalts</li>
+  <li><code>version</code>: SemVer-Version dieser Art. Ein Reader für Backup-Archive mit Major <code>2</code> liest jede Version <code>2.x.y</code> und lehnt <code>3.0.0</code> ab.</li>
+</ul>
+<p>Die <code>1.0.0</code> im Dateinamen ist die Version dieses JSON-Aufbaus.</p>
+
+<p>Die Anwendung <code class="app-inline">it.neckar.backup.archive</code> legt die Namen <code class="app-inline">mongodb</code> und <code class="app-inline">volume</code> und das Format ihres Inhalts fest. Ein Name darf <code>/</code> enthalten, etwa <code class="app-inline">config/users/1.2.0</code>: Name <code>config/users</code>, Version <code>1.2.0</code>.</p>
+
+<h2>Versionsstufen</h2>
+<p>Die Stufe einer neuen Version richtet sich nach der Änderung. Beispiel: Backup-Archiv in Version <code>2.3.0</code> mit den Einträgen <code class="app-inline">mongodb/1.0.0</code> und <code class="app-inline">volume/2.1.0</code>:</p>
+<ul>
+  <li><strong>Patch, <code>2.3.1</code>:</strong> präzisiert die Beschreibung des Formats, die jeder bestehende Container schon erfüllt. Einträge, Felder und Bytes bleiben gleich; in der Praxis bleibt Patch <code>0</code>.</li>
+  <li><strong>Minor, <code>2.4.0</code>:</strong> fügt einen Eintrag oder ein Feld hinzu, etwa <code class="app-inline">postgres/1.0.0</code>. Ein Reader für <code>2.3.0</code> überspringt den unbekannten Eintrag und liest den Rest.</li>
+  <li><strong>Major, <code>3.0.0</code>:</strong> ändert oder entfernt einen Eintrag oder ein Feld, etwa <code class="app-inline">mongodb/1.0.0</code> durch <code class="app-inline">mongodb/2.0.0</code> ersetzt. Ein Reader für Major <code>2</code> lehnt den Container ab.</li>
+</ul>
+<p>Dieselben Stufen gelten für die Version im Namen eines Eintrags und für <code class="container-inline">meta/version</code>.</p>
+
+<h2>Regeln</h2>
+<ul>
+  <li><code class="container-inline">meta/</code> gehört dem Container-Format; kein Daten-Eintrag liegt darin.</li>
+  <li>Jeder Meta-Eintrag außer <code class="container-inline">meta/version</code> heißt <code>&lt;name&gt;/&lt;version&gt;</code>, auch einer, den eine spätere Format-Version hinzufügt.</li>
+  <li>Jeder Eintragsname ist UTF-8 ohne Steuerzeichen (U+0000 bis U+001F und U+007F); kein Eintrag ist verschlüsselt.</li>
+  <li>Ein Name ist ein relativer Pfad aus Segmenten, die <code>/</code> trennt; jedes Segment hat mindestens ein Zeichen, ist weder <code>.</code> noch <code>..</code> und enthält kein <code>\</code>.</li>
+  <li>Jede Version ist <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> ohne führende Null und ohne Suffix.</li>
+  <li><code class="container-inline">meta/version</code> enthält genau die Version, ohne Zeilenende.</li>
+  <li>Der Typ-Name ist ein Name in Reverse-Domain-Notation mit mindestens zwei durch <code>.</code> getrennten Segmenten aus Buchstaben, Ziffern, <code>-</code> und <code>_</code>.</li>
+  <li>Der ZIP-Pfad <code>&lt;name&gt;/&lt;version&gt;</code> eines Eintrags ist höchstens 65535 Bytes lang.</li>
+  <li>Ein Meta-Eintrag ist höchstens 1 MiB groß.</li>
+</ul>
+
+<h2>Vorwärtskompatibilität</h2>
+<p>Ausgangspunkt jedes Beispiels:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 2.3.0</span></span></span><span class="app">mongodb/1.0.0</span><span class="app">volume/2.1.0</span></code></pre>
+<p>Die Versionen eines Namens stehen direkt hintereinander, die höchste zuerst. Ein Reader nimmt die erste Version, deren Major er kennt, und überspringt die übrigen Versionen dieses Namens. Er puffert dabei keinen Inhalt.</p>
+
+<h3>Anwendung: kompatibel erweiterter Eintrag (Minor)</h3>
+<p>Das Backup-Archiv <code>2.4.0</code> schreibt den Dump in <code class="app-inline">mongodb/1.5.0</code> an der Stelle von <code class="app-inline">mongodb/1.0.0</code>:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 2.4.0</span></span></span><span class="app">mongodb/1.5.0</span><span class="app">volume/2.1.0</span></code></pre>
+<ul>
+  <li><strong>Reader für Backup-Archiv <code>2.3.0</code>:</strong> kennt <code class="app-inline">mongodb</code> Major <code>1</code> und liest <code class="app-inline">mongodb/1.5.0</code>.</li>
+</ul>
+
+<h3>Anwendung: zusätzlicher Eintrag (Minor)</h3>
+<p>Das Backup-Archiv <code>2.4.0</code> schreibt den Dump zusätzlich im neuen Format <code class="app-inline">mongodb/2.0.0</code>:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 2.4.0</span></span></span><span class="app">mongodb/2.0.0</span><span class="app">mongodb/1.0.0</span><span class="app">volume/2.1.0</span></code></pre>
+<ul>
+  <li><strong>Reader für Backup-Archiv <code>2.3.0</code>:</strong> überspringt <code class="app-inline">mongodb/2.0.0</code>, liest <code class="app-inline">mongodb/1.0.0</code> und <code class="app-inline">volume/2.1.0</code>.</li>
+  <li><strong>Reader für Backup-Archiv <code>2.4.0</code>:</strong> liest <code class="app-inline">mongodb/2.0.0</code>, überspringt <code class="app-inline">mongodb/1.0.0</code>, liest <code class="app-inline">volume/2.1.0</code>.</li>
+</ul>
+
+<h3>Anwendung: Eintrag entfällt (Major)</h3>
+<p>Das Backup-Archiv <code>3.0.0</code> schreibt <code class="app-inline">mongodb/1.0.0</code> nicht mehr:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 3.0.0</span></span></span><span class="app">mongodb/2.0.0</span><span class="app">volume/2.1.0</span></code></pre>
+<ul>
+  <li><strong>Reader für Backup-Archiv Major <code>2</code>:</strong> lehnt den Container nach <code class="container-inline">meta/type/1.0.0</code> ab.</li>
+  <li><strong>Reader für Backup-Archiv Major <code>3</code>:</strong> liest <code class="app-inline">mongodb/2.0.0</code> und <code class="app-inline">volume/2.1.0</code>.</li>
+</ul>
+
+<h3>Container-Format: neuer Aufbau von <code class="container-inline">meta/type</code></h3>
+<p>Ein neuer JSON-Aufbau steht als zusätzlicher Eintrag <code class="container-inline">meta/type/2.0.0</code> vor <code class="container-inline">meta/type/1.0.0</code>. <code class="container-inline">meta/version</code> bleibt <code>1.0.0</code>:</p>
+<pre><code><span class="container">meta/version</span><span class="container">meta/type/2.0.0</span><span class="container">meta/type/1.0.0<span class="note"><span class="app-value">it.neckar.backup.archive 2.3.0</span></span></span><span class="app">mongodb/1.0.0</span><span class="app">volume/2.1.0</span></code></pre>
+<ul>
+  <li><strong>Reader kennt <code class="container-inline">meta/type</code> Major <code>1</code>:</strong> überspringt <code class="container-inline">meta/type/2.0.0</code>, liest <code class="container-inline">meta/type/1.0.0</code>.</li>
+  <li><strong>Reader kennt <code class="container-inline">meta/type</code> Major <code>2</code>:</strong> liest <code class="container-inline">meta/type/2.0.0</code>, überspringt <code class="container-inline">meta/type/1.0.0</code>.</li>
+</ul>
+
+</main>
+</body>
+</html>

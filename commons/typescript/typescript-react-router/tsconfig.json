@@ -1,0 +1,12 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.dom.json"],
+  "include": ["./src", "./tests", "tests/vitest/setup.ts", "./eslint.config.mjs", "./vitest.config.ts", "./oxfmt.config.ts"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "rootDir": ".",
+    "noEmit": false,
+    "outDir": "./dist"
+  }
+}

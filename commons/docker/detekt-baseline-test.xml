@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:ChromeDockerSupportTest.kt:ChromeDockerSupportTest$println</ID>
+    <ID>ForbiddenPrintCall:MongoDbDockerSupportTest.kt:MongoDbDockerSupportTest$println</ID>
+    <ID>ForbiddenPrintCall:NginxDockerSupportTest.kt:NginxDockerSupportTest$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

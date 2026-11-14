@@ -1,0 +1,148 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.charts
+
+import com.meistercharts.algorithms.layers.ResizablePaintableLayer
+import com.meistercharts.algorithms.layers.addClearBackground
+import com.meistercharts.algorithms.layers.addFillCanvasBackground
+import com.meistercharts.algorithms.layers.compass.CompassTriangleValuePainter
+import com.meistercharts.algorithms.layers.compass.GaugePaintable
+import com.meistercharts.algorithms.layers.compass.ModernCompassPainter
+import com.meistercharts.algorithms.layers.debug.addVersionNumberHidden
+import com.meistercharts.algorithms.layers.text.TextLayer
+import com.meistercharts.canvas.ConfigurationDsl
+import com.meistercharts.canvas.MeisterchartBuilder
+import com.meistercharts.color.Color
+import com.meistercharts.font.FontDescriptorFragment
+import com.meistercharts.font.FontSize
+import com.meistercharts.model.Insets
+import com.meistercharts.provider.ValueRangeProvider
+import com.meistercharts.provider.delegate
+import com.meistercharts.range.ValueRange
+import it.neckar.geometry.Direction
+import it.neckar.geometry.RotationDirection
+import it.neckar.geometry.Size
+import it.neckar.open.formatting.decimalFormat
+import it.neckar.open.kotlin.lang.asProvider
+import it.neckar.open.observable.ObservableObject
+import it.neckar.open.provider.DoubleProvider
+import it.neckar.open.provider.asDoubleProvider
+import it.neckar.open.provider.delegate
+import it.neckar.open.unit.other.deg
+import kotlin.math.PI
+
+/**
+ * A modern compass
+ */
+class ModernCompassGestalt(
+  val configuration: Configuration,
+  additionalConfiguration: Configuration.() -> Unit = {}
+) : ChartGestalt {
+
+  constructor(
+    currentValueProvider: @deg DoubleProvider = 0.0.asDoubleProvider(),
+    valueRangeProvider: ValueRangeProvider = ValueRange.degrees.asProvider(),
+    additionalConfiguration: Configuration.() -> Unit = {}
+  ): this(Configuration(currentValueProvider, valueRangeProvider), additionalConfiguration)
+
+  init {
+    configuration.additionalConfiguration()
+  }
+
+  val fixedChartGestalt: FixedChartGestalt = FixedChartGestalt()
+
+  val modernCompassPainter: ModernCompassPainter = ModernCompassPainter()
+
+  val compassTriangleValuePainter: CompassTriangleValuePainter = CompassTriangleValuePainter {
+    lineWidth = 3.0
+    stroke = Color("#185ba6").asProvider()
+    fill = Color("rgba(24, 91, 166, 0.5)").asProvider()
+  }
+
+  val gaugePaintable: GaugePaintable = GaugePaintable(
+    configuration::valueRangeProvider.delegate(),
+    configuration::currentValueProvider.delegate(),
+    Size(100.0, 100.0)
+  ) {
+    basePainter = modernCompassPainter
+    valuePainter = compassTriangleValuePainter
+
+    startAt = -PI / 2.0
+    extend = 2 * PI
+    rotationDirection = RotationDirection.Clockwise
+  }
+
+  val resizablePaintableLayer: ResizablePaintableLayer = ResizablePaintableLayer(Insets.empty) {
+    gaugePaintable
+  }
+
+  val valueLayer: TextLayer = TextLayer({ _, i18nConfiguration ->
+    val value = configuration.currentValueProvider()
+    listOf("${decimalFormat.format(value, i18nConfiguration)}°")
+  }) {
+    font = FontDescriptorFragment(size = FontSize(50.0)).asProvider()
+    anchorDirection = Direction.BottomCenter
+  }
+
+  val subValueLayer: TextLayer = TextLayer({ _, _ ->
+    listOf("48°24'49.7\"N", "9°03'03.0\"E")
+  }) {
+    font = FontDescriptorFragment(size = FontSize(20.0)).asProvider()
+    margin = Insets.of(500.0, 0.0, 0.0, 0.0)
+    anchorDirection = Direction.TopCenter
+  }
+
+  /**
+   * Kept on the instance so the subscription's lifetime is tied to this gestalt.
+   * Previously registered in `configure()` - which would have attached a new listener on every
+   * call; moving it into an initialised property ensures exactly one subscription per gestalt.
+   */
+  @Suppress("unused")
+  private val marginSubscription = configuration.marginProperty.consumeImmediately {
+    fixedChartGestalt.contentViewportMargin = it
+    resizablePaintableLayer.insets = it
+  }
+
+  override fun configure(meisterChartBuilder: MeisterchartBuilder) {
+    fixedChartGestalt.configure(meisterChartBuilder)
+
+    meisterChartBuilder.configure {
+      layers.addClearBackground()
+      layers.addFillCanvasBackground()
+      this.layers.addLayer(resizablePaintableLayer)
+      this.layers.addLayer(valueLayer)
+      this.layers.addLayer(subValueLayer)
+
+      layers.addVersionNumberHidden()
+    }
+  }
+
+  @ConfigurationDsl
+  class Configuration(
+    /**
+     * Provides the current value of the compass
+     */
+    var currentValueProvider: @deg DoubleProvider = 0.0.asDoubleProvider(),
+    var valueRangeProvider: ValueRangeProvider = ValueRange.degrees.asProvider(),
+  ) {
+    val marginProperty: ObservableObject<Insets> = ObservableObject(Insets.of(0.0))
+
+    /**
+     * The  margin around the chart
+     */
+    var margin: Insets by marginProperty
+  }
+}
