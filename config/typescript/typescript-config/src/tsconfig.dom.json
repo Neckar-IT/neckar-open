@@ -1,0 +1,15 @@
+// Browser/React configuration: adds the DOM type libs and the React JSX settings on top of the neutral base.
+// Extend this (instead of tsconfig.base.json) from any project that targets the browser
+// and emits via tsc (libraries). Vite/Astro apps extend the tsconfig.vite.json /
+// tsconfig.astro.json variants, which build on this one.
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": ["./tsconfig.base.json"],
+  "compilerOptions": {
+    // "jsxImportSource" is deliberately not set: "react" is already its default for
+    // "jsx": "react-jsx". Setting it explicitly would make TS5089 the only outcome for any
+    // project that has to override "jsx" back to the classic runtime.
+    "jsx": "react-jsx",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  }
+}

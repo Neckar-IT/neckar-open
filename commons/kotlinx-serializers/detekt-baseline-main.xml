@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>UnusedPrivateProperty:UUIDSerializer.kt:private val UUID.bytes: ByteArray get() { val byteBuffer = ByteBuffer.wrap(ByteArray(16)) // Create a new ByteBuffer with 16 bytes (length of a UUID) byteBuffer.putLong(this.mostSignificantBits) // Inserts the upper 64 bits byteBuffer.putLong(this.leastSignificantBits) // Inserts the lower 64 bits return byteBuffer.array() }</ID>
+    <ID>UseRequire:KotlinxSerializationExt.jvm.kt:throw IllegalArgumentException("Use the sealed interface [${sealedSuperType.asKClass().simpleName}] as type for serialization instead of [${this.simpleName}].")</ID>
+    <ID>WhenInitializerRequiresExplicitType:SerializerModel.kt:SerializerModel.Companion$model</ID>
+  </CurrentIssues>
+</SmellBaseline>

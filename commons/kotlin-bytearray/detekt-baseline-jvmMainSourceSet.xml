@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ExplicitItLambdaMultipleParameters:BufferJvm.kt:{ it, value -> dst.dbuffer[it] = value }</ID>
+    <ID>ExplicitItLambdaMultipleParameters:BufferJvm.kt:{ it, value -> dst.fbuffer[it] = value }</ID>
+    <ID>ExplicitItLambdaMultipleParameters:BufferJvm.kt:{ it, value -> dst.ibuffer[it] = value }</ID>
+    <ID>ExplicitItLambdaMultipleParameters:BufferJvm.kt:{ it, value -> dst.sbuffer[it] = value }</ID>
+    <ID>ExplicitItLambdaMultipleParameters:BufferJvm.kt:{ it, value -> dst[it] = value }</ID>
+  </CurrentIssues>
+</SmellBaseline>

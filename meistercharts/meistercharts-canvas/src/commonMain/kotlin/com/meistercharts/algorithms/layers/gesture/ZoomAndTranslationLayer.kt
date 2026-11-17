@@ -1,0 +1,406 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.algorithms.layers.gesture
+
+import com.meistercharts.algorithms.layers.AbstractLayer
+import com.meistercharts.algorithms.layers.LayerPaintingContext
+import com.meistercharts.algorithms.layers.LayerType
+import com.meistercharts.algorithms.layers.Layers
+import com.meistercharts.annotations.Window
+import com.meistercharts.annotations.Zoomed
+import com.meistercharts.canvas.ChartSupport
+import com.meistercharts.canvas.ConfigurationDsl
+import com.meistercharts.canvas.DirtyReason
+import com.meistercharts.canvas.events.CanvasKeyEventHandler
+import com.meistercharts.canvas.events.CanvasMouseEventHandler
+import com.meistercharts.canvas.events.CanvasMouseEventHandlerBroker
+import com.meistercharts.canvas.events.CanvasTouchEventHandlerBroker
+import com.meistercharts.events.DragAction
+import com.meistercharts.events.EventConsumption
+import com.meistercharts.events.EventConsumption.Consumed
+import com.meistercharts.events.EventConsumption.Ignored
+import com.meistercharts.events.KeyDownAction
+import com.meistercharts.events.MouseDoubleClickAction
+import com.meistercharts.events.MouseWheelAction
+import com.meistercharts.events.TouchDoubleTapAction
+import com.meistercharts.events.TouchPanAction
+import com.meistercharts.events.TouchPinchAction
+import com.meistercharts.events.gesture.CanvasDragSupport
+import com.meistercharts.events.gesture.CanvasTouchZoomAndPanSupport
+import com.meistercharts.events.gesture.connectedMouseEventHandler
+import com.meistercharts.events.gesture.delegate
+import com.meistercharts.provider.delegate
+import com.meistercharts.zoom.UpdateReason
+import com.meistercharts.zoom.ZoomAndTranslationSupport
+import it.neckar.events.KeyDownEvent
+import it.neckar.events.ModifierCombination
+import it.neckar.events.MouseDoubleClickEvent
+import it.neckar.events.MouseWheelEvent
+import it.neckar.geometry.AxisSelection
+import it.neckar.geometry.Coordinates
+import it.neckar.geometry.Distance
+import it.neckar.geometry.Size
+import it.neckar.open.kotlin.lang.asProvider
+
+/**
+ * Zoom and translation layer that can be configured to handle different zoom and translation actions.
+ *
+ * It is necessary to call the different extension methods to enable any behavior. This is usually done using the configuration constructor parameter.
+ */
+class ZoomAndTranslationLayer(
+  val zoomAndTranslationSupport: ZoomAndTranslationSupport,
+  val configuration: Configuration = Configuration(),
+) : AbstractLayer() {
+  /**
+   * This layer shall be notified as late as possible.
+   * Or: All other layers should have the chance to consume events *before* the zoom and translation layer is called.
+   * Therefore, we define the type as [LayerType.Content] and register as soon as possible.
+   */
+  override val type: LayerType = LayerType.Content
+
+  override val mouseEventHandler: CanvasMouseEventHandlerBroker = CanvasMouseEventHandlerBroker().also { broker ->
+    broker.delegate(object : CanvasMouseEventHandler {
+      override fun onDoubleClick(event: MouseDoubleClickEvent, chartSupport: ChartSupport): EventConsumption {
+        return doubleClickAction?.invoke(event) ?: Ignored
+      }
+
+      override fun onWheel(event: MouseWheelEvent, chartSupport: ChartSupport): EventConsumption {
+        return mouseWheelAction?.invoke(event) ?: Ignored
+      }
+    }
+    )
+  }
+
+  override val keyEventHandler: CanvasKeyEventHandler = object : CanvasKeyEventHandler {
+    override fun onDown(event: KeyDownEvent, chartSupport: ChartSupport): EventConsumption {
+      return onKeyDownAction?.invoke(event) ?: return Ignored
+    }
+  }
+
+
+  override val touchEventHandler: CanvasTouchEventHandlerBroker = CanvasTouchEventHandlerBroker()
+
+  /**
+   * The drag support detects dragging events
+   */
+  val dragSupport: CanvasDragSupport = CanvasDragSupport().also { dragSupport ->
+    mouseEventHandler.delegate(dragSupport.connectedMouseEventHandler(configuration::translateOnMouseDragModifier.delegate()))
+
+    dragSupport.handle(::mouseDragAction.delegate())
+  }
+
+  /**
+   * Handles zooming and panning using
+   */
+  val canvasTouchZoomAndPanSupport: CanvasTouchZoomAndPanSupport = CanvasTouchZoomAndPanSupport().also {
+    touchEventHandler.delegate(it.connectedTouchEventHandler())
+
+    it.addHandler(object : CanvasTouchZoomAndPanSupport.Handler {
+      override fun translate(oldCenter: Coordinates, newCenter: Coordinates, deltaCenter: Distance): EventConsumption {
+        return touchPanAction?.invoke(oldCenter, newCenter, deltaCenter) ?: Ignored
+      }
+
+      override fun doubleTap(tapLocation: Coordinates): EventConsumption {
+        return touchDoubleTapAction?.invoke(tapLocation) ?: Ignored
+      }
+
+      override fun zoomChange(oldCenter: Coordinates, newCenter: Coordinates, oldDistanceBetweenTouches: Distance, newDistanceBetweenTouches: Distance, zoomFactorChangeX: Double, zoomFactorChangeY: Double): EventConsumption {
+        return touchPinchAction?.invoke(oldCenter, newCenter, oldDistanceBetweenTouches, newDistanceBetweenTouches, zoomFactorChangeX, zoomFactorChangeY) ?: Ignored
+      }
+    })
+  }
+
+  private var onKeyDownAction: KeyDownAction? = null
+
+  fun onKeyDownAction(action: KeyDownAction) {
+    this.onKeyDownAction = action
+  }
+
+  /**
+   * The action that is notified on double clicks
+   */
+  private var doubleClickAction: MouseDoubleClickAction? = null
+
+  /**
+   * The double click action - only supported for mouse events
+   */
+  fun onDoubleClick(action: MouseDoubleClickAction) {
+    doubleClickAction = action
+  }
+
+  /**
+   * The action that is notified on mouse wheel
+   */
+  private var mouseWheelAction: MouseWheelAction? = null
+
+  /**
+   * Mouse wheel action - only supported for mouse events
+   */
+  fun onMouseWheel(action: MouseWheelAction) {
+    mouseWheelAction = action
+  }
+
+  /**
+   * The action that is notified on drag
+   */
+  private var mouseDragAction: CanvasDragSupport.Handler? = null
+
+  /**
+   * The drag handler - supported for mouse and pointer events
+   */
+  fun onMouseDrag(action: CanvasDragSupport.Handler) {
+    mouseDragAction = action
+  }
+
+  /**
+   * The (simplified) drag action - supported for mouse and pointer events
+   */
+  fun onMouseDrag(action: DragAction) {
+    mouseDragAction = object : CanvasDragSupport.Handler {
+      override fun isDraggingAllowedFromHere(source: CanvasDragSupport, location: Coordinates, chartSupport: ChartSupport): Boolean {
+        //Always allow dragging - we consume all events
+        return true
+      }
+
+      override fun onDrag(source: CanvasDragSupport, location: Coordinates, distance: Distance, deltaTime: Double, chartSupport: ChartSupport): EventConsumption {
+        return action(distance)
+      }
+    }
+  }
+
+  private var touchPanAction: TouchPanAction? = null
+
+  /**
+   * Sets the action that is called on panning by touch screen
+   */
+  fun onTouchPan(action: TouchPanAction) {
+    this.touchPanAction = action
+  }
+
+  private var touchPinchAction: TouchPinchAction? = null
+
+  /**
+   * Sets the action that is called on pinching by touch screen
+   */
+  fun onTouchPinch(action: TouchPinchAction) {
+    this.touchPinchAction = action
+  }
+
+  private var touchDoubleTapAction: TouchDoubleTapAction? = null
+
+  /**
+   * Sets the action that is called on doubleTaping by touch screen
+   */
+  fun onTouchDoubleTap(action: TouchDoubleTapAction) {
+    this.touchDoubleTapAction = action
+  }
+
+  override fun paint(paintingContext: LayerPaintingContext) {
+    //Do not paint anything
+  }
+
+  /**
+   * The start location for the rubber band
+   */
+  var rubberBandStartLocation: @Window Coordinates? = null
+
+  /**
+   * The current location for the rubber band.
+   * This location is updated on every drag
+   */
+  var rubberBandCurrentLocation: @Window Coordinates? = null
+
+  @ConfigurationDsl
+  class Configuration {
+    /**
+     * The modifier combination for panning
+     */
+    var translateOnMouseDragModifier: () -> ModifierCombination = ModifierCombination.None.asProvider()
+  }
+}
+
+/**
+ * Enable reset zoom and translation on double click
+ */
+fun ZoomAndTranslationLayer.resetToDefaultsOnDoubleClick() {
+  onDoubleClick {
+    zoomAndTranslationSupport.resetToDefaults(reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+/**
+ * Enable reset zoom and translation on double tap (touch screen)
+ */
+fun ZoomAndTranslationLayer.resetToDefaultsOnDoubleTap() {
+  onTouchDoubleTap {
+    zoomAndTranslationSupport.resetToDefaults(reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+/**
+ * Enables zooming on mouse wheel
+ */
+fun ZoomAndTranslationLayer.zoomOnMouseWheel(
+  /**
+   * The configuration for the mouse wheel zoom
+   */
+  config: MouseWheelZoomConfiguration = MouseWheelZoomConfiguration(),
+) {
+  onMouseWheel { event ->
+    if (event.delta + 0.0 == 0.0) {
+      return@onMouseWheel Ignored
+    }
+
+    val doZoomX = config.zoomAxisSelection.containsX && (event.modifierCombination == config.zoomXModifier || event.modifierCombination == config.zoomXandYModifier)
+    val doZoomY = config.zoomAxisSelection.containsY && (event.modifierCombination == config.zoomYModifier || event.modifierCombination == config.zoomXandYModifier)
+
+    val zoomAxis = AxisSelection.get(doZoomX, doZoomY)
+
+    if (zoomAxis == AxisSelection.None) {
+      return@onMouseWheel Ignored
+    }
+    zoomAndTranslationSupport.modifyZoom(event.delta < 0, zoomAxis, event.coordinates, reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+fun ZoomAndTranslationLayer.zoomOnKeyDown(
+  /**
+   * The configuration for the keyboard zoom
+   */
+  config: KeyboardZoomConfiguration = KeyboardZoomConfiguration(),
+) {
+  onKeyDownAction { event ->
+
+    when (event.keyStroke) {
+      in config.zoomInKeys -> {
+        zoomAndTranslationSupport.modifyZoom(zoomIn = true, axisSelection = AxisSelection.Both, reason = UpdateReason.UserInteraction)
+        Consumed
+      }
+
+      in config.zoomOutKeys -> {
+        zoomAndTranslationSupport.modifyZoom(zoomIn = false, axisSelection = AxisSelection.Both, reason = UpdateReason.UserInteraction)
+        Consumed
+      }
+
+      in config.resetZoomStrokes -> {
+        zoomAndTranslationSupport.resetToDefaults(axisSelection = AxisSelection.Both, reason = UpdateReason.UserInteraction)
+        Consumed
+      }
+
+      else -> {
+        Ignored
+      }
+    }
+  }
+}
+
+/**
+ * Enable translate on drag
+ */
+fun ZoomAndTranslationLayer.translateOnMouseDrag(axis: AxisSelection = AxisSelection.Both, translateOnMouseDragModifier: () -> ModifierCombination = ModifierCombination.None.asProvider()) {
+  configuration.translateOnMouseDragModifier = translateOnMouseDragModifier
+
+  onMouseDrag { distance ->
+    zoomAndTranslationSupport.translateWindow(axis, distance.x, distance.y, reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+/**
+ * Enable translate on touch drag
+ */
+fun ZoomAndTranslationLayer.translateOnTouchDrag(axis: AxisSelection = AxisSelection.Both) {
+  onTouchPan { _, _, deltaCenter ->
+    zoomAndTranslationSupport.translateWindow(axis, deltaCenter.x, deltaCenter.y, reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+/**
+ * Enable zooming on pinch
+ */
+fun ZoomAndTranslationLayer.zoomOnPinch() {
+  onTouchPinch { _, newCenter, _, _, zoomFactorChangeX, zoomFactorChangeY ->
+    zoomAndTranslationSupport.modifyZoom(zoomFactorChangeX, zoomFactorChangeY, zoomCenter = newCenter, reason = UpdateReason.UserInteraction)
+    Consumed
+  }
+}
+
+/**
+ * Enables the rubber band zoom
+ */
+fun ZoomAndTranslationLayer.rubberBandZoom() {
+  onMouseDrag(object : CanvasDragSupport.Handler {
+    override fun isDraggingAllowedFromHere(source: CanvasDragSupport, location: Coordinates, chartSupport: ChartSupport): Boolean {
+      rubberBandStartLocation = location
+      return true
+    }
+
+    override fun onDrag(source: CanvasDragSupport, location: @Window Coordinates, distance: Distance, deltaTime: Double, chartSupport: ChartSupport): EventConsumption {
+      rubberBandCurrentLocation = location
+      chartSupport.markAsDirty(DirtyReason.UiStateChanged)
+      return Consumed
+    }
+
+    override fun onFinish(source: CanvasDragSupport, location: Coordinates, chartSupport: ChartSupport): EventConsumption {
+      rubberBandStartLocation?.let { rubberBandStartLocation: @Window Coordinates ->
+        rubberBandCurrentLocation?.let { rubberBandCurrentLocation: @Window Coordinates ->
+
+          @Zoomed val rubberBandSize: Size = rubberBandStartLocation.delta(rubberBandCurrentLocation).abs().asSize()
+
+          //Keep the same aspect ratio as before, find the size (larger) with the current aspect ratio
+          @Zoomed val relevantRubberBandSize = rubberBandSize.containWithAspectRatio(chartSupport.rootChartState.zoom.aspectRatio)
+
+          val factorX = 1 / relevantRubberBandSize.width * chartSupport.canvas.width * chartSupport.rootChartState.zoom.scaleX
+          val factorY = 1 / relevantRubberBandSize.height * chartSupport.canvas.height * chartSupport.rootChartState.zoom.scaleY
+
+          @Window val center = rubberBandStartLocation.center(rubberBandCurrentLocation)
+          zoomAndTranslationSupport.setZoom(factorX, factorY, center, reason = UpdateReason.UserInteraction)
+        }
+      }
+
+      rubberBandStartLocation = null
+      rubberBandCurrentLocation = null
+
+      chartSupport.markAsDirty(DirtyReason.UiStateChanged)
+      return Consumed
+    }
+  })
+}
+
+/**
+ * Adds a zoom and pan layer.
+ *
+ * If necessary also adds the [RubberBandVisualizationLayer]. Returns the layer for callers that
+ * need to configure it further; the return value is otherwise safe to ignore.
+ */
+@IgnorableReturnValue
+fun Layers.addZoomAndTranslation(
+  zoomAndTranslationSupport: ZoomAndTranslationSupport,
+  configuration: ZoomAndTranslationLayer.() -> Unit = {},
+): ZoomAndTranslationLayer {
+  val zoomAndTranslationLayer = ZoomAndTranslationLayer(zoomAndTranslationSupport, ZoomAndTranslationLayer.Configuration())
+  zoomAndTranslationLayer.configuration()
+  return zoomAndTranslationLayer.apply {
+    addLayer(this)
+
+    val rubberBandVisualizationLayer = RubberBandVisualizationLayer(RubberBandVisualizationLayer.Configuration({ rubberBandStartLocation }, { rubberBandCurrentLocation }))
+    addLayer(rubberBandVisualizationLayer)
+  }
+}

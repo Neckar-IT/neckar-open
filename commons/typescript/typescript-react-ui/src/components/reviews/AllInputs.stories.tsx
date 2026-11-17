@@ -1,0 +1,599 @@
+/**
+ * Imports
+ */
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createZodEnumFromConstObject } from "@neckar-hub/typescript-utils/zod-utils";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Bold, Italic, Underline } from "lucide-react";
+import { type ReactElement, type ReactNode, useState } from "react";
+import { type FieldValues, useForm } from "react-hook-form";
+import { z, type ZodObject } from "zod";
+import { CheckboxFormField } from "../forms/checkbox-form-field";
+import { DurationInputFormField } from "../forms/duration-input-form-field";
+import { Form } from "../forms/form";
+import { NumberInputFormField } from "../forms/number-input-form-field";
+import { PasswordInputFormField } from "../forms/password-input-form-field";
+import { PhoneNumberInputFormField } from "../forms/phone-number-input-form-field";
+import { RadioGroupFormField, RadioGroupFormFieldItem } from "../forms/radio-group-form-field";
+import { RatingInputFormField } from "../forms/rating-input-form-field";
+import { SelectFormField } from "../forms/select-form-field";
+import { SelectFromEnumFormField } from "../forms/select-from-enum-form-field";
+import { SelectFromListFormField } from "../forms/select-from-list-form-field";
+import { SwitchFormField } from "../forms/switch-form-field";
+import { TagPickerFormField } from "../forms/tag-picker-form-field";
+import { TextInputFormField } from "../forms/text-input-form-field";
+import { TextareaFormField } from "../forms/textarea-form-field";
+import { ToggleGroupFormField, ToggleGroupFormFieldItem } from "../forms/toggle-group-form-field";
+import { DatePickerFormField } from "../inputs/date";
+import { DateRangePickerFormField } from "../inputs/date-range";
+import { DateTimePickerFormField } from "../inputs/date-time";
+import { TimeInputFormField } from "../inputs/time";
+import { Checkbox } from "../primitives/checkbox";
+import { Input } from "../primitives/input";
+import { Label } from "../primitives/label";
+import { RadioGroupItem, RadioGroup as RadioGroupRoot } from "../primitives/radio-group";
+import { RangeSlider } from "../primitives/range-slider";
+import { SelectContent, SelectItem, Select as SelectRoot, SelectTrigger, SelectValue } from "../primitives/select";
+import { Slider } from "../primitives/slider";
+import { Switch } from "../primitives/switch";
+import { Toggle } from "../primitives/toggle";
+import { ToggleGroupItem, ToggleGroup as ToggleGroupRoot } from "../primitives/toggle-group";
+
+/**
+ * Meta Information
+ */
+
+const meta = {
+  title: "Reviews / All Inputs",
+} satisfies Meta;
+
+export default meta;
+
+/**
+ * Sample Data
+ *
+ * Shared across rows so cells line up visually (same character widths,
+ * same option labels, same ranges).
+ */
+
+const SAMPLE_TEXT = "Sample value";
+const SAMPLE_LONG_TEXT = "This is a longer sample value used to demonstrate wrapping and truncation.";
+const SAMPLE_NUMBER = 42;
+const SAMPLE_DATE = "2025-06-15";
+const SAMPLE_DATE_RANGE = { from: new Date("2025-06-15"), to: new Date("2025-06-22") };
+const SAMPLE_DATETIME = new Date("2025-06-15T14:30:00");
+const SAMPLE_TIME = "14:30";
+const SAMPLE_DURATION_MS = 90 * 60 * 1000;
+const SAMPLE_RATING = 3;
+const SAMPLE_PHONE = "+49 30 12345678";
+
+const FRUITS = [
+  { id: "apple", name: "Apple" },
+  { id: "banana", name: "Banana" },
+  { id: "cherry", name: "Cherry" },
+] as const;
+
+const FRUIT_TAGS = FRUITS.map(({ id, name }) => ({ id, name }));
+
+const FruitEnum = {
+  Apple: "Apple",
+  Banana: "Banana",
+  Cherry: "Cherry",
+} as const;
+
+/**
+ * Layout Helpers
+ */
+
+const COLUMN_TEMPLATE = "minmax(180px, 220px) repeat(4, minmax(220px, 1fr))";
+const COLUMN_HEADERS: ReadonlyArray<string> = ["with value", "empty", "with value · disabled", "empty · disabled"];
+
+const STATES: ReadonlyArray<{ hasValue: boolean; disabled: boolean }> = [
+  { hasValue: true, disabled: false },
+  { hasValue: false, disabled: false },
+  { hasValue: true, disabled: true },
+  { hasValue: false, disabled: true },
+];
+
+function Grid({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <div className="grid items-start gap-x-6 gap-y-8" style={{ gridTemplateColumns: COLUMN_TEMPLATE }}>
+      {children}
+    </div>
+  );
+}
+
+function ColumnHeaders(): ReactElement {
+  return (
+    <>
+      <div className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">component</div>
+      {COLUMN_HEADERS.map((header) => (
+        <div key={header} className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {header}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function SectionHeader({ title }: { title: string }): ReactElement {
+  return <div className="col-span-5 mt-4 border-b pb-1 text-sm font-semibold">{title}</div>;
+}
+
+function RowLabel({ name }: { name: string }): ReactElement {
+  return <div className="self-center text-sm font-medium break-words">{name}</div>;
+}
+
+/**
+ * Renders a labelled row for a primitive: 4 cells generated by `renderCell`.
+ *
+ * `renderCell` receives `hasValue` (whether the cell shows the filled state)
+ * and `disabled`. The renderer is responsible for translating that into the
+ * input's actual props (defaultValue / defaultChecked / etc.).
+ */
+function PrimitiveRow({
+  name,
+  renderCell,
+}: {
+  name: string;
+  renderCell: (state: { hasValue: boolean; disabled: boolean; cellKey: string }) => ReactNode;
+}): ReactElement {
+  return (
+    <>
+      <RowLabel name={name} />
+      {STATES.map((state, index) => {
+        const cellKey = `${name}-${COLUMN_HEADERS[index]}`;
+        return <div key={cellKey}>{renderCell({ ...state, cellKey })}</div>;
+      })}
+    </>
+  );
+}
+
+/**
+ * Renders a single form-field cell with its own react-hook-form instance.
+ *
+ * Each cell needs its own form because `FormFieldBase` reads from
+ * `useFormContext()`. Using one form per cell keeps initial values
+ * independent across the four states.
+ */
+function FormFieldCell({
+  schema,
+  defaultValues,
+  children,
+}: {
+  schema: ZodObject;
+  defaultValues: FieldValues;
+  children: ReactNode;
+}): ReactElement {
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues,
+  });
+  return <Form {...form}>{children}</Form>;
+}
+
+/**
+ * Renders a labelled row for a form-field: 4 form-cells generated by `renderField`.
+ *
+ * `defaultValuesForFilled` provides the form values for the "with value"
+ * states; the empty states pass `{}` (uninitialized fields render as empty).
+ */
+function FormFieldRow({
+  name,
+  schema,
+  defaultValuesForFilled,
+  renderField,
+}: {
+  name: string;
+  schema: ZodObject;
+  defaultValuesForFilled: FieldValues;
+  renderField: (props: { disabled: boolean }) => ReactNode;
+}): ReactElement {
+  return (
+    <>
+      <RowLabel name={name} />
+      {STATES.map((state, index) => {
+        const cellKey = `${name}-${COLUMN_HEADERS[index]}`;
+        return (
+          <FormFieldCell key={cellKey} schema={schema} defaultValues={state.hasValue ? defaultValuesForFilled : {}}>
+            {renderField({ disabled: state.disabled })}
+          </FormFieldCell>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * Slider needs controlled state per cell (the radix primitive accepts
+ * `defaultValue`, but we wrap it to keep a hook in scope for consistency).
+ */
+function ControlledSliderCell({ initialValue, disabled }: { initialValue: number; disabled: boolean }): ReactElement {
+  const [value, setValue] = useState(initialValue);
+  return <Slider value={value} disabled={disabled} onValueChange={setValue} />;
+}
+
+function ControlledRangeSliderCell({ initialValue, disabled }: { initialValue: [number, number]; disabled: boolean }): ReactElement {
+  const [value, setValue] = useState<number[]>(initialValue);
+  return <RangeSlider value={value} disabled={disabled} minStepsBetweenThumbs={1} onValueChange={setValue} />;
+}
+
+/**
+ * Schemas (one per field-type so the matrix can use schema-aware features
+ * like `extractEnumFromFormSchema` without sharing a single mega-schema).
+ */
+
+const stringSchema = z.object({ value: z.string().nullish() });
+const numberSchema = z.object({ value: z.number().nullish() });
+const booleanSchema = z.object({ value: z.boolean().nullish() });
+const dateSchema = z.object({ value: z.string().nullish() });
+const dateRangeSchema = z.object({
+  value: z
+    .object({
+      from: z.date(),
+      to: z.date(),
+    })
+    .nullish(),
+});
+const dateTimeSchema = z.object({ value: z.date().nullish() });
+const enumSchema = z.object({
+  value: createZodEnumFromConstObject(FruitEnum).nullish(),
+});
+const tagsSchema = z.object({
+  value: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
+    )
+    .nullish(),
+});
+
+/**
+ * Stories
+ */
+
+export const Primitives: StoryObj<typeof meta> = {
+  render: () => {
+    return (
+      <div className="p-6">
+        <p className="text-muted-foreground mb-6 max-w-prose text-sm">
+          Each row is one primitive input component. Columns show four states so visual inconsistencies (padding, border, focus ring,
+          height, border-radius, disabled styling, placeholder behavior) become immediately visible side by side.
+        </p>
+        <Grid>
+          <ColumnHeaders />
+
+          <SectionHeader title="Text input" />
+          <PrimitiveRow
+            name="Input"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <Input
+                key={cellKey}
+                type="text"
+                placeholder="Enter text…"
+                disabled={disabled}
+                defaultValue={hasValue ? SAMPLE_TEXT : undefined}
+              />
+            )}
+          />
+
+          <SectionHeader title="Selection" />
+          <PrimitiveRow
+            name="Select"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <SelectRoot key={cellKey} disabled={disabled} defaultValue={hasValue ? "apple" : undefined}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a fruit" />
+                </SelectTrigger>
+                <SelectContent>
+                  {FRUITS.map((fruit) => (
+                    <SelectItem key={fruit.id} value={fruit.id}>
+                      {fruit.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+            )}
+          />
+          <PrimitiveRow
+            name="RadioGroup"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <RadioGroupRoot key={cellKey} disabled={disabled} defaultValue={hasValue ? FRUITS[0].id : undefined}>
+                {FRUITS.map((fruit) => (
+                  <div key={fruit.id} className="flex items-center space-x-2">
+                    <RadioGroupItem id={`${cellKey}-${fruit.id}`} value={fruit.id} />
+                    <Label htmlFor={`${cellKey}-${fruit.id}`}>{fruit.name}</Label>
+                  </div>
+                ))}
+              </RadioGroupRoot>
+            )}
+          />
+          <PrimitiveRow
+            name="ToggleGroup"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <ToggleGroupRoot
+                key={cellKey}
+                type="multiple"
+                variant="outline"
+                disabled={disabled}
+                defaultValue={hasValue ? ["bold", "italic"] : []}
+              >
+                <ToggleGroupItem aria-label="Toggle bold" value="bold">
+                  <Bold className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem aria-label="Toggle italic" value="italic">
+                  <Italic className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem aria-label="Toggle underline" value="underline">
+                  <Underline className="h-4 w-4" />
+                </ToggleGroupItem>
+              </ToggleGroupRoot>
+            )}
+          />
+
+          <SectionHeader title="Boolean / toggle" />
+          <PrimitiveRow
+            name="Checkbox"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox id={cellKey} disabled={disabled} defaultChecked={hasValue} />
+                <Label htmlFor={cellKey}>Accept terms</Label>
+              </div>
+            )}
+          />
+          <PrimitiveRow
+            name="Switch"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <div className="flex items-center space-x-2">
+                <Switch id={cellKey} disabled={disabled} defaultChecked={hasValue} />
+                <Label htmlFor={cellKey}>Airplane mode</Label>
+              </div>
+            )}
+          />
+          <PrimitiveRow
+            name="Toggle"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <Toggle key={cellKey} variant="outline" disabled={disabled} defaultPressed={hasValue}>
+                <Bold className="h-4 w-4" />
+              </Toggle>
+            )}
+          />
+
+          <SectionHeader title="Slider" />
+          <PrimitiveRow
+            name="Slider"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <ControlledSliderCell key={cellKey} initialValue={hasValue ? 65 : 0} disabled={disabled} />
+            )}
+          />
+          <PrimitiveRow
+            name="RangeSlider"
+            renderCell={({ hasValue, disabled, cellKey }) => (
+              <ControlledRangeSliderCell key={cellKey} initialValue={hasValue ? [25, 75] : [0, 0]} disabled={disabled} />
+            )}
+          />
+        </Grid>
+      </div>
+    );
+  },
+};
+
+export const FormFields: StoryObj<typeof meta> = {
+  render: () => {
+    return (
+      <div className="p-6">
+        <p className="text-muted-foreground mb-6 max-w-prose text-sm">
+          Each row is one form-field molecule (label + input + description slot). Each cell hosts its own react-hook-form instance so the
+          four states render independently in parallel.
+        </p>
+        <Grid>
+          <ColumnHeaders />
+
+          <SectionHeader title="Text" />
+          <FormFieldRow
+            name="TextInputFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: SAMPLE_TEXT }}
+            renderField={({ disabled }) => (
+              <TextInputFormField formSchema={stringSchema} fieldName="value" label="Text" placeholder="Enter text…" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="TextareaFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: SAMPLE_LONG_TEXT }}
+            renderField={({ disabled }) => (
+              <TextareaFormField
+                formSchema={stringSchema}
+                fieldName="value"
+                label="Description"
+                placeholder="Enter description…"
+                rows={3}
+                disabled={disabled}
+              />
+            )}
+          />
+          <FormFieldRow
+            name="PasswordInputFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: SAMPLE_TEXT }}
+            renderField={({ disabled }) => (
+              <PasswordInputFormField formSchema={stringSchema} fieldName="value" label="Password" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="PhoneNumberInputFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: SAMPLE_PHONE }}
+            renderField={({ disabled }) => (
+              <PhoneNumberInputFormField formSchema={stringSchema} fieldName="value" label="Phone" countryCode="DE" disabled={disabled} />
+            )}
+          />
+
+          <SectionHeader title="Number / rating" />
+          <FormFieldRow
+            name="NumberInputFormField"
+            schema={numberSchema}
+            defaultValuesForFilled={{ value: SAMPLE_NUMBER }}
+            renderField={({ disabled }) => (
+              <NumberInputFormField formSchema={numberSchema} fieldName="value" label="Number" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="DurationInputFormField"
+            schema={numberSchema}
+            defaultValuesForFilled={{ value: SAMPLE_DURATION_MS }}
+            renderField={({ disabled }) => (
+              <DurationInputFormField formSchema={numberSchema} fieldName="value" label="Duration" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="RatingInputFormField"
+            schema={numberSchema}
+            defaultValuesForFilled={{ value: SAMPLE_RATING }}
+            renderField={({ disabled }) => (
+              <RatingInputFormField formSchema={numberSchema} fieldName="value" label="Rating" disabled={disabled} />
+            )}
+          />
+
+          <SectionHeader title="Date / time" />
+          <FormFieldRow
+            name="DatePickerFormField"
+            schema={dateSchema}
+            defaultValuesForFilled={{ value: SAMPLE_DATE }}
+            renderField={({ disabled }) => (
+              <DatePickerFormField formSchema={dateSchema} fieldName="value" label="Date" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="DateRangePickerFormField"
+            schema={dateRangeSchema}
+            defaultValuesForFilled={{ value: SAMPLE_DATE_RANGE }}
+            renderField={({ disabled }) => (
+              <DateRangePickerFormField formSchema={dateRangeSchema} fieldName="value" label="Date range" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="DateTimePickerFormField"
+            schema={dateTimeSchema}
+            defaultValuesForFilled={{ value: SAMPLE_DATETIME }}
+            renderField={({ disabled }) => (
+              <DateTimePickerFormField formSchema={dateTimeSchema} fieldName="value" label="Date & time" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="TimeInputFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: SAMPLE_TIME }}
+            renderField={({ disabled }) => (
+              <TimeInputFormField formSchema={stringSchema} fieldName="value" label="Time" disabled={disabled} />
+            )}
+          />
+
+          <SectionHeader title="Selection" />
+          <FormFieldRow
+            name="SelectFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: FRUITS[0].id }}
+            renderField={({ disabled }) => (
+              <SelectFormField formSchema={stringSchema} fieldName="value" label="Fruit" placeholder="Select a fruit" disabled={disabled}>
+                {FRUITS.map((fruit) => (
+                  <SelectItem key={fruit.id} value={fruit.id}>
+                    {fruit.name}
+                  </SelectItem>
+                ))}
+              </SelectFormField>
+            )}
+          />
+          <FormFieldRow
+            name="SelectFromListFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: FRUITS[0].id }}
+            renderField={({ disabled }) => (
+              <SelectFromListFormField
+                formSchema={stringSchema}
+                fieldName="value"
+                label="Fruit"
+                placeholder="Select a fruit"
+                options={FRUITS.map((f) => f.id)}
+                itemRenderer={(id) => FRUITS.find((f) => f.id === id)?.name ?? id}
+                disabled={disabled}
+              />
+            )}
+          />
+          <FormFieldRow
+            name="SelectFromEnumFormField"
+            schema={enumSchema}
+            defaultValuesForFilled={{ value: FruitEnum.Apple }}
+            renderField={({ disabled }) => (
+              <SelectFromEnumFormField
+                formSchema={enumSchema}
+                fieldName="value"
+                label="Fruit"
+                placeholder="Select a fruit"
+                disabled={disabled}
+              />
+            )}
+          />
+          <FormFieldRow
+            name="RadioGroupFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: FRUITS[0].id }}
+            renderField={({ disabled }) => (
+              <RadioGroupFormField formSchema={stringSchema} fieldName="value" label="Fruit" disabled={disabled}>
+                {FRUITS.map((fruit) => (
+                  <RadioGroupFormFieldItem key={fruit.id} value={fruit.id}>
+                    {fruit.name}
+                  </RadioGroupFormFieldItem>
+                ))}
+              </RadioGroupFormField>
+            )}
+          />
+          <FormFieldRow
+            name="ToggleGroupFormField"
+            schema={stringSchema}
+            defaultValuesForFilled={{ value: FRUITS[0].id }}
+            renderField={({ disabled }) => (
+              <ToggleGroupFormField formSchema={stringSchema} fieldName="value" label="Fruit" disabled={disabled}>
+                {FRUITS.map((fruit) => (
+                  <ToggleGroupFormFieldItem key={fruit.id} value={fruit.id}>
+                    {fruit.name}
+                  </ToggleGroupFormFieldItem>
+                ))}
+              </ToggleGroupFormField>
+            )}
+          />
+          <FormFieldRow
+            name="TagPickerFormField"
+            schema={tagsSchema}
+            defaultValuesForFilled={{ value: [FRUIT_TAGS[0]] }}
+            renderField={({ disabled }) => (
+              <TagPickerFormField formSchema={tagsSchema} fieldName="value" label="Tags" options={FRUIT_TAGS} disabled={disabled} />
+            )}
+          />
+
+          <SectionHeader title="Boolean / toggle" />
+          <FormFieldRow
+            name="CheckboxFormField"
+            schema={booleanSchema}
+            defaultValuesForFilled={{ value: true }}
+            renderField={({ disabled }) => (
+              <CheckboxFormField formSchema={booleanSchema} fieldName="value" label="Accept terms" disabled={disabled} />
+            )}
+          />
+          <FormFieldRow
+            name="SwitchFormField"
+            schema={booleanSchema}
+            defaultValuesForFilled={{ value: true }}
+            renderField={({ disabled }) => (
+              <SwitchFormField formSchema={booleanSchema} fieldName="value" label="Notifications" disabled={disabled} />
+            )}
+          />
+        </Grid>
+      </div>
+    );
+  },
+};

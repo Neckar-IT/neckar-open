@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:CreateUserRequest.kt:CreateUserRequest$User</ID>
+    <ID>DataViewMustNotReferenceDomain:CreateUserRequest.kt:CreateUserRequest$UserLoginName</ID>
+    <ID>DataViewMustNotReferenceDomain:UpdateUserRequest.kt:UpdateUserRequest$User</ID>
+    <ID>DataViewMustNotReferenceDomain:UserDetails.kt:UserDetails$UserLoginName</ID>
+    <ID>DomainMustNotBeSerializable:User.kt:User$User</ID>
+    <ID>DomainMustNotBeSerializable:UserLoginName.kt:UserLoginName$UserLoginName</ID>
+    <ID>SerializableMustUseNativeUuid:User.kt:User$uuid</ID>
+  </CurrentIssues>
+</SmellBaseline>

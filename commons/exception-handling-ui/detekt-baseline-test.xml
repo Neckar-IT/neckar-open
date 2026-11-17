@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:FxBalloonDialogDemo.kt:FxBalloonDialogDemo$println</ID>
+    <ID>ForbiddenPrintCall:FxBalloonDialogDemo.kt:FxBalloonDialogDemo.&lt;no name provided>$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,179 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.js
+
+import com.meistercharts.canvas.ChartSupport
+import com.meistercharts.canvas.components.CheckBox
+import com.meistercharts.canvas.components.Choice
+import com.meistercharts.canvas.components.ComboBox
+import com.meistercharts.canvas.components.NativeComponent
+import it.neckar.open.dispose.OnDispose
+import it.neckar.open.dispose.disposeOn
+import com.meistercharts.canvas.components.NativeComponentsHandler
+import com.meistercharts.canvas.components.TextInput
+import com.meistercharts.canvas.nativeComponentsSupport
+import it.neckar.open.observable.ObservableBoolean
+import it.neckar.open.observable.ObservableObject
+import kotlinx.browser.document
+import kotlinx.dom.addClass
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLOptionElement
+import org.w3c.dom.HTMLSelectElement
+import org.w3c.dom.get
+
+/**
+ * Supports the native components for HTML/JS
+ */
+class NativeComponentsJS(chartSupport: ChartSupport) {
+  /**
+   * The div that holds all elements
+   */
+  val div: HTMLDivElement = (document.createElement("DIV") as HTMLDivElement).also { div ->
+    div.classList.add(MeisterChartClasses.NativeComponentsHolder)
+
+    //Set the style to 100%
+    div.style.setProperty("width", "100%")
+    div.style.setProperty("height", "100%")
+    div.style.setProperty("position", "absolute")
+    div.style.setProperty("top", "0")
+    div.style.setProperty("left", "0")
+
+    //Mouse events are not consumed. Children have to get the property set to "auto"
+    div.style.setProperty("pointer-events", "none")
+  }
+
+  init {
+    chartSupport.onDispose {
+      div.addClass(MeisterChartClasses.Disposed)
+    }
+
+    chartSupport.nativeComponentsSupport.onComponent(object : NativeComponentsHandler {
+      override fun textInput(textInput: TextInput) {
+        registerPlatformComponent(textInput, document.createElement("input") as HTMLInputElement) {
+          it.setAttribute("type", "text")
+
+          it.bindTextBidirectional(textInput.textProperty, textInput)
+        }
+      }
+
+      override fun checkBox(checkBox: CheckBox) {
+        registerPlatformComponent(checkBox, document.createElement("input") as HTMLInputElement) {
+          it.setAttribute("type", "checkbox")
+
+          it.bindSelectedBidirectional(checkBox.selectedProperty, checkBox)
+        }
+      }
+
+      override fun comboBox(comboBox: ComboBox) {
+        registerPlatformComponent(comboBox, document.createElement("select") as HTMLSelectElement) {
+          comboBox.choicesProperty
+            .consumeImmediately { choices ->
+              val options = it.options
+
+              while (options.length > 0) {
+                options[0]?.remove()
+              }
+
+              //TODO find better implementation that avoid many reflows. see https://developers.google.com/speed/docs/insights/browser-reflow
+              choices.forEach { choice ->
+                val optionElement = document.createElement("option") as HTMLOptionElement
+                optionElement.text = comboBox.converter(choice)
+                options.add(optionElement)
+              }
+            }.disposeOn(comboBox)
+
+          it.bindChoiceBidirectional(comboBox.selectedProperty, comboBox) {
+            comboBox.choices
+          }
+        }
+      }
+    })
+  }
+
+  /**
+   * Registers a plattform component
+   */
+  private fun <T : HTMLElement> registerPlatformComponent(nativeComponent: NativeComponent, platformComponent: T, binder: (plattformComponent: T) -> Unit) {
+    nativeComponent.id = platformComponent
+
+    //Ensure events are processed by this elements
+    platformComponent.style.setProperty("pointer-events", "auto")
+
+    platformComponent.style.setProperty("position", "absolute")
+    platformComponent.bindLocation(nativeComponent)
+
+    div.appendChild(platformComponent)
+
+    nativeComponent.onDispose {
+      platformComponent.remove()
+    }
+
+    binder(platformComponent)
+  }
+}
+
+/**
+ * Binds the location of the FX component to the location of the native component.
+ * The subscription is released when the [nativeComponent] is disposed.
+ */
+private fun HTMLElement.bindLocation(nativeComponent: NativeComponent) {
+  nativeComponent.locationProperty.consumeImmediately { coordinates ->
+    this.style.setProperty("left", "${coordinates.x}px")
+    this.style.setProperty("top", "${coordinates.y}px")
+  }.disposeOn(nativeComponent)
+}
+
+/**
+ * Binds the text bidirectional. Copies the value from the given property to this initially.
+ * The subscription is released when [onDispose] fires.
+ */
+private fun HTMLInputElement.bindTextBidirectional(property: ObservableObject<String>, onDispose: OnDispose) {
+  //On update write the value to the property
+  oninput = {
+    property.value = value
+    Unit
+  }
+
+  property.consumeImmediately {
+    value = it
+  }.disposeOn(onDispose)
+}
+
+private fun HTMLInputElement.bindSelectedBidirectional(property: ObservableBoolean, onDispose: OnDispose) {
+  //On update write the value to the property
+  oninput = {
+    property.value = checked
+    Unit
+  }
+
+  property.consumeImmediately {
+    checked = it
+  }.disposeOn(onDispose)
+}
+
+private fun HTMLSelectElement.bindChoiceBidirectional(property: ObservableObject<Choice?>, onDispose: OnDispose, choicesProvider: () -> List<Choice>) {
+  oninput = {
+    val choice = choicesProvider()[selectedIndex]
+    property.value = choice
+    Unit
+  }
+
+  property.consumeImmediately {
+    selectedIndex = choicesProvider().indexOf(it)
+  }.disposeOn(onDispose)
+}

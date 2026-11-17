@@ -1,0 +1,1 @@
+description = """typescript-tailwind-config"""

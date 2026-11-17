@@ -1,0 +1,81 @@
+/**
+ * This file extends the base NeckarIT theme (main.css) with opinionated styles for basic HTML elements,
+ * for use on a "normal/static" web-site (headings, paragraphs). App frontends that render their own
+ * component markup import `main.css` directly instead.
+ *
+ * Include it in your project by adding `"@neckar-hub/tailwind-config": "workspace:*"` to your project's
+ * devDependencies, creating a CSS file and adding the following import:
+ * `@import "@neckar-hub/tailwind-config/nit.css";`
+ */
+
+@import "@fontsource-variable/open-sans/index.css";
+@import "@fontsource-variable/oswald/index.css";
+
+@import "./main.css";
+
+.dark,
+.light {
+  @apply bg-background text-foreground;
+}
+
+@layer base {
+  html {
+    @apply text-[16px];
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1 {
+    @apply font-display text-foreground text-6xl font-bold tracking-tight uppercase xl:text-8xl;
+  }
+
+  article h1 {
+    @apply my-[0.5em];
+  }
+
+  h2 {
+    @apply font-display text-foreground text-5xl font-semibold tracking-tight xl:text-6xl;
+  }
+
+  article h2 {
+    @apply my-[0.5em];
+  }
+
+  h3 {
+    @apply font-display text-primary text-4xl xl:text-5xl;
+  }
+
+  article h3 {
+    @apply my-[0.5em];
+  }
+
+  h4 {
+    @apply font-display text-foreground text-3xl tracking-wide xl:text-4xl;
+  }
+
+  article h4 {
+    @apply my-[0.75em];
+  }
+
+  h5 {
+    @apply font-display text-foreground text-2xl font-semibold tracking-wide;
+  }
+
+  article h5 {
+    @apply my-[0.5em];
+  }
+
+  h6 {
+    @apply font-display text-foreground text-lg tracking-wide;
+  }
+
+  article h6 {
+    @apply my-[0.5em];
+  }
+
+  p {
+    @apply mb-4;
+  }
+}

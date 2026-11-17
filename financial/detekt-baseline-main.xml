@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:QuoteDetails.kt:QuoteDetails$PricedElements</ID>
+    <ID>DataViewMustNotReferenceDomain:QuoteDetails.kt:QuoteDetails$QuoteLegalNotice</ID>
+    <ID>DataViewMustNotReferenceDomain:QuoteDetails.kt:QuoteDetails$QuoteSources</ID>
+    <ID>DomainMustNotBeSerializable:Amount.kt:Amount$Amount</ID>
+    <ID>DomainMustNotBeSerializable:FinancesInformation.kt:FinancesInformation$FinancesInformation</ID>
+    <ID>DomainMustNotBeSerializable:FinancingInformation.kt:FinancingInformation$FinancingInformation</ID>
+    <ID>DomainMustNotBeSerializable:FinancingType.kt:FinancingType$FinancingType</ID>
+    <ID>DomainMustNotBeSerializable:FinancingType.kt:FinancingType.Leveraged$Leveraged</ID>
+    <ID>DomainMustNotBeSerializable:Quote.kt:Quote$Quote</ID>
+    <ID>DomainMustNotBeSerializable:PricedElement.kt:PricedElement$PricedElement</ID>
+    <ID>DomainMustNotBeSerializable:PricedElements.kt:PricedElements$PricedElements</ID>
+    <ID>DomainMustNotBeSerializable:PricedItem.kt:PricedItem$PricedItem</ID>
+    <ID>DomainMustNotBeSerializable:QuoteLegalNotice.kt:QuoteLegalNotice$QuoteLegalNotice</ID>
+    <ID>DomainMustNotBeSerializable:PricedSection.kt:PricedSection$PricedSection</ID>
+    <ID>DomainMustNotBeSerializable:QuoteSources.kt:QuoteSources$QuoteSources</ID>
+    <ID>DomainMustNotBeSerializable:YearlyCostInformation.kt:YearlyCostInformation$YearlyCostInformation</ID>
+    <ID>SerializableMustUseNativeUuid:Quote.kt:Quote$belongsTo</ID>
+    <ID>SerializableMustUseNativeUuid:QuoteDetails.kt:QuoteDetails$belongsTo</ID>
+    <ID>SerializableMustUseNativeUuid:QuoteSources.kt:QuoteSources$basePriceListId</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:RuntimeContextDetector.kt:RuntimeContextDetector$hostname == null || hostname == undefined || hostname == false || hostname == ""</ID>
+    <ID>ComplexCondition:Url.kt:Url.Relative$(value.contains("?") || value.contains("#")) &amp;&amp; !toAppend.startsWith("?") &amp;&amp; !toAppend.startsWith("&amp;") &amp;&amp; !toAppend.startsWith("#")</ID>
+  </CurrentIssues>
+</SmellBaseline>

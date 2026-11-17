@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:Polygon.kt:Polygon$(crossProduct > 0 &amp;&amp; sign &lt; 0) || (crossProduct &lt; 0 &amp;&amp; sign > 0)</ID>
+  </CurrentIssues>
+</SmellBaseline>

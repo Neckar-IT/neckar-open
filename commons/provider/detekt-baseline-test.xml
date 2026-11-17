@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ObjectLiteralToLambda:SortedDoublesProviderTest.kt:SortedDoublesProviderTest$object : DoublesComparator { override fun compare(valueA: Double, valueB: Double): Int { return valueB.compareTo(valueA) } }</ID>
+  </CurrentIssues>
+</SmellBaseline>

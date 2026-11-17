@@ -1,0 +1,8 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.vite.json"],
+  "include": ["./package.json.d/**/*.js", "./src", "./eslint.config.mjs", "./postcss.config.cjs", "./vite.config.ts", "./oxfmt.config.ts"],
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "build/.tsbuildinfo"
+  }
+}

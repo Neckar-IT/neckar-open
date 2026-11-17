@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:PriceTimelineSummary.kt:PriceTimelineSummary$PriceTimelineEntryView?</ID>
+    <ID>DataViewMustNotReferenceDomain:TagsResponse.kt:TagsResponse$Tag</ID>
+    <ID>DataViewMustNotReferenceDomain:TagsResponse.kt:TagsResponse.Good$Tag</ID>
+    <ID>DomainMustNotBeSerializable:CatalogItemReference.kt:CatalogItemReference$CatalogItemReference</ID>
+    <ID>DomainMustNotBeSerializable:PositionEdit.kt:PositionEdit$PositionEdit</ID>
+    <ID>DomainMustNotBeSerializable:PositionEditHistory.kt:PositionEditHistory$PositionEditHistory</ID>
+    <ID>DomainMustNotBeSerializable:PriceTimeline.kt:PriceTimeline$PriceTimeline</ID>
+    <ID>DomainMustNotBeSerializable:PriceTimeline.kt:PriceTimeline.Entry$Entry</ID>
+    <ID>DomainMustNotBeSerializable:PriceTimelineEntry.kt:PriceTimelineEntry$PriceTimelineEntry</ID>
+    <ID>DomainMustNotBeSerializable:PriceTimelineEntryView.kt:PriceTimelineEntryView$PriceTimelineEntryView</ID>
+    <ID>DomainMustNotBeSerializable:Tag.kt:Tag$Tag</ID>
+    <ID>DomainMustNotBeSerializable:Tags.kt:Tags$Tags</ID>
+  </CurrentIssues>
+</SmellBaseline>

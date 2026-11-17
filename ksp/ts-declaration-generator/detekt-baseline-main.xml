@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NoNameShadowing:TypescriptDeclarationGenerator.kt:nestedClasses</ID>
+    <ID>WhenInitializerRequiresExplicitType:KSTypeExt.kt:classKind</ID>
+    <ID>WhenInitializerRequiresExplicitType:KSTypeExt.kt:nameSpace</ID>
+  </CurrentIssues>
+</SmellBaseline>

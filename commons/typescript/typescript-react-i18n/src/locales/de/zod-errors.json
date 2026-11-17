@@ -1,0 +1,136 @@
+{
+  "errors": {
+    "invalid_type": {
+      "received_undefined": "Darf nicht leer sein",
+      "received_null": "Darf nicht leer sein",
+      "default": "Ungültiger Typ: {{expected}} erwartet"
+    },
+    "types": {
+      "function": "Funktion",
+      "number": "Zahl",
+      "string": "String",
+      "nan": "NaN",
+      "integer": "Ganzzahl",
+      "float": "Gleitkommazahl",
+      "boolean": "Boolean",
+      "date": "Datum",
+      "bigint": "Bigint",
+      "undefined": "Undefined",
+      "symbol": "Symbol",
+      "null": "Nullwert",
+      "array": "Array",
+      "object": "Objekt",
+      "unknown": "Unknown",
+      "promise": "Promise",
+      "void": "Void",
+      "never": "Never",
+      "map": "Map",
+      "set": "Set"
+    },
+
+    "unrecognized_keys": "Unbekannte Schlüssel im Objekt: {{- keys}}",
+
+    "too_small": {
+      "array": {
+        "exact": "Array muss genau {{minimum}} Element(e) enthalten",
+        "inclusive": "Array muss mindestens {{minimum}} Element(e) enthalten",
+        "not_inclusive": "Array muss mehr als {{minimum}} Element(e) enthalten"
+      },
+      "string": {
+        "exact": "String muss genau {{minimum}} Zeichen enthalten",
+        "inclusive": "String muss mindestens {{minimum}} Zeichen enthalten",
+        "not_inclusive": "String muss mehr als {{minimum}} Zeichen enthalten"
+      },
+      "number": {
+        "exact": "Zahl muss genau {{minimum}} sein",
+        "inclusive": "Zahl muss größer oder gleich {{minimum}} sein",
+        "not_inclusive": "Zahl muss größer als {{minimum}} sein"
+      },
+      "set": {
+        "exact": "Ungültige Eingabe",
+        "inclusive": "Ungültige Eingabe",
+        "not_inclusive": "Ungültige Eingabe"
+      },
+      "date": {
+        "exact": "Datum muss genau {{- minimum, datetime}} sein",
+        "inclusive": "Datum muss größer oder gleich {{- minimum, datetime}} sein",
+        "not_inclusive": "Datum muss größer als {{- minimum, datetime}} sein"
+      },
+      "file": {
+        "exact": "Datei muss genau {{minimum}} Byte groß sein",
+        "inclusive": "Datei muss mindestens {{minimum}} Byte groß sein",
+        "not_inclusive": "Datei muss mehr als {{minimum}} Byte groß sein"
+      },
+      "default": "Ihre Eingabe ist zu klein"
+    },
+
+    "too_big": {
+      "array": {
+        "exact": "Array muss genau {{maximum}} Element(e) enthalten",
+        "inclusive": "Array darf höchstens {{maximum}} Element(e) enthalten",
+        "not_inclusive": "Array muss weniger als {{maximum}} Element(e) enthalten"
+      },
+      "string": {
+        "exact": "String muss genau {{maximum}} Zeichen enthalten",
+        "inclusive": "String darf höchstens {{maximum}} Zeichen enthalten",
+        "not_inclusive": "String muss weniger als {{maximum}} Zeichen enthalten"
+      },
+      "number": {
+        "exact": "Zahl muss genau {{maximum}} sein",
+        "inclusive": "Zahl muss kleiner oder gleich {{maximum}} sein",
+        "not_inclusive": "Zahl muss kleiner als {{maximum}} sein"
+      },
+      "set": {
+        "exact": "Ungültige Eingabe",
+        "inclusive": "Ungültige Eingabe",
+        "not_inclusive": "Ungültige Eingabe"
+      },
+      "date": {
+        "exact": "Datum muss genau {{- maximum, datetime}} sein",
+        "inclusive": "Datum muss kleiner oder gleich {{- maximum, datetime}} sein",
+        "not_inclusive": "Datum muss kleiner als {{- maximum, datetime}} sein"
+      },
+      "file": {
+        "exact": "Datei muss genau {{minimum}} Byte groß sein",
+        "inclusive": "Datei darf höchstens {{minimum}} Byte groß sein",
+        "not_inclusive": "Datei muss weniger als {{minimum}} Byte groß sein"
+      },
+      "default": "Ihre Eingabe ist zu klein"
+    },
+
+    "invalid_format": {
+      "startsWith": "Ungültige Eingabe: muss mit \"{{startsWith}}\" beginnen",
+      "endsWith": "Ungültige Eingabe: muss mit \"{{endsWith}}\" enden",
+      "includes": "Ungültige Eingabe: muss \"{{includes}}\" enthalten",
+      "date": "Ungültiges Datum",
+      "time": "Ungültige Uhrzeit",
+      "datetime": "Ungültiger Datums- und Zeitwert",
+      "lowercase": "Ungültige Eingabe: nur Kleinbuchstaben erlaubt",
+      "uppercase": "Ungültige Eingabe: nur Großbuchstaben erlaubt",
+      "regex": "Ungültig",
+      "other": "Ungültige {{validations}}"
+    },
+    "validations": {
+      "email": "E-Mail-Adresse",
+      "url": "URL",
+      "uuid": "Kennung",
+      "guid": "Kennung",
+      "cuid": "CUID",
+      "iban": "IBAN",
+      "credit_card": "Kreditkartennummer"
+    },
+
+    "not_multiple_of": "Zahl muss ein Vielfaches von {{multipleOf}} sein",
+
+    "invalid_union": "Ungültiger Eingabewert",
+
+    "invalid_element": {
+      "map": "Ungültiger Map-Schlüssel",
+      "set": "Ungültiges Set-Element"
+    },
+
+    "invalid_key": "Ungültiges Attribut",
+
+    "invalid_value": "Ungültiger Wert"
+  }
+}

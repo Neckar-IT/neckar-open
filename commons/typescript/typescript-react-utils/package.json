@@ -1,0 +1,125 @@
+{
+  "name": "@neckar-hub/typescript-react-utils",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Common React Components",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "exports": {
+    "./custom-axios-instance": {
+      "import": "./dist/src/custom-axios-instance/index.js",
+      "types": "./dist/src/custom-axios-instance/index.d.ts"
+    },
+    "./data-slice-filters": {
+      "import": "./dist/src/data-slice-filters/index.js",
+      "types": "./dist/src/data-slice-filters/index.d.ts"
+    },
+    "./download-utilities": {
+      "import": "./dist/src/download-utilities/index.js",
+      "types": "./dist/src/download-utilities/index.d.ts"
+    },
+    "./formatters": {
+      "import": "./dist/src/formatters/index.js",
+      "types": "./dist/src/formatters/index.d.ts"
+    },
+    "./html-utilities": {
+      "import": "./dist/src/html-utilities/index.js",
+      "types": "./dist/src/html-utilities/index.d.ts"
+    },
+    "./jotai": {
+      "import": "./dist/src/jotai/index.js",
+      "types": "./dist/src/jotai/index.d.ts"
+    },
+    "./ladle": {
+      "import": "./dist/src/ladle/index.js",
+      "types": "./dist/src/ladle/index.d.ts"
+    },
+    "./network-hooks": {
+      "import": "./dist/src/network-hooks/index.js",
+      "types": "./dist/src/network-hooks/index.d.ts"
+    },
+    "./parsers": {
+      "import": "./dist/src/parsers/index.js",
+      "types": "./dist/src/parsers/index.d.ts"
+    },
+    "./providers": {
+      "import": "./dist/src/providers/index.js",
+      "types": "./dist/src/providers/index.d.ts"
+    },
+    "./render": {
+      "import": "./dist/src/render/index.js",
+      "types": "./dist/src/render/index.d.ts"
+    },
+    "./search-params": {
+      "import": "./dist/src/search-params/index.js",
+      "types": "./dist/src/search-params/index.d.ts"
+    },
+    "./storybook": {
+      "import": "./dist/src/storybook/index.js",
+      "types": "./dist/src/storybook/index.d.ts"
+    },
+    "./is-test-mode": {
+      "import": "./dist/src/test-mode/isTestMode.js",
+      "types": "./dist/src/test-mode/isTestMode.d.ts"
+    },
+    "./set-test-mode": {
+      "import": "./dist/src/test-mode/setTestMode.js",
+      "types": "./dist/src/test-mode/setTestMode.d.ts"
+    },
+    "./utility-hooks": {
+      "import": "./dist/src/utility-hooks/index.js",
+      "types": "./dist/src/utility-hooks/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@neckar-hub/typescript-utils": "workspace:*",
+    "axios": "catalog:",
+    "jotai": "catalog:",
+    "libphonenumber-js": "catalog:",
+    "nuqs": "catalog:",
+    "react-router": "catalog:",
+    "usehooks-ts": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "msw": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

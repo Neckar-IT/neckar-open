@@ -1,0 +1,27 @@
+{
+  "name": "@neckar-hub/playwright-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shareable Playwright Configuration",
+  "type": "module",
+  "exports": {
+    ".": "./src/playwright.config.ts"
+  },
+  "scripts": {
+    "lint": "oxlint .",
+    "lint:fix": "pnpm run lint -- --fix"
+  },
+  "dependencies": {
+    "sync-fetch": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "@types/sync-fetch": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:"
+  }
+}

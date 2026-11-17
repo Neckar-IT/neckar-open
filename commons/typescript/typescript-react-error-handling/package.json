@@ -1,0 +1,87 @@
+{
+  "name": "@neckar-hub/typescript-react-error-handling",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Error and connectivity display of a React application",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.it"
+  },
+  "type": "module",
+  "exports": {
+    "./app-connectivity": {
+      "import": "./dist/src/app-connectivity/index.js",
+      "types": "./dist/src/app-connectivity/index.d.ts"
+    },
+    "./global-error-handler": {
+      "import": "./dist/src/global-error-handler/index.js",
+      "types": "./dist/src/global-error-handler/index.d.ts"
+    },
+    "./tailwind-sources.css": "./src/tailwind-sources.css"
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "integration-test": "playwright install chromium && playwright test",
+    "storybook": "storybook dev --no-open",
+    "storybook:build": "storybook build --output-dir build/storybook",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@neckar-hub/typescript-react-i18n": "workspace:*",
+    "@neckar-hub/typescript-react-query": "workspace:*",
+    "@neckar-hub/typescript-react-ui": "workspace:*",
+    "@neckar-hub/typescript-react-utils": "workspace:*",
+    "@neckar-hub/typescript-utils": "workspace:*",
+    "axios": "catalog:",
+    "cn": "catalog:",
+    "jotai": "catalog:",
+    "lucide-react": "catalog:",
+    "react-error-boundary": "catalog:",
+    "react-router": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/playwright-config": "workspace:*",
+    "@neckar-hub/tailwind-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "es-toolkit": "catalog:",
+    "jsdom": "catalog:",
+    "msw": "catalog:",
+    "msw-storybook-addon": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "storybook": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

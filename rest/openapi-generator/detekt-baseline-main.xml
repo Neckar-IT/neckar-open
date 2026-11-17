@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>UnusedPrivateProperty:OpenApiSchemaGenerator.kt:OpenApiSchemaGenerator$private val generator: OpenApiJsonGenerator</ID>
+    <ID>WhenInitializerRequiresExplicitType:OpenApiSimpleBody.kt:classSchema</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,38 @@
+{
+  "name": "@neckar-hub/tailwind-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tailwind CSS configuration with the Neckar IT corporate design",
+  "keywords": [
+    "Neckar IT",
+    "corporate",
+    "css",
+    "design",
+    "tailwind"
+  ],
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "catalog:",
+    "@fontsource-variable/jetbrains-mono": "catalog:",
+    "@fontsource-variable/manrope": "catalog:",
+    "@fontsource-variable/nunito-sans": "catalog:",
+    "@fontsource-variable/open-sans": "catalog:",
+    "@fontsource-variable/oswald": "catalog:",
+    "@fontsource-variable/outfit": "catalog:",
+    "@fontsource-variable/sora": "catalog:",
+    "@fontsource-variable/space-grotesk": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@tailwindcss/typography": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:"
+  }
+}

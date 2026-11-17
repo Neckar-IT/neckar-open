@@ -1,0 +1,124 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:Suppress("RETURN_VALUE_NOT_USED") // Test/demo-scope discards: builder-style mutator returns, event-notifier returns, subscription discards
+
+package com.meistercharts.canvas.animation
+
+import it.neckar.open.unit.si.ms
+import assertk.*
+import assertk.assertions.*
+import com.meistercharts.canvas.ChartSupport
+import com.meistercharts.canvas.DefaultLayerSupport
+import com.meistercharts.canvas.layer.LayerSupport
+import com.meistercharts.canvas.MockCanvas
+import it.neckar.open.observable.ObservableDouble
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import kotlin.time.Duration.Companion.seconds
+
+class ChartAnimationTest {
+  lateinit var canvas: MockCanvas
+  lateinit var chartSupport: ChartSupport
+  lateinit var layerSupport: LayerSupport
+  @ms
+  private val frameStart: Double = 1_000.0
+
+  @BeforeEach
+  internal fun setUp() {
+    canvas = MockCanvas()
+    chartSupport = ChartSupport(canvas)
+    layerSupport = DefaultLayerSupport(chartSupport)
+  }
+
+  @Test
+  fun testFinished() {
+    val chartAnimation = ChartAnimation { frameMonotonicMillis ->
+      AnimationState.finishedIf(frameMonotonicMillis - frameStart > 10_000.0)
+    }
+
+    assertThat(chartSupport.renderLoopListeners).containsNone(chartAnimation)
+    chartSupport.onRender(chartAnimation)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    //Simulate an event
+    renderFrame(10_000.0, 100.0)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    renderFrame(20_000.0, 200.0)
+    assertThat(chartSupport.renderLoopListenersToRemove).contains(chartAnimation)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    renderFrame(30_000.0, 300.0)
+    assertThat(chartSupport.renderLoopListeners).containsNone(chartAnimation)
+  }
+
+  @Test
+  fun testDispose() {
+    val chartAnimation = ChartAnimation { frameMonotonicMillis ->
+      AnimationState.finishedIf(frameMonotonicMillis - frameStart > 10_000.0)
+    }
+
+    assertThat(chartSupport.renderLoopListeners).containsNone(chartAnimation)
+    assertThat(chartSupport.renderLoopListeners).hasSize(1)
+    chartSupport.onRender(chartAnimation)
+    assertThat(chartSupport.renderLoopListeners).hasSize(2)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    renderFrame(10_000.0, 100.0)
+    assertThat(chartSupport.renderLoopListeners).hasSize(2)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    chartAnimation.dispose()
+
+    assertThat(chartSupport.renderLoopListeners).hasSize(2)
+    assertThat(chartSupport.renderLoopListeners).contains(chartAnimation)
+
+    renderFrame(20_000.0, 200.0)
+
+    assertThat(chartSupport.renderLoopListenersToRemove).contains(chartAnimation)
+    renderFrame(30_000.0, 300.0)
+
+    assertThat(chartSupport.renderLoopListeners).hasSize(1)
+    assertThat(chartSupport.renderLoopListeners).containsNone(chartAnimation)
+  }
+
+  @Test
+  fun testUsageWithProperty() {
+    val positionY = ObservableDouble(0.0)
+
+    @ms val start = 1_000.0
+    val tweenDefinition = TweenDefinition(1.seconds)
+    val tween = tweenDefinition.realize(start)
+
+    val propertyTween = tween.animate(positionY::value, 7.0)
+
+    propertyTween.update(start)
+    assertThat(positionY.value).isEqualTo(0.0)
+
+    propertyTween.update(start + 1000.0)
+    assertThat(positionY.value).isEqualTo(7.0)
+
+    propertyTween.update(start + 500.0)
+    assertThat(positionY.value).isEqualTo(3.5)
+  }
+
+  /**
+   * Renders a frame [elapsedMillis] after [frameStart]
+   */
+  private fun renderFrame(elapsedMillis: Double, relativeHighRes: Double) {
+    chartSupport.render(elapsedMillis, frameStart + elapsedMillis, relativeHighRes)
+  }
+}

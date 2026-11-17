@@ -1,0 +1,501 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.algorithms.layers
+
+import com.meistercharts.algorithms.layout.BoxIndex
+import com.meistercharts.algorithms.layout.BoxLayoutCalculator
+import com.meistercharts.algorithms.layout.EquisizedBoxLayout
+import com.meistercharts.algorithms.layout.LayoutDirection
+import com.meistercharts.algorithms.painter.stripe.StripePainter
+import com.meistercharts.annotations.ContentArea
+import com.meistercharts.calc.TimeChartCalculator
+import com.meistercharts.annotations.Window
+import com.meistercharts.annotations.Zoomed
+import com.meistercharts.canvas.ConfigurationDsl
+import com.meistercharts.canvas.fillRectCoordinates
+import com.meistercharts.canvas.saved
+import com.meistercharts.color.Color
+import com.meistercharts.history.DataSeriesIndex
+import com.meistercharts.history.DataSeriesIndexProvider
+import com.meistercharts.history.HistoryBucket
+import com.meistercharts.history.HistoryConfiguration
+import com.meistercharts.history.HistoryStorage
+import com.meistercharts.history.SamplingPeriod
+import com.meistercharts.history.TimestampIndex
+import com.meistercharts.history.atMost
+import com.meistercharts.history.fastForEach
+import com.meistercharts.history.fastForEachIndexed
+import com.meistercharts.history.find
+import com.meistercharts.history.impl.HistoryChunk
+import com.meistercharts.history.impl.timestampEnd
+import com.meistercharts.history.impl.timestampStart
+import com.meistercharts.history.valueAt
+import com.meistercharts.provider.TimeRangeProvider
+import com.meistercharts.time.TimeRange
+import it.neckar.open.annotations.Hot
+import it.neckar.open.annotations.HotAllocation
+import it.neckar.open.collections.fastForEach
+import it.neckar.open.kotlin.lang.requireFinite
+import it.neckar.open.provider.MultiProvider
+import it.neckar.open.unit.number.MayBeNaN
+import it.neckar.open.unit.other.px
+import it.neckar.open.unit.si.ms
+
+/**
+ * Base class for layers that paint stripes using the history
+ */
+abstract class AbstractHistoryStripeLayer<
+  DataSeriesIndexProviderType : DataSeriesIndexProvider<DataSeriesIndexType>,
+  DataSeriesIndexType : DataSeriesIndex,
+  StripePainterType : StripePainter<DataSeriesIndexType>,
+  Value1Type, Value2Type, Value3Type, Value4Type,
+  >(
+  /**
+   * The configuration
+   */
+  val configuration: Configuration<DataSeriesIndexProviderType, DataSeriesIndexType, StripePainterType, Value1Type, Value2Type, Value3Type, Value4Type>,
+) : AbstractLayer() {
+
+  override val type: LayerType = LayerType.Content
+
+  @Hot
+  abstract override fun paintingVariables(): HistoryStripeLayerPaintingVariables<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type>
+
+  /**
+   * The time chart calculator for the current frame.
+   * Calculated once per frame in [DefaultHistoryStripeLayerPaintingVariables.calculate] and reused in [paint] -
+   * avoids creating a second calculator in the paint phase.
+   */
+  private var currentTimeChartCalculator: TimeChartCalculator? = null
+
+  /**
+   * Abstract base class for painting variables
+   */
+  open inner class DefaultHistoryStripeLayerPaintingVariables : HistoryStripeLayerPaintingVariables<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type> {
+    override var historyBuckets: List<HistoryBucket> = emptyList()
+    var minGapDistance: @ms Double = Double.NaN
+
+    /**
+     * The time range that is currently visible
+     */
+    override var visibleTimeRange: TimeRange = TimeRange.oneMinuteSinceReference
+    var currentSamplingPeriod: SamplingPeriod = SamplingPeriod.EveryHundredMillis
+
+    /**
+     * The vertical layout for the stripes
+     */
+    override var stripesLayout: EquisizedBoxLayout = EquisizedBoxLayout.empty
+
+    var historyConfiguration: HistoryConfiguration = HistoryConfiguration.empty
+
+    override val activeInformation: HistoryStripeLayerPaintingVariables.ActiveInformation<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type> = object : HistoryStripeLayerPaintingVariables.ActiveInformation<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type> {
+      override var value1: Value1Type = value1Default()
+      override var value2: Value2Type = value2Default()
+      override var value3: Value3Type = value3Default()
+      override var value4: Value4Type = value4Default()
+
+      override var activeDataSeriesIndex: DataSeriesIndexType? = null
+
+      /**
+       * The geometrical center for the [Configuration.activeDataSeriesIndex] and [Configuration.activeTimeStamp].
+       */
+      override var geometricalCenter: @Window @MayBeNaN Double = Double.NaN
+        private set
+
+      override var geometricalCenterIfFinite: @Window @MayBeNaN Double
+        @Deprecated("Not supported", level = DeprecationLevel.HIDDEN) get() {
+          throw UnsupportedOperationException("Only set supported")
+        }
+        /**
+         * Sets the value of [geometricalCenter] if the provided value is finite.
+         */
+        set(value) {
+          if (value.isFinite()) {
+            geometricalCenter = value
+          }
+        }
+
+      @Hot
+      override fun reset() {
+        value1 = value1Default()
+        value2 = value2Default()
+        value3 = value3Default()
+        value4 = value4Default()
+
+        geometricalCenter = Double.NaN
+      }
+    }
+
+    @Hot
+    override fun calculate(paintingContext: LayerPaintingContext) {
+      val chartSupport = paintingContext.chartSupport
+
+      @HotAllocation("Once per frame per layer - calculator factory allocation, cached in currentTimeChartCalculator for reuse in paint. Fix candidate: cache in ChartState (TODO exists at the factory)")
+      val chartCalculator = paintingContext.chartSupport.timeChartCalculator(configuration.contentAreaTimeRange())
+      currentTimeChartCalculator = chartCalculator
+
+      historyConfiguration = configuration.historyConfiguration()
+
+      currentSamplingPeriod = PaintingPropertyKey.SamplingPeriod.retrieve(chartSupport)
+      visibleTimeRange = PaintingPropertyKey.VisibleTimeRangeX.retrieve(chartSupport)
+      minGapDistance = PaintingPropertyKey.MinGapDistance.retrieve(chartSupport)
+
+      @HotAllocation("Once per frame per layer - not per data point. Allocates the descriptor and bucket lists, size = number of visible buckets (typically 1-3). The buckets themselves are cached in the storage; only the list wrappers are allocated per query")
+      val queriedBuckets = configuration.historyStorage.query(visibleTimeRange, currentSamplingPeriod)
+      historyBuckets = queriedBuckets
+
+      //Y axis
+      @Zoomed val availableSpace = chartCalculator.contentAreaRelative2zoomedY(1.0)
+
+      stripesLayout = BoxLayoutCalculator.layout(
+        availableSpace = availableSpace,
+        numberOfBoxes = visibleIndices.size(),
+        layoutDirection = configuration.layoutDirection,
+        minBoxSize = configuration.stripeHeight,
+        maxBoxSize = configuration.stripeHeight,
+        gapSize = configuration.stripesDistance,
+      )
+
+
+      //Calculate the "active" value
+      run {
+        activeInformation.reset()
+        configuration.activeDataSeriesIndex?.let { activeDataSeriesIndex ->
+          activeInformation.activeDataSeriesIndex = activeDataSeriesIndex
+
+          @ms val activeTimeStamp = configuration.activeTimeStamp.requireFinite { "activeTimeStamp" }
+
+          historyBuckets.find(activeTimeStamp) { bucket: HistoryBucket, timestampIndex: TimestampIndex ->
+            activeInformation.value1 = bucket.chunk.getValue1(activeDataSeriesIndex, timestampIndex)
+            activeInformation.value2 = bucket.chunk.getValue2(activeDataSeriesIndex, timestampIndex)
+            activeInformation.value3 = bucket.chunk.getValue3(activeDataSeriesIndex, timestampIndex)
+            activeInformation.value4 = bucket.chunk.getValue4(activeDataSeriesIndex, timestampIndex)
+          }
+        }
+      }
+
+      //Calculate the layout for the stripes
+      visibleIndices.fastForEach { visibleDataSeriesIndex ->
+        val stripePainter: StripePainterType = configuration.stripePainters.valueAt(visibleDataSeriesIndex)
+        val isActiveDataSeries = configuration.activeDataSeriesIndex == visibleDataSeriesIndex
+
+        //Is only set if the current series is the active series
+        @MayBeNaN @ms val relevantActiveTimeStamp = if (isActiveDataSeries) configuration.activeTimeStamp else Double.NaN
+
+        //The time of the last data point. Is used to identify gaps
+        @ms var lastTime = Double.NaN //initialize with NaN to ensure first one is no gap
+
+        stripePainter.layoutBegin(paintingContext, stripesLayout.boxSize, visibleDataSeriesIndex, historyConfiguration)
+
+        historyBuckets.fastForEach historyBucketForEach@{ bucket ->
+          val chunk = bucket.chunk
+          if (chunk.isEmpty()) {
+            return@historyBucketForEach
+          }
+
+          for (timestampIndexAsInt in 0 until chunk.timeStampsCount) {
+            val timestampIndex = TimestampIndex(timestampIndexAsInt)
+
+            //The start time is the time when the value "starts" (has been measured)
+            @ms val startTime = chunk.timestampStart(timestampIndex, bucket.samplingPeriod)
+            //The end time is the time of the *next* measurement
+            @ms val endTime = chunk.timestampEnd(timestampIndex, bucket.samplingPeriod)
+
+            if (endTime < visibleTimeRange.start) {
+              //Skip all data points that are not visible on this tile yet
+              continue
+            }
+
+            @Window val startX = chartCalculator.time2windowX(startTime)
+            @Window val endX = chartCalculator.time2windowX(endTime)
+
+            if (startTime > visibleTimeRange.end) {
+              //Skip all data points that are no longer visible on this tile
+              activeInformation.geometricalCenterIfFinite = layoutDataPoint(
+                paintingContext, stripePainter, visibleDataSeriesIndex, chunk, timestampIndex, startX, endX, startTime, endTime, relevantActiveTimeStamp
+              )
+              break
+            }
+
+            //Check if there is a gap because the distance between data points is larger than the gap size
+            @ms val distanceToLastDataPoint = startTime - lastTime
+            if (distanceToLastDataPoint > minGapDistance) {
+              //We have a gap -> finish the current line and begin a new one
+              activeInformation.geometricalCenterIfFinite = stripePainter.layoutFinish(paintingContext, visibleDataSeriesIndex)
+              stripePainter.layoutBegin(paintingContext, stripesLayout.boxSize, visibleDataSeriesIndex, historyConfiguration)
+            }
+
+            lastTime = startTime
+
+            activeInformation.geometricalCenterIfFinite = layoutDataPoint(
+              paintingContext, stripePainter, visibleDataSeriesIndex, chunk, timestampIndex, startX, endX, startTime, endTime, relevantActiveTimeStamp
+            )
+          }
+        }
+
+        activeInformation.geometricalCenterIfFinite = stripePainter.layoutFinish(paintingContext, visibleDataSeriesIndex)
+      }
+    }
+  }
+
+  @Hot
+  override fun paint(paintingContext: LayerPaintingContext) {
+    val gc = paintingContext.gc
+
+    @HotAllocation("Fallback only when paint runs without a preceding layout - the layout phase caches the calculator in currentTimeChartCalculator")
+    val chartCalculator = currentTimeChartCalculator ?: paintingContext.chartSupport.timeChartCalculator(configuration.contentAreaTimeRange())
+
+    configuration.background?.let { background ->
+      @Window val y0 = chartCalculator.contentAreaRelative2windowY(0.0)
+      @Window val y1 = chartCalculator.contentAreaRelative2windowY(1.0)
+
+      val x0 = chartCalculator.contentViewportMinX()
+      val x1 = chartCalculator.contentViewportMaxX()
+
+      gc.fill(background)
+      gc.fillRectCoordinates(x0, y0, x1, y1)
+    }
+
+    val paintingVariables = paintingVariables()
+    val stripesLayout = paintingVariables.stripesLayout
+
+    //translate to content area origin
+    gc.translate(0.0, chartCalculator.contentAreaRelative2windowY(0.0))
+
+    visibleIndices.fastForEachIndexed { visibleIndexAsInt, visibleDataSeriesIndex ->
+      val stripePainter = configuration.stripePainters.valueAt(visibleDataSeriesIndex)
+
+      val boxIndex = BoxIndex(visibleIndexAsInt)
+      @Zoomed val startY = stripesLayout.calculateStart(boxIndex)
+
+      gc.saved {
+        //translate to the correct y location
+        gc.translate(0.0, startY)
+
+        gc.saved {
+          stripePainter.paint(paintingContext, visibleDataSeriesIndex)
+        }
+      }
+    }
+
+  }
+
+
+  @Hot
+  protected abstract fun value1Default(): Value1Type
+
+  @Hot
+  protected abstract fun value2Default(): Value2Type
+
+  @Hot
+  protected abstract fun value3Default(): Value3Type
+
+  @Hot
+  protected abstract fun value4Default(): Value4Type
+
+  /**
+   * Returns the number of data series
+   */
+  protected abstract fun dataSeriesCount(): Int
+
+  /**
+   * Extracts the value 1
+   */
+  @Hot
+  abstract fun HistoryChunk.getValue1(visibleDataSeriesIndex: DataSeriesIndexType, timestampIndex: TimestampIndex): Value1Type
+
+  @Hot
+  abstract fun HistoryChunk.getValue2(visibleDataSeriesIndex: DataSeriesIndexType, timestampIndex: TimestampIndex): Value2Type
+
+  @Hot
+  abstract fun HistoryChunk.getValue3(visibleDataSeriesIndex: DataSeriesIndexType, timestampIndex: TimestampIndex): Value3Type
+
+  @Hot
+  abstract fun HistoryChunk.getValue4(visibleDataSeriesIndex: DataSeriesIndexType, timestampIndex: TimestampIndex): Value4Type
+
+  /**
+   * Reads the relevant values for a single data point from the [chunk] and feeds them to the painter's
+   * `layoutValueChange`. Implemented per concrete layer with concrete value classes so no boxing happens in the
+   * per-data-point hot loop.
+   *
+   * @return the geometrical center of the segment - if the [activeTimeStamp] is within the segment, [Double.NaN] otherwise.
+   */
+  @Hot
+  protected abstract fun layoutDataPoint(
+    paintingContext: LayerPaintingContext,
+    stripePainter: StripePainterType,
+    dataSeriesIndex: DataSeriesIndexType,
+    chunk: HistoryChunk,
+    timestampIndex: TimestampIndex,
+    startX: @Window Double,
+    endX: @Window Double,
+    startTime: @ms Double,
+    endTime: @ms Double,
+    activeTimeStamp: @ms @MayBeNaN Double,
+  ): @Window @MayBeNaN Double
+
+
+  /**
+   * Contains the visible indices
+   */
+  val visibleIndices: DataSeriesIndexProvider<DataSeriesIndexType> = configuration::requestedVisibleIndices.atMost { dataSeriesCount() }
+
+  @ConfigurationDsl
+  abstract class Configuration<
+    SeriesIndexProviderType : DataSeriesIndexProvider<DataSeriesIndexType>,
+    DataSeriesIndexType : DataSeriesIndex,
+    StripePainterType : StripePainter<DataSeriesIndexType>,
+    Value1Type, Value2Type, Value3Type, Value4Type,
+    >(
+    /**
+     * Where the history is stored
+     */
+    val historyStorage: HistoryStorage,
+
+    /**
+     * Provides the current history configuration
+     */
+    val historyConfiguration: () -> HistoryConfiguration,
+
+    /**
+     * The visible indices
+     *
+     * ATTENTION: This might contain indices that do *not* exist.
+     * Therefore, it is necessary to check whether the data series for the given index does exist
+     */
+    var requestedVisibleIndices: SeriesIndexProviderType,
+
+    /**
+     * Provides the time range of the content area
+     */
+    val contentAreaTimeRange: @ContentArea TimeRangeProvider,
+
+    /**
+     * The enum bar painters that are used to paint the enums.
+     */
+    var stripePainters: MultiProvider<DataSeriesIndexType, StripePainterType>,
+  ) {
+
+    /**
+     * The height of a stripe
+     */
+    var stripeHeight: @px Double = 22.0
+
+    /**
+     * The distance between two enum stripes
+     */
+    var stripesDistance: @px Double = 14.0
+
+    /**
+     * The layout direction
+     */
+    var layoutDirection: LayoutDirection = LayoutDirection.TopToBottom
+
+    /**
+     * The background color
+     */
+    var background: Color? = null
+
+    /**
+     * Calculates the height for the given number of enum values
+     */
+    fun calculateTotalHeight(stripesCount: Int): @px Double {
+      if (stripesCount == 0) {
+        return 0.0
+      }
+
+      return stripeHeight * stripesCount + stripesDistance * (stripesCount - 1)
+    }
+
+    /**
+     * The index of the data series that is highlighted (mouse over)
+     */
+    var activeDataSeriesIndex: DataSeriesIndexType? = null
+
+    /**
+     * The active time stamp (usually where the mouse is located).
+     * Is set to [Double.NaN] if no values is set
+     */
+    var activeTimeStamp: @ms @MayBeNaN Double = Double.NaN
+
+    /**
+     * Provides the size for the background of the active data series.
+     *
+     * The result is used to paint the background for the active series.
+     * If the returned size is small(er) than the data series size, the background is also smaller
+     */
+    var activeDataSeriesBackgroundSize: (dataSeriesHeight: @Zoomed Double) -> Double = { dataSeriesHeight -> dataSeriesHeight }
+  }
+
+  /**
+   * The painting variables for a [AbstractHistoryStripeLayer]
+   */
+  interface HistoryStripeLayerPaintingVariables<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type> : PaintingVariables {
+    /**
+     * The history bucket that have been used to display the strips
+     */
+    var historyBuckets: List<HistoryBucket>
+
+    /**
+     * The time range that is currently visible
+     */
+    var visibleTimeRange: TimeRange
+
+    /**
+     * The vertical layout for the stripes
+     */
+    var stripesLayout: EquisizedBoxLayout
+
+
+    /**
+     * Contains the information about the active (usually related mouse over / tooltip) data
+     */
+    val activeInformation: ActiveInformation<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type>
+
+
+    /**
+     * Used for tooltips
+     */
+    interface ActiveInformation<DataSeriesIndexType, Value1Type, Value2Type, Value3Type, Value4Type> {
+      /**
+       * Resets all values
+       */
+      @Hot
+      fun reset()
+
+      /**
+       * The active data series index
+       */
+      var activeDataSeriesIndex: DataSeriesIndexType?
+
+      /**
+       * The geometrical center of the active segment
+       */
+      val geometricalCenter: @Window @MayBeNaN Double
+
+      /**
+       * Can be used to set the value - if it is not [Double.NaN]
+       */
+      var geometricalCenterIfFinite: @Window @MayBeNaN Double
+        @Deprecated("Not supported", level = DeprecationLevel.HIDDEN) get
+
+      var value1: Value1Type
+      var value2: Value2Type
+      var value3: Value3Type
+      var value4: Value4Type
+    }
+  }
+}

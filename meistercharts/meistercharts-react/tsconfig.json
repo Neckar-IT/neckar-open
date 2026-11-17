@@ -1,0 +1,5 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.vite.json"],
+  "compilerOptions": {},
+  "include": ["./.storybook/*", "./src", "./vite.config.ts"]
+}

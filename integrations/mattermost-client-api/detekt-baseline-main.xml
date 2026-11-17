@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:PostsResponse.kt:MattermostPostsResponse$Post</ID>
+    <ID>DomainMustNotBeSerializable:Post.kt:Post$Post</ID>
+  </CurrentIssues>
+</SmellBaseline>

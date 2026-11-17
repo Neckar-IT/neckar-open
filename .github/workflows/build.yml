@@ -1,0 +1,25 @@
+# Builds every release of this read-only mirror; develop is not built here.
+name: build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "open-*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # The fonts and PDFs that tests read are stored in Git LFS.
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: ./gradlew build

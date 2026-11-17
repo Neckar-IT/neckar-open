@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:Url.kt:Url.Relative$(value.contains("?") || value.contains("#")) &amp;&amp; !toAppend.startsWith("?") &amp;&amp; !toAppend.startsWith("&amp;") &amp;&amp; !toAppend.startsWith("#")</ID>
+    <ID>DomainMustNotBeSerializable:Url.kt:Url.Absolute$Absolute</ID>
+    <ID>DomainMustNotBeSerializable:Url.kt:Url.DataScheme$DataScheme</ID>
+    <ID>DomainMustNotBeSerializable:Url.kt:Url.Relative$Relative</ID>
+    <ID>DomainMustNotBeSerializable:Url.kt:Url.RootRelative$RootRelative</ID>
+    <ID>NoNameShadowing:Inflector.kt:Inflector$lowerCaseAndUnderscoredWord</ID>
+    <ID>RedundantHigherOrderMapUsage:ReflectExt.kt:map</ID>
+    <ID>UseOrEmpty:Inflector.kt:Inflector.Rule$replacement ?: ""</ID>
+    <ID>UseRequire:IteratorExtensions.kt:throw IllegalArgumentException("Collection contains more than one element.")</ID>
+    <ID>UseRequire:IteratorExtensions.kt:throw IllegalArgumentException("Collection contains more than one matching element.")</ID>
+    <ID>UseRequire:MathExt.kt:throw IllegalArgumentException("Long doesn't fit Integer")</ID>
+    <ID>UseRequire:RandomExt.kt:throw IllegalArgumentException("Empty list")</ID>
+    <ID>UseRequire:ReflectJvmBridge.kt:throw IllegalArgumentException("Generic types are not supported: $className")</ID>
+    <ID>UseRequire:StringExt.kt:throw IllegalArgumentException("End [$end] not found in [$this]")</ID>
+    <ID>UseRequire:StringExt.kt:throw IllegalArgumentException("Start [$start] not found in [$this]")</ID>
+    <ID>UseRequire:Url.kt:Url.Relative$throw IllegalArgumentException("Cannot append path segment [$toAppend] after query parameter or fragment in [$value]")</ID>
+    <ID>UseRequire:UrlExt.kt:throw IllegalArgumentException("Cannot convert data scheme to URL")</ID>
+  </CurrentIssues>
+</SmellBaseline>

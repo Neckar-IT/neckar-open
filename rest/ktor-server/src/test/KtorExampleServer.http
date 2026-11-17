@@ -1,0 +1,130 @@
+### Hello World
+GET http://localhost:9999/
+
+### Version
+GET http://localhost:9999/meta/version
+
+### health
+GET http://localhost:9999/meta/health
+
+### Login
+GET http://localhost:9999/login
+
+> {%
+  client.global.set("accessToken", response.body);
+%}
+
+
+### JWT auth - None --> 401
+GET http://localhost:9999/with-jwt-auth
+
+### JWT auth - Header --> 200
+GET http://localhost:9999/with-jwt-auth
+Authorization: Bearer {{accessToken}}
+
+### JWT auth + Cookie --> 401
+GET http://localhost:9999/with-jwt-auth
+Cookie: accessToken={{accessToken}}; name2=value2
+
+
+###############################################################################################
+
+### JWT cookie auth - None --> 403 "No Access Token Cookie found!"
+GET http://localhost:9999/with-jwt-cookie-auth
+
+### JWT cookie auth - Header --> 403 "No Access Token Cookie found!"
+GET http://localhost:9999/with-jwt-cookie-auth
+Authorization: Bearer {{accessToken}}
+
+### JWT cookie auth - Cookie --> 200
+GET http://localhost:9999/with-jwt-cookie-auth
+Cookie: accessToken={{accessToken}}; name2=value2
+
+
+###############################################################################################
+
+
+### both - None --> 403 "No Access Token Cookie found!"
+GET http://localhost:9999/with-both-auth
+
+### both - Header --> 200
+GET http://localhost:9999/with-both-auth
+Authorization: Bearer {{accessToken}}
+
+### both - Cookie --> 200
+GET http://localhost:9999/with-both-auth
+Cookie: accessToken={{accessToken}}; name2=value2
+
+
+######################################
+####
+#### Resources
+####
+######################################
+
+
+##### Route: "resources-test", remotePath ""
+### 200
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+
+##### Route: "resources-test/", remotePath ""
+### 404
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+### 200
+GET http://localhost:9999/resources-test/test.html
+
+
+##### Route: "", remotePath "resources-test"
+### 200
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+### 200
+GET http://localhost:9999/resources-test/test.html
+
+
+##### Route: "", remotePath "resources-test/"
+### 404
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+### 200
+GET http://localhost:9999/resources-test/test.html
+
+
+
+##### Route: ""resources-test/*"", remotePath ""
+### 404
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+### 200
+GET http://localhost:9999/resources-test/test.html
+
+
+
+##### Route: ""resources-test"", remotePath "/"
+### 404
+GET http://localhost:9999/resources-test
+
+### 404
+GET http://localhost:9999/resources-test/
+
+### 200
+GET http://localhost:9999/resources-test/test.html
+
+

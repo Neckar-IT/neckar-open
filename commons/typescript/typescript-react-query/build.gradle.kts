@@ -1,0 +1,1 @@
+description = """ customized @tanstack/react-query library """

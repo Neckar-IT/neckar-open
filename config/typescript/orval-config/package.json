@@ -1,0 +1,40 @@
+{
+  "name": "@neckar-hub/orval-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Common Orval configuration and utility functions",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "lint:report": "oxlint -f gitlab .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "@orval/core": "catalog:",
+    "es-toolkit": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

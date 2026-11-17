@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DomainMustNotBeSerializable:TextKey.kt:TextKey$TextKey</ID>
+    <ID>UnusedPrivateProperty:DateTimeFormatJVM.kt:DateTimeFormatIso8601$/** * Append three digits for the milliseconds */ private val isoTimeFormatter = DateTimeFormatterBuilder() .appendValue(ChronoField.HOUR_OF_DAY, 2) .appendLiteral(':') .appendValue(ChronoField.MINUTE_OF_HOUR, 2) .optionalStart() .appendLiteral(':') .appendValue(ChronoField.SECOND_OF_MINUTE, 2) .optionalStart() .appendFraction(ChronoField.MILLI_OF_SECOND, 3, 3, true) .toFormatter()</ID>
+    <ID>UnusedPrivateProperty:DateTimeFormatJVM.kt:DateTimeFormatIso8601$/** * Uses the custom [isoTimeFormatter] */ private val isoLocalDateTime = DateTimeFormatterBuilder() .parseCaseInsensitive() .append(DateTimeFormatter.ISO_LOCAL_DATE) .appendLiteral('T') .append(isoTimeFormatter) .toFormatter()</ID>
+    <ID>UnusedPrivateProperty:DateTimeFormatJVM.kt:DateTimeFormatIso8601$private val iso8601DateTimeFormatter = DateTimeFormatterBuilder() .append(isoLocalDateTime) .optionalStart() .appendOffsetId() .toFormatter()</ID>
+    <ID>UnusedPrivateProperty:NumberFormat.kt:DecimalFormat$private val numberFormatCache = NumberFormatCache("DecimalFormat(Fractions: min: $minimumFractionDigits, max: $maximumFractionDigits; Min int: $minimumIntegerDigits; grouping: $useGrouping)") { this.maximumFractionDigits = this@DecimalFormat.maximumFractionDigits this.minimumFractionDigits = this@DecimalFormat.minimumFractionDigits this.minimumIntegerDigits = this@DecimalFormat.minimumIntegerDigits this.isGroupingUsed = this@DecimalFormat.useGrouping }</ID>
+  </CurrentIssues>
+</SmellBaseline>

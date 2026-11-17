@@ -1,0 +1,66 @@
+{
+  "authProvider": {
+    "authenticating": "Authenticating ...",
+    "loggingOut": "Signing out ...",
+    "loadingUserData": "Loading user data ...",
+    "loadingUserDataDescription": "Authentication is complete. Loading your profile from the server.",
+    "authServiceNotReachable": "Authentication service not reachable",
+    "authServiceNotReachableDescription": "Could not connect to the authentication service.",
+    "loginFailed": "Login failed",
+    "loginFailedDescription": "The login via the authentication service was not successful.",
+    "sessionExpired": "Session expired",
+    "sessionExpiredDescription": "Your session has ended. Sign in again to continue.",
+    "signInAgain": "Sign in again",
+    "onboardingRejected": "Invitation required",
+    "onboardingRejectedDescription": "You are signed in. This application is available by invitation — as soon as you have been invited, your account is ready to go.",
+    "onboardingRejectedContact": "We are happy to invite you — just write to",
+    "signOut": "Sign out",
+    "reloadPage": "Reload page",
+    "invalidLoginToken": "Invalid Login Token."
+  },
+  "loginScreen": {
+    "htmlTitle": "Sign In",
+    "signIn": "Sign In",
+    "userName": "Email address",
+    "userNameEmpty": "Please provide your email address.",
+    "password": "Password",
+    "passwordEmpty": "Please enter your password.",
+    "errorHeading": "Sign in failed!",
+    "invalidCredentials": "Invalid username or password.",
+    "userDisabled": "User is disabled."
+  },
+  "registrationScreen": {
+    "htmlTitle": "Create Account",
+    "heading": "Create Account",
+    "description": "Create an Account to test the application.",
+    "descriptionEmphasis": "No credit card required.",
+    "companyName": "Company Name",
+    "personalData": "Personal Data",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "credentials": "Credentials",
+    "email": "E-Mail",
+    "emailAlreadyRegistered": "There already is an account with this email address.",
+    "password": "Password",
+    "passwordTooShort": "The password must contain at least 8 characters.",
+    "passwordsDoNotMatch": "Your passwords do not match.",
+    "passwordConfirmation": "Confirm Password",
+    "submit": "Create Account!"
+  },
+  "userMenu": {
+    "logout": "Log out",
+    "avatarAlt": "Avatar of {{name}}"
+  },
+  "impersonation": {
+    "signedInAs": "Signed in as {{name}}",
+    "returnToOwnAccount": "Back to my account",
+    "title": "Switch user",
+    "description": "This tab uses the application as the selected user until you return to your account or close the tab. Newly opened tabs stay with your account.",
+    "search": "Name, email address or tenant",
+    "empty": "No user found",
+    "withoutTenant": "without tenant",
+    "narrowSearch": "Not all users are shown. Refine the search.",
+    "cancel": "Cancel",
+    "start": "Switch"
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:TestKClass.kt:TestKClass$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:Polygon.kt:Polygon$(crossProduct > 0 &amp;&amp; sign &lt; 0) || (crossProduct &lt; 0 &amp;&amp; sign > 0)</ID>
+    <ID>DomainMustNotBeSerializable:Coordinates.kt:Coordinates$Coordinates</ID>
+    <ID>DomainMustNotBeSerializable:Coordinates.kt:Hull$Hull</ID>
+    <ID>DomainMustNotBeSerializable:Polygon.kt:Polygon$Polygon</ID>
+    <ID>DomainMustNotBeSerializable:Quadrilateral.kt:Quadrilateral$Quadrilateral</ID>
+    <ID>DomainMustNotBeSerializable:Rectangle.kt:Rectangle$Rectangle</ID>
+    <ID>DomainMustNotBeSerializable:RotatedRectangle.kt:RotatedRectangle$RotatedRectangle</ID>
+    <ID>DomainMustNotBeSerializable:Size.kt:Size$Size</ID>
+  </CurrentIssues>
+</SmellBaseline>

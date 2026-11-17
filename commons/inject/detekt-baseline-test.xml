@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>UnusedPrivateProperty:GuiceModulesHelperTest.kt:GuiceModulesHelperTest.MyObject$private val id: String</ID>
+  </CurrentIssues>
+</SmellBaseline>

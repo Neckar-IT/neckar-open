@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:ExampleTestClass.kt:ExampleTestClass$println</ID>
+    <ID>ForbiddenPrintCall:ExampleTestEnum.kt:ExampleTestEnum$println</ID>
+    <ID>ForbiddenPrintCall:ExampleTestInterface.kt:ExampleTestInterface$println</ID>
+    <ID>ForbiddenPrintCall:InlineCollectingTest.kt:InlineCollectingTest$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:ObservableCoroutinesTest.kt:ObservableCoroutinesTest$println</ID>
+    <ID>ForbiddenPrintCall:ObservableObjectPerformanceDemo.kt:ObservableObjectPerformanceDemo$println</ID>
+    <ID>InjectDispatcher:ObservableCoroutinesTest.kt:ObservableCoroutinesTest$Default</ID>
+  </CurrentIssues>
+</SmellBaseline>

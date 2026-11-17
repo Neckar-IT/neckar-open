@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ArrayPrimitive:_ExtensionsKtTest.kt:_ExtensionsKtTest$arrayOf(1, 2, 3, 4, 5)</ID>
+    <ID>ArrayPrimitive:_ExtensionsKtTest.kt:_ExtensionsKtTest$arrayOf(1, 2, 4, 5)</ID>
+    <ID>ForbiddenPrintCall:CacheMapPerformanceTest.kt:CacheMapPerformanceTest$println</ID>
+  </CurrentIssues>
+</SmellBaseline>

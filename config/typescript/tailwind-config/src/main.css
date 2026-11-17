@@ -1,0 +1,321 @@
+/**
+ * This is the tailwind configuration for the default NeckarIT theme.
+ *
+ * Include it in your project by adding `"@neckar-hub/tailwind-config": "workspace:*"` to your project's
+ * devDependencies, creating a CSS file and adding the following import:
+ * `@import "@neckar-hub/tailwind-config/main.css";`
+ *
+ * Projects extend this base with their own semantic colors — see the "Extending the theme" section in
+ * this package's README.md and the reference example at
+ * internal/patterns/react-frontend/src/styles.css.
+ */
+
+@import "@fontsource-variable/open-sans/index.css";
+@import "@fontsource-variable/oswald/index.css";
+
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /*
+   * Font stacks as raw values so pluggable themes (src/themes/) can override them
+   * per `data-theme` attribute — mirrors the two-level pattern used for colors:
+   * raw value here, Tailwind mapping in the `@theme inline` block below.
+   */
+  --theme-font-sans: "Open Sans Variable", sans-serif;
+  --theme-font-body: "Open Sans Variable", sans-serif;
+  --theme-font-display: "Oswald Variable", sans-serif;
+  --theme-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+:root,
+.light {
+  /* base radius for rounded corners */
+  --radius: 0.5rem;
+
+  /* light mode colors */
+  --background: hsl(0deg 0% 100%);
+  --foreground: hsl(222.2deg 84% 4.9%);
+
+  --card: hsl(0deg 0% 100%);
+  --card-foreground: hsl(222.2deg 84% 4.9%);
+
+  --popover: hsl(0deg 0% 100%);
+  --popover-foreground: hsl(222.2deg 84% 4.9%);
+
+  --overlay: hsl(0deg 0% 0% / 0.6);
+
+  --primary: hsl(198deg 100% 45%);
+  --primary-foreground: hsl(210deg 40% 98%);
+
+  --secondary: hsl(210deg 40% 96.1%);
+  --secondary-foreground: hsl(222.2deg 47.4% 11.2%);
+
+  --muted: hsl(210deg 40% 96.1%);
+  --muted-foreground: hsl(215.4deg 16.3% 46.9%);
+
+  --accent: hsl(210deg 40% 96.1%);
+  --accent-foreground: hsl(222.2deg 47.4% 11.2%);
+
+  --destructive: hsl(0deg 84.2% 60.2%);
+  --destructive-foreground: hsl(210deg 40% 98%);
+
+  --border: hsl(214.3deg 31.8% 91.4%);
+
+  --input: hsl(214.3deg 31.8% 91.4%);
+
+  --ring: hsl(215deg 20.2% 65.1%);
+
+  --sidebar: hsl(0deg 0% 98%);
+  --sidebar-foreground: hsl(240deg 5.3% 26.1%);
+  --sidebar-primary: hsl(240deg 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0deg 0% 98%);
+  --sidebar-accent: hsl(240deg 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240deg 5.9% 10%);
+  --sidebar-border: hsl(220deg 13% 91%);
+  --sidebar-ring: hsl(217.2deg 91.2% 59.8%);
+
+  /*
+   * Semantic status colors (NeckarIT theme).
+   *
+   * These are consumed as solid fills — a colored background paired with the matching `-foreground`
+   * text (e.g. Button `confirm` variant, ConfirmationStatusBadge, styling.neckar.it color previews).
+   * A solid mid-saturation fill reads on both light and dark surfaces, so `state-*`, `confirmed`, and
+   * `draft` deliberately have NO `.dark` override. The single exception is `state-unknown`: its light
+   * value is a near-black navy that vanishes on the dark background, so it gets a `.dark` variant below.
+   */
+  --state-success: hsl(87deg 46% 56%);
+  --state-success-foreground: hsl(87deg 46% 16%);
+  --state-neutral: hsl(198deg 100% 45%);
+  --state-neutral-foreground: hsl(198deg 100% 15%);
+  --state-warning: hsl(49deg 100% 48%);
+  --state-warning-foreground: hsl(49deg 100% 18%);
+  --state-critical: hsl(28deg 88% 54%);
+  --state-critical-foreground: hsl(28deg 88% 14%);
+  --state-error: hsl(346deg 79% 54%);
+  --state-error-foreground: hsl(346deg 79% 14%);
+  --state-unknown: hsl(201deg 100% 13.7%);
+  --state-unknown-foreground: hsl(0deg 0% 100%);
+
+  --confirmed: hsl(142.1deg 76.2% 36.3%);
+  --confirmed-foreground: hsl(210deg 40% 98%);
+  --draft: hsl(220deg 8.9% 46.1%);
+  --draft-foreground: hsl(210deg 40% 98%);
+
+  --chart-1: hsl(198deg 100% 45%);
+  --chart-2: hsl(201deg 100% 14%);
+  --chart-3: hsl(183deg 42% 74%);
+  --chart-4: hsl(198deg 100% 29%);
+  --chart-5: hsl(200deg 78% 70%);
+  --chart-6: hsl(169deg 42% 40%);
+}
+
+.dark {
+  /* dark mode colors */
+  --background: hsl(201deg 100% 10%);
+  --foreground: hsl(210deg 40% 98%);
+
+  --card: hsl(201deg 100% 10%);
+  --card-foreground: hsl(210deg 40% 98%);
+
+  --popover: hsl(201deg 100% 10%);
+  --popover-foreground: hsl(210deg 40% 98%);
+
+  --overlay: hsl(201deg 100% 5% / 0.6);
+
+  --primary: hsl(198deg 100% 45%);
+  --primary-foreground: hsl(210deg 40% 98%);
+
+  --secondary: hsl(198deg 100% 22%);
+  --secondary-foreground: hsl(210deg 40% 98%);
+
+  --muted: hsl(198deg 100% 22%);
+  --muted-foreground: hsl(215deg 20.2% 65.1%);
+
+  --accent: hsl(198deg 100% 22%);
+  --accent-foreground: hsl(210deg 40% 98%);
+
+  --destructive: hsl(0deg 62.8% 30.6%);
+  --destructive-foreground: hsl(210deg 40% 98%);
+
+  --border: hsl(198deg 100% 22%);
+
+  --input: hsl(198deg 100% 22%);
+
+  --ring: hsl(216deg 34% 17%);
+
+  --sidebar: hsl(201deg 100% 14%);
+  --sidebar-foreground: hsl(240deg 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3deg 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0deg 0% 100%);
+  --sidebar-accent: hsl(201deg 100% 11%);
+  --sidebar-accent-foreground: hsl(240deg 4.8% 95.9%);
+  --sidebar-border: hsl(240deg 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2deg 91.2% 59.8%);
+
+  --state-unknown: hsl(0deg 0% 55%);
+  --state-unknown-foreground: hsl(0deg 0% 15%);
+
+  --chart-1: hsl(198deg 100% 29%);
+  --chart-2: hsl(169deg 42% 40%);
+  --chart-3: hsl(198deg 100% 45%);
+  --chart-4: hsl(180deg 39% 56%);
+  --chart-5: hsl(200deg 78% 70%);
+  --chart-6: hsl(189deg 49% 85%);
+}
+
+/*
+ * Indeterminate linear progress in the style of Material UI: two bars sweep across the track, the second one delayed.
+ * Used by the `Progress` of typescript-react-ui.
+ */
+@theme {
+  --animate-progress-indeterminate-primary: progress-indeterminate-primary 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+  --animate-progress-indeterminate-secondary: progress-indeterminate-secondary 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+
+  @keyframes progress-indeterminate-primary {
+    0% {
+      left: -35%;
+      right: 100%;
+    }
+    60%,
+    100% {
+      left: 100%;
+      right: -90%;
+    }
+  }
+
+  @keyframes progress-indeterminate-secondary {
+    0% {
+      left: -200%;
+      right: 100%;
+    }
+    60%,
+    100% {
+      left: 107%;
+      right: -8%;
+    }
+  }
+}
+
+@theme inline {
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans: var(--theme-font-sans);
+  --font-body: var(--theme-font-body);
+  --font-display: var(--theme-font-display);
+  --font-mono: var(--theme-font-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-overlay: var(--overlay);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+
+  --color-input: var(--input);
+
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-confirmed: var(--confirmed);
+  --color-confirmed-foreground: var(--confirmed-foreground);
+  --color-draft: var(--draft);
+  --color-draft-foreground: var(--draft-foreground);
+
+  --color-state-success: var(--state-success);
+  --color-state-success-foreground: var(--state-success-foreground);
+  --color-state-neutral: var(--state-neutral);
+  --color-state-neutral-foreground: var(--state-neutral-foreground);
+  --color-state-warning: var(--state-warning);
+  --color-state-warning-foreground: var(--state-warning-foreground);
+  --color-state-critical: var(--state-critical);
+  --color-state-critical-foreground: var(--state-critical-foreground);
+  --color-state-error: var(--state-error);
+  --color-state-error-foreground: var(--state-error-foreground);
+  --color-state-unknown: var(--state-unknown);
+  --color-state-unknown-foreground: var(--state-unknown-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    /**
+     * globally enable hyphenation (This relies on the html lang property to being set properly. We do that in the
+     * I18nProvider in `typescript-react-utils/i18n`)
+     */
+    @apply bg-background text-foreground hyphens-auto;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  /**
+   * Pointer cursor on every enabled button. Tailwind v4 leaves the default cursor on buttons; the rule reaches the buttons the
+   * shadcn primitives render inside their own parts (calendar navigation, dialog close button, sidebar trigger) as well.
+   */
+  button:not(:disabled, [aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  /**
+   * This prevents the rendering of the alt text of images, when the image cannot be loaded.
+   */
+  img {
+    @apply text-[0px];
+  }
+}
+
+/**
+ * Overlay color of the shadcn primitives (`@neckar-hub/typescript-react-ui-primitives`): their overlays render
+ * `bg-black/10` inside the dialog content, out of reach of a wrapper's className. The rule stays outside of every layer, so it
+ * wins over every `bg-*` utility without `!`, the one a caller passes to `DialogOverlay`, `SheetOverlay` or `AlertDialogOverlay` included.
+ */
+[data-slot="dialog-overlay"],
+[data-slot="sheet-overlay"],
+[data-slot="alert-dialog-overlay"] {
+  background-color: var(--overlay);
+}

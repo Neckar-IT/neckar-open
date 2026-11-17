@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>FunctionParameterNaming:_GenericSort.kt:RUN: Int = 32</ID>
+    <ID>SpreadOperator:ArrayList.kt:(*this)</ID>
+    <ID>UnusedPrivateProperty:IntMap.kt:IntIntMap$dummy: Boolean</ID>
+    <ID>UnusedPrivateProperty:IntMap.kt:IntMap$dummy: Boolean = false</ID>
+    <ID>UnusedPrivateProperty:WeakSetJVM.kt:WeakSet$private val backingMap: WeakHashMap&lt;T, Boolean> = WeakHashMap()</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,9 @@
+/* Stylesheet of the story browser. Nothing outside .storybook/ imports it. */
+
+@import "@neckar-hub/tailwind-config/main.css";
+
+/* The package's own sources plus those of its Tailwind-carrying dependencies. */
+@import "../src/tailwind-sources.css";
+
+/* The decorators of preview.tsx — not part of the package's sources, so not in the manifest. */
+@source "./";

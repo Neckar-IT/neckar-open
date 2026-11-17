@@ -1,0 +1,136 @@
+{
+  "errors": {
+    "invalid_type": {
+      "received_undefined": "Required",
+      "received_null": "Required",
+      "default": "Invalid Type: {{expected}} expected"
+    },
+    "types": {
+      "function": "function",
+      "number": "number",
+      "string": "string",
+      "nan": "nan",
+      "integer": "integer",
+      "float": "float",
+      "boolean": "boolean",
+      "date": "date",
+      "bigint": "bigint",
+      "undefined": "undefined",
+      "symbol": "symbol",
+      "null": "null",
+      "array": "array",
+      "object": "object",
+      "unknown": "unknown",
+      "promise": "promise",
+      "void": "void",
+      "never": "never",
+      "map": "map",
+      "set": "set"
+    },
+
+    "unrecognized_keys": "Unrecognized key(s) in object: {{- keys}}",
+
+    "too_small": {
+      "array": {
+        "exact": "Array must contain exactly {{minimum}} element(s)",
+        "inclusive": "Array must contain at least {{minimum}} element(s)",
+        "not_inclusive": "Array must contain more than {{minimum}} element(s)"
+      },
+      "string": {
+        "exact": "String must contain exactly {{minimum}} character(s)",
+        "inclusive": "String must contain at least {{minimum}} character(s)",
+        "not_inclusive": "String must contain over {{minimum}} character(s)"
+      },
+      "number": {
+        "exact": "Number must be exactly {{minimum}}",
+        "inclusive": "Number must be greater than or equal to {{minimum}}",
+        "not_inclusive": "Number must be greater than {{minimum}}"
+      },
+      "set": {
+        "exact": "Invalid input",
+        "inclusive": "Invalid input",
+        "not_inclusive": "Invalid input"
+      },
+      "date": {
+        "exact": "Date must be exactly {{- minimum, datetime}}",
+        "inclusive": "Date must be greater than or equal to {{- minimum, datetime}}",
+        "not_inclusive": "Date must be greater than {{- minimum, datetime}}"
+      },
+      "file": {
+        "exact": "File must have exactly {{minimum}} bytes",
+        "inclusive": "File must have at least {{minimum}} bytes",
+        "not_inclusive": "File must have more than {{minimum}} bytes"
+      },
+      "default": "Value too small"
+    },
+
+    "too_big": {
+      "array": {
+        "exact": "Array must contain exactly {{maximum}} element(s)",
+        "inclusive": "Array must contain at most {{maximum}} element(s)",
+        "not_inclusive": "Array must contain less than {{maximum}} element(s)"
+      },
+      "string": {
+        "exact": "String must contain exactly {{maximum}} character(s)",
+        "inclusive": "String must contain at most {{maximum}} character(s)",
+        "not_inclusive": "String must contain under {{maximum}} character(s)"
+      },
+      "number": {
+        "exact": "Number must be exactly {{maximum}}",
+        "inclusive": "Number must be less than or equal to {{maximum}}",
+        "not_inclusive": "Number must be less than {{maximum}}"
+      },
+      "set": {
+        "exact": "Invalid input",
+        "inclusive": "Invalid input",
+        "not_inclusive": "Invalid input"
+      },
+      "date": {
+        "exact": "Date must be exactly {{- maximum, datetime}}",
+        "inclusive": "Date must be smaller than or equal to {{- maximum, datetime}}",
+        "not_inclusive": "Date must be smaller than {{- maximum, datetime}}"
+      },
+      "file": {
+        "exact": "File must have exactly {{minimum}} bytes",
+        "inclusive": "File must not be larger than {{minimum}} bytes",
+        "not_inclusive": "File must be smaller than {{minimum}} bytes"
+      },
+      "default": "Value too big"
+    },
+
+    "invalid_format": {
+      "startsWith": "Invalid input: must start with \"{{startsWith}}\"",
+      "endsWith": "Invalid input: must end with \"{{endsWith}}\"",
+      "includes": "Invalid input: must include \"{{includes}}\"",
+      "date": "Invalid date",
+      "time": "Invalid time",
+      "datetime": "Invalid date and time",
+      "lowercase": "Invalid input: only lowercase letters allowed",
+      "uppercase": "Invalid input: only uppercase letters allowed",
+      "regex": "Invalid",
+      "other": "Invalid {{validations}}"
+    },
+    "validations": {
+      "email": "email",
+      "url": "url",
+      "uuid": "identifier",
+      "guid": "identifier",
+      "cuid": "CUID",
+      "iban": "IBAN",
+      "credit_card": "credit card number"
+    },
+
+    "not_multiple_of": "Number must be a multiple of {{multipleOf}}",
+
+    "invalid_union": "Invalid input",
+
+    "invalid_element": {
+      "map": "Invalid element of Map",
+      "set": "Invalid element of Set"
+    },
+
+    "invalid_key": "Invalid key",
+
+    "invalid_value": "Invalid value"
+  }
+}

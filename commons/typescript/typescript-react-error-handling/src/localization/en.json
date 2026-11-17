@@ -1,0 +1,77 @@
+{
+  "versionMismatchErrorHandler": {
+    "newVersionAvailable": "New Version Available!",
+    "reloadApplication": "A new version of this application has been released. For the best experience, please refresh the page to update.",
+    "reloadNow": "Refresh now!",
+    "keybindings": "Alternatively you could use the keys 'F5' or 'Ctrl' + 'F5'.",
+    "autoRefresh": "We are automatically refreshing the application in {{remainingSeconds}} seconds."
+  },
+  "versionInfo": {
+    "heading": "Version Info"
+  },
+  "copyErrorInfoButton": {
+    "label": "Copy Error Information"
+  },
+  "errorMessage": {
+    "error": "Error:",
+    "noMessage": "No error message available."
+  },
+  "contactSupportButton": {
+    "label": "Contact Support",
+    "mailSubject": "Error report from {{host}}",
+    "mailBodyIntro": "Hello,\n\nThe application showed an error. Right before, I did the following:\n\n\n\nError information:",
+    "truncationHint": "[Shortened. The copy button next to \"{{contactSupportLabel}}\" on the error page copies the complete error information.]"
+  },
+  "missingCapabilityErrorHandler": {
+    "heading": "Permission required",
+    "message": "You need the permission <strong>{{capabilityLabel}}</strong> to perform this action.",
+    "contactAdminHint": "Please contact your administrator if you need this permission.",
+    "contactAdmin": "Contact administrator",
+    "contactAdminMailSubject": "Permission required: {{capabilityLabel}}",
+    "contactAdminMailBody": "Hello,\n\nI need the permission \"{{capabilityLabel}}\" ({{capabilityKey}}) for my work. Please grant me this permission.\n\nThank you",
+    "goBack": "Back",
+    "errorCodeLabel": "Error code:"
+  },
+  "requestDetails": {
+    "heading": "Request Details",
+    "endpoint": "Endpoint:",
+    "status": "Status:",
+    "responseBody": "Response Body:",
+    "requestBody": "Request Body:"
+  },
+  "traceLink": {
+    "heading": "Trace ID:",
+    "openInGrafana": "Open trace in Grafana"
+  },
+  "errorPageLogout": {
+    "label": "Log out"
+  },
+  "appConnectivity": {
+    "deviceOffline": "You are offline.",
+    "description": "As soon as the connection is back, you can continue."
+  },
+  "serviceAvailability": {
+    "degraded": "Some features are limited right now.",
+    "starting": "The application is starting.",
+    "migrating": "Maintenance is in progress.",
+    "dependencyUnavailable": "The application is briefly unavailable.",
+    "failed": "The application is unavailable right now. We have been notified.",
+    "unreachable": "The application cannot be reached right now.",
+    "noConnection": "No connection to the application.",
+    "continuesByItself": "As soon as the application is ready again, this page continues by itself."
+  },
+  "serviceUnavailablePage": {
+    "goBack": "Back",
+    "retry": "Try again"
+  },
+  "mutationNotExecuted": {
+    "withReason": "Not saved. {{reason}}",
+    "withoutReason": "Not saved."
+  },
+  "unexpectedErrorPage": {
+    "oops": "Oops!",
+    "somethingWentWrong": "Something went wrong.",
+    "reloadApplication": "Reload application",
+    "sendScreenshot": "Please report this error to our support (with a screenshot of this page, if possible)."
+  }
+}

@@ -1,0 +1,11 @@
+/*
+ * Tailwind source manifest — the class names this package renders, declared by the package that
+ * owns them. Consumers import it by package name; nobody spells out a node_modules path.
+ * Rule and rationale: internal/patterns/docs/typescript/tailwind-source-manifest.md
+ *
+ * "./" is this package's src directory, because @source resolves relative to the file that
+ * declares it. Never widen it to the package root: build/ (the Gradle-downloaded Node
+ * distribution) and a node_modules/ with symlink cycles live there, and Tailwind scans across
+ * symlinks without honouring .gitignore — that OOM-kills the vite build.
+ */
+@source "./";

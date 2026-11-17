@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2013-2026 Neckar IT GmbH, Mössingen, Germany
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Linking this library statically or dynamically with other modules is
+ * making a combined work based on this library. Thus, the terms and
+ * conditions of the GNU General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this library give you
+ * permission to link this library with independent modules, regardless of
+ * the license terms of these independent modules, and to copy and distribute
+ * the resulting combined work under terms of your choice, provided that every
+ * copy of the combined work is accompanied by a complete copy of the source
+ * code of this library.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package it.neckar.rest.filtering
+
+import io.ktor.http.*
+import it.neckar.open.http.UrlParameterName
+import it.neckar.open.kotlin.lang.ValueClassString
+import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
+
+/**
+ * Represents the key of a filter.
+ * The key is usually a string describing a property or a property itself
+ */
+@Serializable
+@JvmInline
+value class FilterKey(override val value: String) : ValueClassString {
+  override fun toString(): String {
+    return value
+  }
+
+  companion object {
+    /**
+     * Standard filter key for free-text filtering across multiple fields.
+     *
+     * Use this in [it.neckar.rest.RestResponseFilters] enums:
+     * ```kotlin
+     * FreeText { override val typedFilterKey: TypedFilterKey = FilterKey.freeText },
+     * ```
+     *
+     * The backend implementation defines which fields are filtered (typically OR over relevant text fields).
+     */
+    val freeText: TypedFilterKey = FilterKey("freeText").string()
+  }
+}
+
+/**
+ * Creates a filter key from the url parameter name
+ */
+operator fun FilterKey.Companion.invoke(key: UrlParameterName): FilterKey {
+  return FilterKey(key)
+}
+
+/**
+ * Creates a url parameter name matching this [FilterKey]
+ */
+fun FilterKey.toUrlParameterName(): UrlParameterName {
+  return UrlParameterName(value)
+}
+
+inline operator fun Parameters.get(name: FilterKey): String? {
+  return get(name.value)
+}

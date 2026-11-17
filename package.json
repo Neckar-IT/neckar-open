@@ -1,0 +1,28 @@
+{
+  "name": "it.neckar.hub",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@opentelemetry/api": "catalog:",
+    "@tailwindcss/cli": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "caniuse-lite": "catalog:",
+    "jsdom": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "yaml": "catalog:"
+  },
+  "engines": {
+    "node": "26.13.1",
+    "pnpm": "12.21.0"
+  },
+  "packageManager": "pnpm@12.21.0"
+}

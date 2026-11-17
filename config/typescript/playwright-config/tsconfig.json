@@ -1,0 +1,14 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["./eslint.config.mjs", "./playwright.config.ts", "./src"],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    // The config reads `process.env` (CI detection, LADLE_PORT); without this the ambient Node
+    // types are not picked up and `tsc` rejects the file.
+    "types": ["node"],
+    "noEmit": false,
+    "outDir": "./dist",
+    "incremental": true,
+    "tsBuildInfoFile": "build/.tsbuildinfo"
+  }
+}

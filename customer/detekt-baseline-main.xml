@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DataViewMustNotReferenceDomain:CompanyDetails.kt:CompanyDetails$BankAccountInformation?</ID>
+    <ID>DataViewMustNotReferenceDomain:CompanyDetails.kt:CompanyDetails$CompanyLegalInformation?</ID>
+    <ID>DataViewMustNotReferenceDomain:CompanyDetails.kt:CompanyDetails$ContactInformation?</ID>
+    <ID>DataViewMustNotReferenceDomain:UpsertCompanyContactPersonRequest.kt:UpsertCompanyContactPersonRequest$CompanyContactPerson</ID>
+    <ID>DataViewMustNotReferenceDomain:UpsertCompanyRequest.kt:UpsertCompanyRequest$Company</ID>
+    <ID>DataViewMustNotReferenceDomain:UpsertCompanyRequest.kt:UpsertCompanyRequest$ContactInformation?</ID>
+    <ID>DataViewMustNotReferenceDomain:UpsertCustomerRequest.kt:UpsertCustomerRequest$Customer</ID>
+    <ID>DomainMustNotBeSerializable:BankAccountInformation.kt:BankAccountInformation$BankAccountInformation</ID>
+    <ID>DomainMustNotBeSerializable:Company.kt:Company$Company</ID>
+    <ID>DomainMustNotBeSerializable:CompanyContactPerson.kt:CompanyContactPerson$CompanyContactPerson</ID>
+    <ID>DomainMustNotBeSerializable:CompanyLegalInformation.kt:CompanyLegalInformation$CompanyLegalInformation</ID>
+    <ID>DomainMustNotBeSerializable:ContactInformation.kt:ContactInformation$ContactInformation</ID>
+    <ID>DomainMustNotBeSerializable:Customer.kt:Customer$Customer</ID>
+    <ID>UseOrEmpty:Address.kt:this?.cityWithZipCode ?: ""</ID>
+    <ID>UseOrEmpty:Address.kt:this?.streetWithHouseNumber ?: ""</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,24 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.dom.json"],
+  "include": [
+    "./.storybook/*",
+    "./src",
+    "./tests",
+    "./eslint.config.mjs",
+    "./playwright.config.ts",
+    "./postcss.config.cjs",
+    "./tailwind.config.ts",
+    "./orval.config.ts",
+    "./vitest.config.ts",
+    "./oxfmt.config.ts"
+  ],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "paths": {
+      "@test/*": ["./tests/vitest/*"]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+// React/Vite app configuration: tsconfig.dom.json plus the bundler-only import extensions.
+// Extend this from every Vite app (React SPAs, Ladle setups).
+//
+// Currently identical in content to tsconfig.astro.json. The two are kept apart on purpose:
+// each names the toolchain it belongs to, so a future Vite-only or Astro-only option lands in
+// one file without a rename sweep across every app. Do not merge them.
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": ["./tsconfig.dom.json"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true
+  }
+}

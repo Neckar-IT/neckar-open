@@ -1,0 +1,405 @@
+{
+  "example": {
+    "cancel": "Abbrechen",
+    "save": "Speichern"
+  },
+  "sidebarToggleButton": {
+    "collapse": "Menü einklappen",
+    "expand": "Menü ausklappen"
+  },
+  "themeSwitcher": {
+    "openMenu": "Theme wechseln",
+    "theme": "Theme",
+    "colorMode": "Farbmodus",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "pagination": {
+    "itemsPerPage": "Elemente pro Seite",
+    "page": "Seite {{pageNumber}} von {{pageCount}}",
+    "goToFirstPage": "Zur ersten Seite",
+    "goToPreviousPage": "Zur vorherigen Seite",
+    "goToNextPage": "Zur nächsten Seite",
+    "goToLastPage": "Zur letzten Seite"
+  },
+  "priceSummary": {
+    "current": "Aktueller Preis",
+    "nextChange": "Nächste Änderung",
+    "since": "seit",
+    "from": "ab",
+    "addNow": "Jetzt eintragen"
+  },
+  "priceTimeline": {
+    "fields": {
+      "timing": "Preis ab",
+      "price": "Preis"
+    }
+  },
+  "timeline": {
+    "fields": {
+      "validFrom": "Gültig ab",
+      "status": "Status"
+    },
+    "status": {
+      "past": "Vergangen",
+      "current": "Aktuell",
+      "future": "Zukünftig"
+    },
+    "timing": {
+      "now": "Sofort",
+      "scheduled": "Einem bestimmten Datum",
+      "tomorrow": "Morgen",
+      "nextWeek": "Nächste Woche",
+      "nextMonth": "Nächster Monat"
+    },
+    "since": "seit",
+    "from": "ab"
+  },
+  "conditionsSummary": {
+    "current": "Aktuelle Konditionen",
+    "nextChange": "Nächste Änderung",
+    "addNow": "Jetzt eintragen"
+  },
+  "conditionsTimeline": {
+    "fields": {
+      "timing": "Konditionen ab",
+      "purchasePrice": "Einkaufspreis",
+      "sellingPrice": "Verkaufspreis",
+      "unit": "Einheit",
+      "unitPlaceholder": "Stück",
+      "withAccessory": "Zubehör angeben",
+      "withAccessoryDescription": "Preis für mitzulieferndes Zubehör/Kleinmaterial erfassen.",
+      "accessoryPurchasePrice": "Einkaufspreis Zubehör",
+      "accessorySellingPrice": "Verkaufspreis Zubehör",
+      "withInstallationTime": "Montagezeit angeben",
+      "withInstallationTimeDescription": "Veranschlagte Personenstunden für die Montage erfassen.",
+      "installationTime": "Montagezeit"
+    },
+    "priceOverview": {
+      "title": "Übersicht",
+      "placeholder": "Wird berechnet …",
+      "position": "Position",
+      "purchasePrice": "Einkauf",
+      "sellingPrice": "Verkauf",
+      "surcharge": "Aufschlag",
+      "part": "Teil",
+      "accessory": "Zubehör",
+      "labour": "Arbeitszeit",
+      "customerPrice": "Endkundenpreis",
+      "perPiece": "Alle Beträge je Stück, netto.",
+      "perUnit": "Alle Beträge je {{unit}}, netto."
+    },
+    "table": {
+      "partHint": "Einkaufspreis, Aufschlag auf den Einkaufspreis und Verkaufspreis des Teils, netto je Einheit des Eintrags.",
+      "accessoryHint": "Einkaufspreis, Aufschlag auf den Einkaufspreis und Verkaufspreis des mitgelieferten Zubehörs, netto je Einheit des Eintrags.",
+      "labourHint": "Montagezeit mal Stundensatz ergibt den Preis der Arbeitszeit, netto je Einheit des Eintrags. Der Stundensatz ist der aktuelle, auch bei vergangenen und künftigen Einträgen."
+    }
+  },
+  "quote": {
+    "fields": {
+      "position": "Position",
+      "description": "Beschreibung",
+      "amount": "Anzahl",
+      "unitPrice": "Einzelpreis",
+      "vat": "MwSt.",
+      "lineTotal": "Position gesamt"
+    },
+    "internalLine": "Interne Position: Der Kunde sieht sie nicht, ihr Preis geht in die übergeordnete Position ein.",
+    "optional": {
+      "tooltip": "Optionale Position: nicht in der Summe enthalten, auf Wunsch zubuchbar"
+    },
+    "units": {
+      "none": "Stck.",
+      "hours": "Std.",
+      "kiloMeters": "km",
+      "meters": "m",
+      "squareMeters": "m²"
+    },
+    "sums": {
+      "preDiscountNet": "Zwischensumme",
+      "discount": "Rabatt",
+      "net": "Nettosumme",
+      "vatOnNet": "zzgl. MwSt. <rate/> auf <net/>",
+      "gross": "Bruttosumme"
+    }
+  },
+  "columnHeaderWithHint": {
+    "showHint": "Hinweis anzeigen"
+  },
+  "dataContainer": {
+    "items": "{{filteredElementsCount}} Element(e) von {{totalElementsCount}} Elementen insgesamt",
+    "noItemsFound": "Es wurden keine Elemente gefunden, die Ihren Kriterien entsprechen.",
+    "invalidPagination": "Sie versuchen, auf eine Seite zuzugreifen, die nicht existiert.",
+    "loading": "Lade Daten ..."
+  },
+  "listContainer": {
+    "items": "{{filteredElementsCount}} Element(e) von {{totalElementsCount}} Elementen insgesamt",
+    "noItemsFound": "Es wurden keine Elemente gefunden, die Ihren Kriterien entsprechen.",
+    "invalidPagination": "Sie versuchen, auf eine Seite zuzugreifen, die nicht existiert.",
+    "fetching": "Aktualisiere Daten ..."
+  },
+  "datePicker": {
+    "clearSelection": "Löschen",
+    "placeholder": "Datum auswählen"
+  },
+  "dateRangePicker": {
+    "clearSelection": "Löschen",
+    "placeholder": "Zeitraum auswählen"
+  },
+  "loadingIndicator": {
+    "label": "Lade Daten ..."
+  },
+  "errorIndicator": {
+    "label": "Ein Fehler ist aufgetreten!"
+  },
+  "notFoundIndicator": {
+    "label": "Nichts gefunden!",
+    "entityNotFound": "{{entityLabel}} nicht gefunden",
+    "goBack": "Zurück"
+  },
+  "offlineFallbackProvider": {
+    "offline": "Sie sind offline!",
+    "checkConnection": "Bitte überprüfen Sie Ihre Internetverbindung."
+  },
+  "deploymentInfo": {
+    "title": "Über",
+    "description": "Welcher Stand auf welchem Deployment läuft — für Support-Anfragen.",
+    "notInjected": "nicht injiziert",
+    "assumedStage": "Die Anwendung rechnet mit der Stage {{stage}}.",
+    "copy": "Als JSON kopieren",
+    "close": "Schließen"
+  },
+  "multiStep": {
+    "cancel": "Abbrechen",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "finish": "Speichern"
+  },
+  "combobox": {
+    "placeholder": "Einträge suchen ...",
+    "search": "Einträge suchen ...",
+    "empty": "Keine Einträge gefunden."
+  },
+  "confirmationDialog": {
+    "title": "Aktion bestätigen",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen"
+  },
+  "destructiveConfirmationDialog": {
+    "confirm": "Löschen",
+    "description": "Das Löschen kann nicht rückgängig gemacht werden."
+  },
+  "simpleDialog": {
+    "cancel": "Abbrechen",
+    "submit": "Speichern"
+  },
+  "imageUpload": {
+    "input": "Datei wählen"
+  },
+  "tagPicker": {
+    "placeholder": "Tags auswählen",
+    "search": "Tags suchen ...",
+    "empty": "Keine Tags gefunden."
+  },
+  "textList": {
+    "add": "Eintrag hinzufügen",
+    "remove": "Eintrag entfernen"
+  },
+  "descriptionList": {
+    "noValue": "k. A."
+  },
+  "singleLineList": {
+    "more_one": "{{count}} weiterer Eintrag",
+    "more_other": "{{count}} weitere Einträge"
+  },
+  "emptyState": {
+    "noEntities": "Noch keine {{entities}} vorhanden."
+  },
+  "dataSliceView": {
+    "noData": "Noch keine Einträge vorhanden.",
+    "nothingFound": "Keine Einträge entsprechen Ihren Filterkriterien.",
+    "invalidPagination": "Sie versuchen, auf eine Seite zuzugreifen, die nicht existiert.",
+    "items": "{{filteredElementsCount}} Element(e) von {{totalElementsCount}} Elementen insgesamt"
+  },
+  "addButton": {
+    "label": "Eintrag hinzufügen"
+  },
+  "inlineValueObjectList": {
+    "add": "Eintrag hinzufügen",
+    "edit": "Bearbeiten",
+    "remove": "Entfernen"
+  },
+  "select": {
+    "placeholder": "Bitte wählen"
+  },
+  "submitButton": {
+    "label": "Speichern"
+  },
+  "cancelButton": {
+    "label": "Abbrechen"
+  },
+  "adjustableValueFormField": {
+    "calculatedValueLabel": "Berechneter Wert:"
+  },
+  "adjustableValueAddress": {
+    "heading": "Adresse",
+    "override": "Berechnete Adresse überschreiben",
+    "reset": "Zur berechneten Adresse zurückkehren",
+    "showCalculated": "Berechnete Adresse anzeigen"
+  },
+  "addressForms": {
+    "street": "Straße",
+    "houseNumber": "Hausnummer",
+    "zipCode": "PLZ",
+    "city": "Ort",
+    "country": "Land",
+    "confirm": "Adresse bestätigen"
+  },
+  "fileInput": {
+    "placeholder": "Datei wählen ..."
+  },
+  "fileSlot": {
+    "empty": "Keine Datei",
+    "pick": "Datei wählen",
+    "upload": "Hochladen",
+    "replace": "Ersetzen",
+    "remove": "Entfernen",
+    "uploadedAt": "hochgeladen"
+  },
+  "fileUploadSlot": {
+    "pick": "Datei auswählen",
+    "dropHint": "Datei hierher ziehen oder vom Computer auswählen",
+    "hintWithMaximum": "{{hint}} · max. {{maximum}}",
+    "uploading": "Datei wird hochgeladen",
+    "processing": "Datei wird verarbeitet",
+    "cancelUploadLabel": "Upload abbrechen",
+    "cancelUpload": "Abbrechen",
+    "bytesOfTotal": "{{loaded}} von {{total}}",
+    "tooLarge": "{{fileName}} ist {{size}} groß; erlaubt sind höchstens {{maximum}}."
+  },
+  "imageSlot": {
+    "empty": "Noch kein Bild hochgeladen",
+    "wrongType": "{{fileName}} hat keinen erlaubten Typ; erlaubt sind {{types}}.",
+    "actions": "Bildaktionen",
+    "open": "{{alt}} in voller Größe öffnen",
+    "replace": "Ersetzen",
+    "delete": "Löschen"
+  },
+  "pdfSlot": {
+    "onlyPdf": "Nur PDF",
+    "open": "{{fileName}} öffnen",
+    "pageOfPages": "Seite {{page}} / {{pages}}",
+    "kind": "PDF-Dokument",
+    "kindWithPages_one": "PDF-Dokument · {{count}} Seite",
+    "kindWithPages_other": "PDF-Dokument · {{count}} Seiten",
+    "fileName": "Dateiname",
+    "size": "Dateigröße",
+    "uploadedAt": "Hochgeladen am",
+    "download": "Herunterladen",
+    "replace": "Ersetzen",
+    "remove": "Löschen"
+  },
+  "archiveState": {
+    "Archived": "archiviert"
+  },
+  "archivedBanner": {
+    "title": "Archivierter Eintrag",
+    "description": "Dieser Eintrag ist archiviert. Er wird in Standardansichten ausgeblendet.",
+    "editLocked": "Archiviert — zum Bearbeiten zuerst reaktivieren."
+  },
+  "confirmationStatus": {
+    "Draft": "vorläufig",
+    "Confirmed": "bestätigt"
+  },
+  "filterByConfirmationStatus": {
+    "placeholder": "Bestätigung"
+  },
+  "validation": {
+    "preventConfirmation": "Folgende Probleme verhindern das Bestätigen:",
+    "errorOccurred": "Ein Fehler ist aufgetreten"
+  },
+  "versionConflict": {
+    "title": "Inzwischen geändert",
+    "description": "Jemand hat diesen Eintrag gespeichert, während Sie ihn bearbeitet haben. Ihre Änderungen sind noch nicht gespeichert.",
+    "reload": "Verwerfen und neu laden",
+    "saveAnyway": "Trotzdem speichern"
+  },
+  "confirmation": {
+    "title": "Alle Angaben bestätigen?",
+    "description": "Hiermit bestätigen Sie, dass alle Angaben korrekt sind.",
+    "descriptionNote": "Bei späteren Änderungen müssen die Angaben erneut bestätigt werden.",
+    "reconfirmAfterSave": "Nach dem Speichern müssen alle Angaben erneut bestätigt werden.",
+    "versionConflict": "Der Eintrag wurde zwischenzeitlich geändert. Seite neu laden und erneut bestätigen.",
+    "cascadingReset": {
+      "title": "Bereits bestätigt!",
+      "description": "Dieser Eintrag wurde bereits bestätigt. Die gewünschten Änderungen setzen diese Bestätigung zurück.",
+      "dependenciesNote": "In den folgenden Abhängigkeiten wird ebenfalls die Bestätigung zurückgesetzt:",
+      "saveAnyway": "Trotzdem speichern"
+    },
+    "buttonLabel": "Bestätigen"
+  },
+  "archiveScope": {
+    "OnlyActive": "Aktive",
+    "Archived": "Archivierte",
+    "All": "Alle"
+  },
+  "filterBar": {
+    "filters": "Filter",
+    "filtersActive": "Filter, {{count}} aktiv",
+    "clear": "Leeren",
+    "removeFilter": "{{label}} entfernen",
+    "reset": "Zurücksetzen",
+    "clearSearch": "Suche leeren",
+    "archive": "Archiv",
+    "confirmationStatus": "Bestätigung",
+    "rangeFrom": "ab {{value}}",
+    "rangeTo": "bis {{value}}",
+    "rangeBetween": "{{from}} – {{to}}",
+    "lowerBound": "{{label}} ab",
+    "upperBound": "{{label}} bis",
+    "itemsSelected": "{{count}} gewählt",
+    "noOptionsFound": "Keine Einträge gefunden.",
+    "selectEntity": "Auswählen",
+    "previewMissing": "Nicht gefunden",
+    "previewPending": "…",
+    "presets": {
+      "last7Days": "Letzte 7 Tage",
+      "last30Days": "Letzte 30 Tage",
+      "thisMonth": "Dieser Monat"
+    }
+  },
+  "clearButton": {
+    "label": "Leeren"
+  },
+  "numberInput": {
+    "decrease": "Verringern",
+    "increase": "Erhöhen"
+  },
+  "formFeedback": {
+    "saveFailed": "Speichern fehlgeschlagen.",
+    "invalidForm": "Das Formular enthält ungültige Felder — bitte Eingaben prüfen."
+  },
+  "actionFeedback": {
+    "failed": "{{action}} fehlgeschlagen.",
+    "activeUsage_one": "Ein aktiver Datensatz hängt weiterhin vom archivierten Eintrag ab.",
+    "activeUsage_other": "{{count}} aktive Datensätze hängen weiterhin vom archivierten Eintrag ab."
+  },
+  "entitySelectTable": {
+    "select": "Auswählen"
+  },
+  "unknownOutcome": {
+    "title": "‚{{action}}‘: Ergebnis unklar",
+    "titleWithoutAction": "Ergebnis unklar",
+    "text": "Ob Ihre Änderung gespeichert wurde, ist nicht sicher. Ihre Eingaben bleiben im Formular.",
+    "textOutsideForm": "Ob Ihre Änderung gespeichert wurde, ist nicht sicher.",
+    "textAfterReload": "Stand von {{time}}: Ist Ihre Änderung zu sehen, schließen Sie das Formular. Sonst senden Sie sie erneut.",
+    "reloadState": "Aktuellen Stand laden",
+    "sendAgain": "Erneut senden",
+    "closeForm": "Formular schließen"
+  },
+  "unavailableService": {
+    "unreachable": "Nicht gespeichert. Die Anwendung ist gerade nicht erreichbar.",
+    "notReady": "Nicht gespeichert. Die Anwendung ist gerade nicht verfügbar."
+  }
+}

@@ -1,0 +1,1 @@
+export { filterArrayBySearchTerm } from "./filterArrayBySearchTerm";

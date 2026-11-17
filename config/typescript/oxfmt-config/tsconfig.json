@@ -1,0 +1,5 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["./oxfmt.config.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,82 @@
+/**
+ * Fjord theme — cool nordic light aesthetic: ice-blue off-white background,
+ * deep petrol accent, Sora display and Manrope body typography.
+ *
+ * This theme only overrides the raw token values defined in main.css — components
+ * keep using the semantic Tailwind utilities (bg-background, text-foreground, …)
+ * and are not affected by the theme in any other way.
+ *
+ * The theme has a fixed light color scheme: activate it by setting both
+ * `data-theme="fjord"` and the `light` class on the <html> element
+ * (the ThemeProvider from typescript-react-ui does this automatically for
+ * themes declared with `colorScheme: "light"`).
+ *
+ * Usage in an app's styles.css (after the main.css import):
+ *
+ *   @import "@neckar-hub/tailwind-config/themes/fjord.css";
+ */
+
+@import "@fontsource-variable/sora/index.css";
+@import "@fontsource-variable/manrope/index.css";
+
+html[data-theme="fjord"] {
+  color-scheme: light;
+
+  --radius: 0.5rem;
+
+  --theme-font-sans: "Manrope Variable", system-ui, sans-serif;
+  --theme-font-body: "Manrope Variable", system-ui, sans-serif;
+  --theme-font-display: "Sora Variable", system-ui, sans-serif;
+
+  --background: #f2f6f9;
+  --foreground: #14242f;
+
+  --card: #fbfdfe;
+  --card-foreground: #14242f;
+
+  --popover: #fbfdfe;
+  --popover-foreground: #14242f;
+
+  --overlay: rgba(20, 36, 47, 0.5);
+
+  --primary: #116e8c;
+  --primary-foreground: #f0f9fc;
+
+  --secondary: #e4ecf2;
+  --secondary-foreground: #1d3543;
+
+  --muted: #e4ecf2;
+  --muted-foreground: #55707f;
+
+  --accent: #dcebf2;
+  --accent-foreground: #1d3543;
+
+  --destructive: #c0343f;
+  --destructive-foreground: #fdf2f2;
+
+  --border: #d5e0e8;
+
+  --input: #d5e0e8;
+
+  --ring: #116e8c;
+
+  --sidebar: #e9f0f5;
+  --sidebar-foreground: #2b4453;
+  --sidebar-primary: #116e8c;
+  --sidebar-primary-foreground: #f0f9fc;
+  --sidebar-accent: #dce7ee;
+  --sidebar-accent-foreground: #1d3543;
+  --sidebar-border: #d0dde5;
+  --sidebar-ring: #116e8c;
+
+  --chart-1: #116e8c;
+  --chart-2: #4f83a5;
+  --chart-3: #2e9e8e;
+  --chart-4: #86a873;
+  --chart-5: #b07f56;
+  --chart-6: #6b7f8c;
+}
+
+html[data-theme="fjord"] ::selection {
+  background: rgba(17, 110, 140, 0.18);
+}

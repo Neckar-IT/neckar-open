@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ForbiddenPrintCall:KtorClientJettyTest.kt:KtorClientJettyTest$println</ID>
+    <ID>ForbiddenPrintCall:KtorClientOkHttpTest.kt:KtorClientOkHttpTest$println</ID>
+    <ID>ForbiddenPrintCall:KtorHttpClientPerformanceRunner.kt:print</ID>
+    <ID>ForbiddenPrintCall:KtorHttpClientPerformanceRunner.kt:println</ID>
+    <ID>UnusedPrivateProperty:AdvancedClientTest.kt:AdvancedClientTest.Companion$private val logger: Logger = LoggerFactory.getLogger("it.neckar.ktor.client.advanced.AdvancedClientTest")</ID>
+  </CurrentIssues>
+</SmellBaseline>

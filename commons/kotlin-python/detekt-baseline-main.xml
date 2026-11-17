@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DomainMustNotBeSerializable:PythonRunner.kt:PythonRunner.PythonResult$PythonResult</ID>
+  </CurrentIssues>
+</SmellBaseline>

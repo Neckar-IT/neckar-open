@@ -1,0 +1,70 @@
+/*
+ * Copyright 2023 Neckar IT GmbH, Mössingen, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.meistercharts.canvas.resize
+
+import com.meistercharts.annotations.Zoomed
+import it.neckar.geometry.Direction
+import it.neckar.geometry.Distance
+import it.neckar.open.unit.other.px
+
+/**
+ * Handler that receives resize events.
+ */
+interface ResizeHandler {
+  /**
+   * Is notified when the mouse is above the handle
+   */
+  fun armed(handleDirection: Direction) {
+  }
+
+  /**
+   * Is notified when the mouse has left the handle
+   */
+  fun disarmed() {
+  }
+
+  fun beginResizing(handleDirection: Direction) {
+  }
+
+  /**
+   * Is called for each resize event.
+   *
+   * The distances are the totals since [beginResizing], not the deltas since the last event, so an implementation
+   * applies them to the geometry it held then. Applying them to the geometry it has produced meanwhile loses whatever
+   * its own clamping cut off.
+   */
+  fun resizing(
+    /**
+     * The mouse movement since the handle was pressed
+     */
+    totalDistance: @px Distance,
+    /**
+     * The handle direction
+     */
+    handleDirection: Direction,
+    /**
+     * The horizontal part of [totalDistance] (0.0 for center handles)
+     */
+    totalX: @px @Zoomed Double,
+    /**
+     * The vertical part of [totalDistance] (0.0 for center handles)
+     */
+    totalY: @px @Zoomed Double,
+  )
+
+  fun resizingFinished() {
+  }
+}

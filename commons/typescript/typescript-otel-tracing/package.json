@@ -1,0 +1,60 @@
+{
+  "name": "@neckar-hub/typescript-otel-tracing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "OpenTelemetry browser tracing with OTLP-HTTP export and W3C Trace Context propagation",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "oxlint --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "oxlint --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "oxlint -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@neckar-hub/typescript-utils": "workspace:*",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/core": "catalog:",
+    "@opentelemetry/exporter-logs-otlp-http": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-http": "catalog:",
+    "@opentelemetry/resources": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
+    "@opentelemetry/sdk-trace": "catalog:",
+    "@opentelemetry/semantic-conventions": "catalog:"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "axios": "catalog:",
+    "jsdom": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "axios": "catalog:"
+  }
+}

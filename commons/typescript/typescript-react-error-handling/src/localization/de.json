@@ -1,0 +1,77 @@
+{
+  "versionMismatchErrorHandler": {
+    "newVersionAvailable": "Neue Version verfügbar!",
+    "reloadApplication": "Eine neue Version dieser Anwendung wurde veröffentlicht. Um weiterhin optimal arbeiten zu können, aktualisieren Sie bitte die Seite für ein Update.",
+    "reloadNow": "Jetzt neu laden!",
+    "keybindings": "Alternativ können Sie auch die Tasten 'F5' oder 'Strg' + 'F5' drücken.",
+    "autoRefresh": "Die Anwendung wird in {{remainingSeconds}} Sekunden automatisch neu geladen."
+  },
+  "versionInfo": {
+    "heading": "Versionsinfo"
+  },
+  "copyErrorInfoButton": {
+    "label": "Fehlerinformationen kopieren"
+  },
+  "errorMessage": {
+    "error": "Fehler:",
+    "noMessage": "Keine Fehlermeldung verfügbar."
+  },
+  "contactSupportButton": {
+    "label": "Support kontaktieren",
+    "mailSubject": "Fehlerbericht von {{host}}",
+    "mailBodyIntro": "Hallo,\n\nin der Anwendung ist ein Fehler aufgetreten. Unmittelbar davor habe ich:\n\n\n\nFehlerinformationen:",
+    "truncationHint": "[Gekürzt. Der Kopieren-Button neben „{{contactSupportLabel}}“ auf der Fehlerseite kopiert die vollständigen Fehlerinformationen.]"
+  },
+  "missingCapabilityErrorHandler": {
+    "heading": "Keine Berechtigung",
+    "message": "Sie benötigen die Berechtigung <strong>{{capabilityLabel}}</strong>, um diese Aktion auszuführen.",
+    "contactAdminHint": "Bitte wenden Sie sich an Ihren Administrator, falls Sie diese Berechtigung benötigen.",
+    "contactAdmin": "Administrator kontaktieren",
+    "contactAdminMailSubject": "Berechtigung benötigt: {{capabilityLabel}}",
+    "contactAdminMailBody": "Hallo,\n\nfür meine Arbeit benötige ich die Berechtigung „{{capabilityLabel}}“ ({{capabilityKey}}). Bitte erteilen Sie mir diese.\n\nVielen Dank",
+    "goBack": "Zurück",
+    "errorCodeLabel": "Fehlercode:"
+  },
+  "requestDetails": {
+    "heading": "Request-Details",
+    "endpoint": "Endpoint:",
+    "status": "Status:",
+    "responseBody": "Response-Body:",
+    "requestBody": "Request-Body:"
+  },
+  "traceLink": {
+    "heading": "Trace-ID:",
+    "openInGrafana": "Trace in Grafana öffnen"
+  },
+  "errorPageLogout": {
+    "label": "Abmelden"
+  },
+  "appConnectivity": {
+    "deviceOffline": "Sie sind offline.",
+    "description": "Sobald die Verbindung zurück ist, können Sie weiterarbeiten."
+  },
+  "serviceAvailability": {
+    "degraded": "Einige Funktionen sind gerade eingeschränkt.",
+    "starting": "Die Anwendung startet gerade.",
+    "migrating": "Gerade laufen Wartungsarbeiten.",
+    "dependencyUnavailable": "Die Anwendung ist kurz nicht verfügbar.",
+    "failed": "Die Anwendung ist gerade nicht verfügbar. Wir sind informiert.",
+    "unreachable": "Die Anwendung ist gerade nicht erreichbar.",
+    "noConnection": "Keine Verbindung zur Anwendung.",
+    "continuesByItself": "Sobald die Anwendung wieder bereit ist, geht es hier von selbst weiter."
+  },
+  "serviceUnavailablePage": {
+    "goBack": "Zurück",
+    "retry": "Erneut versuchen"
+  },
+  "mutationNotExecuted": {
+    "withReason": "Nicht gespeichert. {{reason}}",
+    "withoutReason": "Nicht gespeichert."
+  },
+  "unexpectedErrorPage": {
+    "oops": "Hoppla!",
+    "somethingWentWrong": "Etwas ist schiefgelaufen.",
+    "reloadApplication": "Anwendung neu laden",
+    "sendScreenshot": "Bitte melden Sie diesen Fehler (wenn möglich mit einem Screenshot dieser Seite) an unseren Support."
+  }
+}

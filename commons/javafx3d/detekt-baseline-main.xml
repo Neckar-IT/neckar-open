@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>SpreadOperator:MeshGenerator.kt:MeshGenerator$(*faces.stream().mapToInt { i: Int -> i }.toArray())</ID>
+    <ID>SpreadOperator:MeshGenerator.kt:MeshGenerator$(*points)</ID>
+    <ID>SpreadOperator:MeshGenerator.kt:MeshGenerator$(*textCoords)</ID>
+  </CurrentIssues>
+</SmellBaseline>

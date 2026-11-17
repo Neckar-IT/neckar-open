@@ -1,0 +1,10 @@
+{
+  "extends": ["@neckar-hub/typescript-config/tsconfig.base.json"],
+  "include": ["./src"],
+  "exclude": ["dist", "build", "node_modules", ".gradle"],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "."
+  }
+}

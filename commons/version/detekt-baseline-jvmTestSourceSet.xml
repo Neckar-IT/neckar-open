@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DestructuringDeclarationWithTooManyEntries:VersionParsingPerformance.kt:VersionParsingPerformance$(val major, val minor, val build, val suffix) = callable.call()</ID>
+  </CurrentIssues>
+</SmellBaseline>
