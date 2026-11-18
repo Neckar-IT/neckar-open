@@ -30,7 +30,6 @@ package it.neckar.customer.company
 import it.neckar.customer.Address
 import it.neckar.lifeCycle.HasArchiveState
 import it.neckar.lifeCycle.ArchiveState
-import it.neckar.open.http.Url
 import it.neckar.uuid.NativeUuid
 import it.neckar.uuid.ValueClassUuid
 import it.neckar.uuid.randomForEnvironment
@@ -68,12 +67,6 @@ data class Company(
   val bankAccountInformation: BankAccountInformation? = null,
   val legalInformation: CompanyLegalInformation? = null,
 
-  /**
-   * URL of the company logo.
-   * Defaults to [logoPlaceholder] if no logo has been uploaded.
-   */
-  val logoUrl: Url = logoPlaceholder,
-
   override val archiveState: ArchiveState = ArchiveState.Active,
 ) : HasArchiveState {
 
@@ -97,11 +90,6 @@ data class Company(
   }
 
   companion object {
-    /**
-     * Placeholder logo URL used when no logo has been uploaded.
-     */
-    val logoPlaceholder: Url = Url.relative("img/logo/logo-not-available.png")
-
     fun empty(id: Id = Id.random(), namespace: String, name: String): Company {
       return Company(
         id = id,

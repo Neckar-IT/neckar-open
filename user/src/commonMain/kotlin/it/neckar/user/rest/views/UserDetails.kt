@@ -32,7 +32,7 @@ import it.neckar.open.annotations.DataView
 import it.neckar.open.authorization.RoleLabel
 import it.neckar.open.authorization.UserCapabilities
 import it.neckar.open.http.Url
-import it.neckar.open.tenancy.Tenant
+import it.neckar.open.tenancy.TenantPreview
 import it.neckar.user.User
 import it.neckar.user.UserEnvironment
 import it.neckar.user.UserLoginName
@@ -65,12 +65,10 @@ data class UserDetails(
   val environment: Set<UserEnvironment>,
 
   /**
-   * The tenant the user acts for, or null in a product without tenants.
-   *
-   * Sent by the server so a frontend never derives it from the token or compares it against a
-   * hardcoded id.
+   * The tenant the user acts for, or null in a product without tenants. Resolved by the server, so a frontend
+   * neither derives it from the token nor loads the tenant for its name.
    */
-  val tenantId: Tenant.Id?,
+  val tenant: TenantPreview?,
 
   /**
    * What the user may do — the same set the endpoints check, so a hidden button and a rejected
@@ -90,12 +88,11 @@ data class UserDetails(
 /**
  * Converts a [User] domain object to a [UserDetails] for REST output.
  *
- * [tenantId], [capabilities] and [roleLabel] live outside the [User] domain class — in the user
- * document of the product — and are therefore passed in. A product that has none of them leaves
- * them at their defaults.
+ * [tenant], [capabilities] and [roleLabel] live outside the [User] domain class: the product's service
+ * resolves them, and a product that has none of them leaves them at their defaults.
  */
 fun User.toDetails(
-  tenantId: Tenant.Id? = null,
+  tenant: TenantPreview? = null,
   capabilities: UserCapabilities = UserCapabilities.Empty,
   roleLabel: RoleLabel? = null,
 ): UserDetails = UserDetails(
@@ -106,7 +103,7 @@ fun User.toDetails(
   email = email,
   avatarUrl = avatarUrl,
   environment = environment,
-  tenantId = tenantId,
+  tenant = tenant,
   capabilities = capabilities,
   roleLabel = roleLabel,
 )

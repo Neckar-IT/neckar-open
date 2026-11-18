@@ -7,4 +7,3 @@ export { requireGoodResponse } from "./requireGoodResponse";
 export { createMutationErrorToastHandler, type MutationErrorToastHandlerOptions } from "./createMutationErrorToastHandler";
 export { useConnectCompanion, type UseConnectCompanionOptions } from "./useConnectCompanion";
 export { companionQueryKey, useConnectFormCompanion } from "./useConnectFormCompanion";
-export { resolvedById } from "./resolvedById";

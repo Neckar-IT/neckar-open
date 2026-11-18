@@ -55,48 +55,6 @@ This version of the `QueryClientProvider` includes React Query Devtools. They ar
   This hook is designed for data that is needed only once. It fetches on mount and drops the response from the cache
   as soon as the hook unmounts.
 
-### entityQueryKeys
-
-Builds every query key of one entity collection; `byId(id)` is a prefix of `preview(id)` and `of(id, …)`.
-
-```ts
-export const bookQueryKeys = entityQueryKeys("books");
-bookQueryKeys.of(bookId, "editions", editionId); // ["books", bookId, "editions", editionId]
-```
-
-### createEntityQueries
-
-Builds the standard queries of a standalone entity from its query keys and its Orval functions.
-
-```ts
-const bookQueries = createEntityQueries(bookQueryKeys, {
-  byId: getBook,
-  preview: getPreviewForBook,
-  list: getTableEntriesForViewsForBooks,
-  template: postNewForBooks,
-});
-export const useBookByIdQuery = bookQueries.useByIdQuery; // useQueryForStaticData, ["books", bookId]
-export const useBookPreviewQuery = bookQueries.usePreviewQuery; // useQueryForStaticData, ["books", bookId, "preview"]
-export const useBooksDataSliceQuery = bookQueries.useDataSliceQuery; // useQueryForTableData, ["books", searchParams]
-export const useBookNewQuery = bookQueries.useNewQuery; // useQueryForOneOffData, ["books", "new", request]
-```
-
-`useByIdQuery(null)` and `usePreviewQuery(null)` send no request (`skipToken`) and key `["books", null]` and `["books", null, "preview"]`; the query stays pending.
-
-Functions without `preview` build `useByIdQuery`, `useDataSliceQuery` and `useNewQuery`, typed as `EntityQueriesWithoutPreview`.
-
-`useNewQuery()` sends and keys `{}` when every field of the template request is optional; a required field makes the request argument required.
-
-### useIdMutation
-
-Wraps `useMutation` for an endpoint that takes the id alone, such as archive and unarchive.
-
-```ts
-export const useBookArchiveMutation = () => useIdMutation(postArchiveForBook);
-const archive = useBookArchiveMutation();
-await archive.mutateAsync(bookId); // postArchiveForBook(bookId)
-```
-
 ### useFileUploadMutation
 
 Wraps `useMutation` for the upload of one file and reports the progress of the request body.

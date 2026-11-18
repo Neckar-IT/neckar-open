@@ -47,6 +47,7 @@ export {
   DestructiveConfirmationDialog,
 } from "./confirmation-dialog";
 export {
+  actionForArchiveState,
   createEntityDialogAction,
   createEntityDialogAtom,
   DialogRegistry,
@@ -63,6 +64,7 @@ export {
   type ArchiveUsageCount,
   EntityArchiveDialog,
   type EntityArchiveDialogProps,
+  type EntityArchiveMessages,
   EntityArchiveUsage,
   type EntityArchiveUsageProps,
 } from "./entity-archive-dialog";

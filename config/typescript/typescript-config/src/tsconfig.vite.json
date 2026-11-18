@@ -1,5 +1,5 @@
 // React/Vite app configuration: tsconfig.dom.json plus the bundler-only import extensions.
-// Extend this from every Vite app (React SPAs, Ladle setups).
+// Extend this from every Vite app (React SPAs, Storybook setups).
 //
 // Currently identical in content to tsconfig.astro.json. The two are kept apart on purpose:
 // each names the toolchain it belongs to, so a future Vite-only or Astro-only option lands in

@@ -52,21 +52,6 @@ export {
 export { createQueryClientWithoutGcTimer } from "./createQueryClientWithoutGcTimer";
 
 /**
- * Query keys of an entity collection
- */
-export { entityQueryKeys, type EntityQueryKeys } from "./entityQueryKeys";
-
-/**
- * The standard queries of a standalone entity, with or without preview
- */
-export {
-  createEntityQueries,
-  type EntityQueries,
-  type EntityQueriesWithoutPreview,
-  type EntityQueryFunctions,
-} from "./createEntityQueries";
-
-/**
  * Reset that respects `meta.preventBeingResetByMutations`
  */
 export { refetchQueriesExceptPrevented, resetQueriesExceptPrevented } from "./resetQueriesExceptPrevented";
@@ -93,11 +78,6 @@ export { useQueryForOneOffData } from "./useQueryForOneOffData";
 export { useQueryForSearchResults } from "./useQueryForSearchResults";
 export { useQueryForStaticData } from "./useQueryForStaticData";
 export { useQueryForTableData } from "./useQueryForTableData";
-
-/**
- * Mutation that passes the id alone
- */
-export { useIdMutation } from "./useIdMutation";
 
 /**
  * Mutation for a single file upload with progress

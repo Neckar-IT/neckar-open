@@ -7,7 +7,7 @@ import { readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { extname, join, resolve, sep } from "node:path";
-import { type ConsoleMessage, expect, type Locator, type Page } from "@playwright/test";
+import { type ConsoleMessage, expect, type Page } from "@playwright/test";
 
 /**
  * Configuration
@@ -111,23 +111,10 @@ async function serveUnderStaticSitePolicy(directory: string): Promise<StaticSite
 }
 
 /**
- * Where a story viewer renders its first story, and how it shows that no story rendered.
+ * Opens the Storybook build in `directory` under `staticSitePolicy()` and returns the page errors and policy violations
+ * until the first story rendered and the network was idle; throws with them when none renders within 15 s or on an error display.
  */
-interface StoryViewer {
-  name: string;
-  /** The first element of the rendered story. */
-  renderedStory: (page: Page) => Locator;
-  /** Resolves true when the viewer shows its error page instead of the story. */
-  showsError: (page: Page) => Promise<boolean>;
-}
-
-/**
- * Opens the build of `viewer` in `directory`, relative to the working directory, under
- * `staticSitePolicy()` and returns the page errors and policy violations reported until the first
- * story rendered and the network was idle; throws with them when no story renders within 15 s or
- * the viewer shows its error page.
- */
-async function openBuildUnderStaticSitePolicy(page: Page, directory: string, viewer: StoryViewer): Promise<string[]> {
+export async function openStorybookBuildUnderStaticSitePolicy(page: Page, directory: string): Promise<string[]> {
   const server = await serveUnderStaticSitePolicy(directory);
   const problems: string[] = [];
 
@@ -142,8 +129,11 @@ async function openBuildUnderStaticSitePolicy(page: Page, directory: string, vie
   page.on("pageerror", onPageError);
   page.on("console", onConsole);
 
-  const renderedStory = viewer.renderedStory(page);
-  const noStoryMessage = (): string => `${viewer.name} rendered no story from ${directory}; the browser reported: ${JSON.stringify(problems)}`;
+  const preview = page.frameLocator("#storybook-preview-iframe");
+  const renderedStory = preview.locator("#storybook-root > *").first();
+  // A story that throws, or an index without stories, swaps the root for Storybook's own display.
+  const showsError = async (): Promise<boolean> => (await preview.locator("body.sb-show-errordisplay, body.sb-show-nopreview").count()) > 0;
+  const noStoryMessage = (): string => `Storybook rendered no story from ${directory}; the browser reported: ${JSON.stringify(problems)}`;
 
   try {
     await page.goto(server.url);
@@ -154,7 +144,7 @@ async function openBuildUnderStaticSitePolicy(page: Page, directory: string, vie
     await page.waitForLoadState("networkidle");
 
     // A story may crash after its first commit.
-    if ((await renderedStory.count()) === 0 || (await viewer.showsError(page))) {
+    if ((await renderedStory.count()) === 0 || (await showsError())) {
       throw new Error(noStoryMessage());
     }
   } finally {
@@ -164,31 +154,4 @@ async function openBuildUnderStaticSitePolicy(page: Page, directory: string, vie
   }
 
   return problems;
-}
-
-/**
- * Opens the Ladle build in `directory` like `openBuildUnderStaticSitePolicy`.
- */
-export async function openLadleBuildUnderStaticSitePolicy(page: Page, directory: string): Promise<string[]> {
-  return openBuildUnderStaticSitePolicy(page, directory, {
-    name: "Ladle",
-    // The spinner and Ladle's error pages are the other children; a crashed story leaves `.ladle-main` empty.
-    renderedStory: (ladlePage) => ladlePage.locator(".ladle-main > :not(.ladle-ring-wrapper, .ladle-error-content)").first(),
-    // "Story not found" renders inside the global provider.
-    showsError: async (ladlePage) => (await ladlePage.locator(".ladle-main .ladle-error-content").count()) > 0,
-  });
-}
-
-/**
- * Opens the Storybook build in `directory` like `openBuildUnderStaticSitePolicy`; the manager page
- * loads the first story into its preview frame.
- */
-export async function openStorybookBuildUnderStaticSitePolicy(page: Page, directory: string): Promise<string[]> {
-  return openBuildUnderStaticSitePolicy(page, directory, {
-    name: "Storybook",
-    renderedStory: (storybookPage) => storybookPage.frameLocator("#storybook-preview-iframe").locator("#storybook-root > *").first(),
-    // A story that throws, or an index without stories, swaps the root for Storybook's own display.
-    showsError: async (storybookPage) =>
-      (await storybookPage.frameLocator("#storybook-preview-iframe").locator("body.sb-show-errordisplay, body.sb-show-nopreview").count()) > 0,
-  });
 }

@@ -31,6 +31,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import it.neckar.ktor.KtorRoutes
+import it.neckar.ktor.exemptFromServerSimulation
 import it.neckar.ktor.get
 import it.neckar.ktor.server.openapi.ktor.doc
 import it.neckar.open.http.UrlPattern
@@ -56,7 +57,7 @@ class MetricsRouting(
     routing {
       get(baseUrl + "metrics") {
         call.respond<String>(metricsProvider())
-      }.doc {
+      }.exemptFromServerSimulation().doc {
         category = OpenApiMetaData.Category.Metrics
         operationId = OperationId("GetMetrics")
 
@@ -72,7 +73,7 @@ class MetricsRouting(
 
       get(baseUrl + "jvm/start-parameters") {
         call.respond<JvmStartupParameters>(JvmStartupParameters.create())
-      }.doc {
+      }.exemptFromServerSimulation().doc {
         category = OpenApiMetaData.Category.Metrics
         operationId = OperationId("GetJvmStartupParameters")
 
@@ -88,7 +89,7 @@ class MetricsRouting(
 
       get(baseUrl + "jvm/memory") {
         call.respond<JvmMemoryUsage>(JvmMemoryUsage.create())
-      }.doc {
+      }.exemptFromServerSimulation().doc {
         category = OpenApiMetaData.Category.Metrics
         operationId = OperationId("GetJvmMemoryUsage")
 

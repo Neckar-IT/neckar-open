@@ -33,6 +33,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.routing
 import it.neckar.ktor.KtorRoutes
+import it.neckar.ktor.exemptFromServerSimulation
 import it.neckar.ktor.get
 import it.neckar.ktor.server.openapi.ktor.doc
 import it.neckar.open.health.BackgroundJobRegistry
@@ -84,7 +85,7 @@ class HealthRouting(
           HealthHttpStatus.Ok -> call.respondText("live")
           HealthHttpStatus.ServiceUnavailable -> call.respondText("starting", status = HttpStatusCode.ServiceUnavailable)
         }
-      }.exemptFromReadinessGating().doc {
+      }.exemptFromServerSimulation().exemptFromReadinessGating().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetHealthLive")
         tag = HealthTag
@@ -109,7 +110,7 @@ class HealthRouting(
           HealthProjection.readinessStatus(state, dependencies).toHttpStatusCode(),
           HealthProjection.readinessResponse(state, dependencies),
         )
-      }.exemptFromReadinessGating().doc {
+      }.exemptFromServerSimulation().exemptFromReadinessGating().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetHealthReady")
         tag = HealthTag
@@ -136,7 +137,7 @@ class HealthRouting(
             BackgroundJobRegistry.states,
           ),
         )
-      }.exemptFromReadinessGating().doc {
+      }.exemptFromServerSimulation().exemptFromReadinessGating().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetHealth")
         tag = HealthTag
@@ -154,7 +155,7 @@ class HealthRouting(
           HttpStatusCode.OK,
           HealthProjection.readinessResponse(stateHolder.state, stateHolder.dependencies),
         )
-      }.exemptFromReadinessGating().doc {
+      }.exemptFromServerSimulation().exemptFromReadinessGating().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetHealthDependencies")
         tag = HealthTag

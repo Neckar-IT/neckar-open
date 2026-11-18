@@ -33,10 +33,6 @@
       "import": "./dist/src/jotai/index.js",
       "types": "./dist/src/jotai/index.d.ts"
     },
-    "./ladle": {
-      "import": "./dist/src/ladle/index.js",
-      "types": "./dist/src/ladle/index.d.ts"
-    },
     "./network-hooks": {
       "import": "./dist/src/network-hooks/index.js",
       "types": "./dist/src/network-hooks/index.d.ts"

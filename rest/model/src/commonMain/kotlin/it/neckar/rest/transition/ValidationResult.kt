@@ -55,4 +55,25 @@ sealed interface ValidationResult<out E : ValidationError> {
       require(errors.isNotEmpty()) { "Invalid ValidationResult must contain at least one error." }
     }
   }
+
+  companion object {
+    /**
+     * [Valid] for an empty [errors], else [Invalid] with [errors].
+     */
+    fun <E : ValidationError> of(errors: List<E>): ValidationResult<E> {
+      return when {
+        errors.isEmpty() -> Valid
+        else -> Invalid(errors)
+      }
+    }
+  }
 }
+
+/**
+ * The errors of this result; empty for [ValidationResult.Valid].
+ */
+val <E : ValidationError> ValidationResult<E>.errors: List<E>
+  get() = when (this) {
+    is ValidationResult.Valid -> emptyList()
+    is ValidationResult.Invalid -> errors
+  }

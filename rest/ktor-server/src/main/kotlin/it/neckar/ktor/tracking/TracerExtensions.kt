@@ -46,24 +46,6 @@ inline fun span(block: Span.() -> Unit) {
 }
 
 /**
- * Groups span-attribute assignments in a block so the block style stays consistent
- * whether one or many attributes are set:
- *
- * ```
- * span.attributes {
- *   set("author.id", authorId)
- *   set("tenant.id", tenantId)
- * }
- * ```
- *
- * Equivalent to `span.apply(block)` but names the intent (setting attributes) and is
- * not flagged by Detekt's `UnnecessaryApply` when only a single attribute is set.
- */
-inline fun Span.attributes(block: Span.() -> Unit) {
-  block()
-}
-
-/**
  * Sets a span attribute from a [HasUuid] value (e.g., value class IDs).
  */
 fun Span.set(key: String, id: HasUuid) {
@@ -171,9 +153,7 @@ private fun resolveCallerSpanName(): String {
  * // In a support class:
  * suspend fun find(id: MyEntity.Id, tenantId: Tenant.Id): MyEntity? {
  *   return tracer.withSpan { span ->
- *     span.attributes {
- *       set("myEntity.id", id)
- *     }
+ *     span.set("myEntity.id", id)
  *     myEntityAccess.find(id, tenantId)  // suspend call — context propagates correctly
  *   }
  * }

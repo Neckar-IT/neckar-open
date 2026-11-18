@@ -33,6 +33,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import it.neckar.ktor.exemptFromServerSimulation
 import it.neckar.ktor.get
 import it.neckar.ktor.getParamSafe
 import it.neckar.ktor.AuthenticationRequirement
@@ -82,7 +83,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
         get(OpenApiEndpoints.Openapi) {
           val json = documentSource.generateAll(application.openApiRoutes())
           call.respondJson(json.toString())
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetOpenApiDocumentation")
           tag = OpenApiTag("openapi", "OpenAPI")
@@ -100,7 +101,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
 
           val message: OpenApiCategoriesResponse = OpenApiCategoriesResponse.good(categories.toList())
           call.respond<OpenApiCategoriesResponse>(message)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetOpenApiCategories")
           tag = OpenApiTag("openapi", "OpenAPI")
@@ -121,7 +122,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
             routes = application.openApiRoutes(),
           )
           call.respondJson(json.toStringPretty())
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetOpenApiDocumentationByCategory")
           tag = OpenApiTag("openapi", "OpenAPI")
@@ -152,7 +153,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
           )
 
           call.respondJson(json.toString())
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetOpenApiDocumentationWithOrigin")
           tag = OpenApiTag("openapi", "OpenAPI")
@@ -172,7 +173,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
             val specUrl = OpenApiEndpoints.openapiWithOriginFullUrl(baseUrl)
             val html = ScalarHtml.render(specUrl = specUrl, title = metadata.title, oAuth2Config = metadata.oAuth2Config)
             call.respondText(html, ContentType.Text.Html)
-          }.doc {
+          }.exemptFromServerSimulation().doc {
             category = OpenApiMetaData.Category.Meta
             operationId = OperationId("GetApiReferenceUi")
             tag = OpenApiTag("openapi", "OpenAPI")
@@ -188,7 +189,7 @@ val OpenApiPlugin: ApplicationPlugin<OpenApiPluginConfiguration> = createApplica
             val specUrl = OpenApiEndpoints.byCategoryFullUrl(baseUrl, category)
             val html = ScalarHtml.render(specUrl = specUrl, title = "${metadata.title} — ${category.value}", oAuth2Config = metadata.oAuth2Config)
             call.respondText(html, ContentType.Text.Html)
-          }.doc {
+          }.exemptFromServerSimulation().doc {
             category = OpenApiMetaData.Category.Meta
             operationId = OperationId("GetApiReferenceUiByCategory")
             tag = OpenApiTag("openapi", "OpenAPI")

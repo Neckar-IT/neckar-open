@@ -9,6 +9,24 @@ import { DestructiveConfirmationDialog } from "../confirmation-dialog";
  */
 export type ArchiveOutcome = { readonly type: "good"; readonly usedBy: ActiveUsageCounts } | { readonly type: `bad/${string}` };
 
+/**
+ * Translation keys of the toast after each archive answer.
+ */
+export interface EntityArchiveMessages {
+  /**
+   * Success toast of a `good` answer.
+   */
+  archived: ParseKeys;
+  /**
+   * Error toast of a refusal: every `bad/*` answer other than `bad/AlreadyArchived` and `bad/NotFound`.
+   */
+  refused?: ParseKeys;
+  /**
+   * Error toast of `bad/AlreadyArchived` and `bad/NotFound`; also of a refusal without `refused`.
+   */
+  failed: ParseKeys;
+}
+
 export interface EntityArchiveDialogProps {
   /**
    * Translation key of the label in front of `display` in the heading.
@@ -24,24 +42,22 @@ export interface EntityArchiveDialogProps {
    */
   usage?: ReactNode;
   /**
-   * Translation key of the confirm button; also names the action in the failure toast.
+   * Translation key of the confirm button; also names the action in the action-failed toast.
    */
   confirmLabel: ParseKeys;
-  /**
-   * Translation key of the success toast.
-   */
-  archivedMessage: ParseKeys;
+  messages: EntityArchiveMessages;
   archive: () => Promise<ArchiveOutcome>;
   onOpenChange: (open: boolean) => void;
   /**
-   * Called after `archive` resolved; a rejection keeps the dialog open and shows the failure toast instead.
+   * Called after a `good` answer; a rejected `archive` keeps the dialog open and shows the action-failed toast instead.
    */
   onArchived?: () => void;
 }
 
 /**
  * Dialog to confirm archiving an entity. Always open; the caller mounts it to show it and unmounts it on
- * `onOpenChange(false)`. A `good` answer with active dependent records adds the `actionFeedback.activeUsage` warning toast.
+ * `onOpenChange(false)`. Every answer closes the dialog and shows the toast `messages` names for it; a `good` answer with active
+ * dependent records adds the `actionFeedback.activeUsage` warning toast.
  */
 export function EntityArchiveDialog({
   title,
@@ -49,7 +65,7 @@ export function EntityArchiveDialog({
   description,
   usage,
   confirmLabel,
-  archivedMessage,
+  messages,
   archive,
   onOpenChange,
   onArchived,
@@ -59,11 +75,20 @@ export function EntityArchiveDialog({
   const handleArchive = async () => {
     const outcome = await withActionFailedToast(t(confirmLabel), archive());
     onOpenChange(false);
-    toast.success(t(archivedMessage));
-    if (outcome.type === "good") {
-      warnAboutActiveUsage(outcome.usedBy);
+
+    switch (outcome.type) {
+      case "good":
+        toast.success(t(messages.archived));
+        warnAboutActiveUsage(outcome.usedBy);
+        onArchived?.();
+        return;
+      case "bad/AlreadyArchived":
+      case "bad/NotFound":
+        toast.error(t(messages.failed));
+        return;
+      default:
+        toast.error(t(messages.refused ?? messages.failed));
     }
-    onArchived?.();
   };
 
   return (

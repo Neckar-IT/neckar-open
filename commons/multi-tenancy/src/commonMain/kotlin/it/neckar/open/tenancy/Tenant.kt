@@ -29,8 +29,8 @@
 package it.neckar.open.tenancy
 
 import it.neckar.open.kotlin.serializers.NativeInstant
-import it.neckar.uuid.UuidSerializer
 import it.neckar.uuid.NativeUuid
+import it.neckar.uuid.UuidSerializer
 import it.neckar.uuid.ValueClassUuid
 import it.neckar.uuid.randomUuid4
 import kotlinx.serialization.Serializable
@@ -75,6 +75,8 @@ interface Tenant {
       slug = slug,
     )
   }
+
+  fun preview(): TenantPreview = TenantPreview(id = id, name = TenantName(name))
 
   companion object {
     /**

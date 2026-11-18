@@ -57,8 +57,8 @@ const DefaultServiceHost = "localhost";
  * environment and costs every frontend package its up-to-date state.
  */
 export function serveTimeInjection(): Plugin {
-  // After Ladle's hook, which appends the head block carrying the placeholders of the packages
-  // whose HTML shell ships with @ladle/react.
+  // After Storybook's hook, which appends the `previewHead` block carrying the placeholders of the
+  // packages whose HTML shell ships with Storybook.
   return { ...servePlaceholders(resolveServeTimeValues, "post"), name: "neckar-serve-time-injection" };
 }
 

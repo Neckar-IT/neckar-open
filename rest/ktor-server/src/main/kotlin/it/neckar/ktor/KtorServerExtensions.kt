@@ -70,6 +70,7 @@ import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 /**
@@ -114,6 +115,12 @@ fun <Id> Parameters.idFromPath(name: UrlParameterName, factory: (Uuid) -> Id): I
 fun Parameters.getLongOrFail(paramName: UrlParameterName): Long {
   val raw = getOrFail(paramName)
   return raw.toLongOrNull() ?: throw ParameterConversionException(paramName.value, "Long")
+}
+
+/** Throws like [getUuidOrFail], where a bare `Instant.parse` throws an `IllegalArgumentException` (500). */
+fun Parameters.getInstantOrFail(paramName: UrlParameterName): Instant {
+  val raw = getOrFail(paramName)
+  return Instant.parseOrNull(raw) ?: throw ParameterConversionException(paramName.value, "Instant")
 }
 
 /**
@@ -451,21 +458,19 @@ fun ApplicationCall.appendSimulatedDelay(delay: Duration) {
 }
 
 /**
- * Handles the feature flags for the current request.
- * Delays the response if [FeatureFlag.slowServer] is enabled, and if [FeatureFlag.realisticLatency] is enabled in an
- * application without [FeatureFlagsPlugin], which applies it to every request itself;
- * forces an internal server error if [FeatureFlag.forceServerError] is enabled.
- *
- * Requires a [RoutingContext] to access [RoutingContext.call] for setting the [SimulatedDelayHeader].
+ * Applies the simulation effects in an application without [FeatureFlagsPlugin]: delays the response if [FeatureFlag.slowServer]
+ * or [FeatureFlag.realisticLatency] is enabled, forces an internal server error if [FeatureFlag.forceServerError] is enabled.
+ * With [FeatureFlagsPlugin] installed it applies nothing, because the plugin applies every effect itself.
  */
 context(routingContext: RoutingContext)
 @IgnorableReturnValue
 suspend fun FeatureFlags.handle(): FeatureFlags {
   val call = routingContext.call
-  call.appendSimulatedDelay(delayIfSlowServerEnabled())
-  if (call.application.pluginOrNull(FeatureFlagsPlugin) == null) {
-    call.appendSimulatedDelay(delayIfRealisticLatencyEnabled())
+  if (call.application.pluginOrNull(FeatureFlagsPlugin) != null) {
+    return this
   }
+  call.appendSimulatedDelay(delayIfSlowServerEnabled())
+  call.appendSimulatedDelay(delayIfRealisticLatencyEnabled())
   forceInternalErrorIfEnabled()
   return this
 }

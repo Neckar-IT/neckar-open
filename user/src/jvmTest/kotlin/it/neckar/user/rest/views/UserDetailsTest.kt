@@ -34,6 +34,8 @@ import it.neckar.open.authorization.UserCapabilities
 import it.neckar.open.kotlin.serializers.JsonInclusionStrategy
 import it.neckar.open.serialization.roundTrip
 import it.neckar.open.tenancy.Tenant
+import it.neckar.open.tenancy.TenantName
+import it.neckar.open.tenancy.TenantPreview
 import it.neckar.user.User
 import it.neckar.user.UserLoginName
 import it.neckar.uuid.parseUuid
@@ -50,7 +52,7 @@ class UserDetailsTest {
   fun testJson() {
     roundTrip(
       objectToSerialize = user().toDetails(
-        tenantId = Tenant.Id(parseUuid("b2c3d4e5-f6a7-8901-bcde-f12345678901")),
+        tenant = TenantPreview(id = Tenant.Id(parseUuid("b2c3d4e5-f6a7-8901-bcde-f12345678901")), name = TenantName("Buchclub Tübingen")),
         capabilities = UserCapabilities(setOf(CoreCapability.ReadData.key)),
         roleLabel = RoleLabel("owner"),
       ),
@@ -66,7 +68,10 @@ class UserDetailsTest {
           "email": "test@example.com",
           "avatarUrl": null,
           "environment": [],
-          "tenantId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "tenant": {
+            "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+            "name": "Buchclub Tübingen"
+          },
           "capabilities": [
             "core:read-data"
           ],
@@ -93,7 +98,7 @@ class UserDetailsTest {
           "email": "test@example.com",
           "avatarUrl": null,
           "environment": [],
-          "tenantId": null,
+          "tenant": null,
           "capabilities": [],
           "roleLabel": null
         }

@@ -1,6 +1,6 @@
 /**
  * Context that provides a function to return the current date, but also can return a specific date for tests
- * and ladle stories
+ * and Storybook stories
  *
  * Usage:
  * const now = useNow()

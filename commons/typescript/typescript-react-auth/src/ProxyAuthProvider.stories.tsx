@@ -39,7 +39,7 @@ const meResponse: MeResponse = {
     loginName: "test-user",
     environment: [],
     avatarUrl: null,
-    tenantId: null,
+    tenant: null,
     capabilities: [],
     roleLabel: null,
   },

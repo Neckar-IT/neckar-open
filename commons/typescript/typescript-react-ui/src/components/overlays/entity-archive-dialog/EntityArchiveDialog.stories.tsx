@@ -36,7 +36,7 @@ const languageResources = {
           archivedUsage_Book_one: "One archived book holds a reference as well.",
           archivedUsage_Book_other: "{{count}} archived books hold a reference as well.",
         },
-        messages: { archived: "Author archived" },
+        messages: { archived: "Author archived", archiveFailed: "Author could not be archived" },
       },
     },
   },
@@ -52,7 +52,7 @@ const languageResources = {
           archivedUsage_Book_one: "Ein archiviertes Buch enthält ebenfalls eine Referenz.",
           archivedUsage_Book_other: "{{count}} archivierte Bücher enthalten ebenfalls eine Referenz.",
         },
-        messages: { archived: "Autor archiviert" },
+        messages: { archived: "Autor archiviert", archiveFailed: "Autor konnte nicht archiviert werden" },
       },
     },
   },
@@ -76,7 +76,7 @@ function EntityArchiveDialogStoryBody({ usage }: { usage?: React.ReactNode }): R
           description="authors.archive.description"
           usage={usage}
           confirmLabel="authors.archive.confirm"
-          archivedMessage="authors.messages.archived"
+          messages={{ archived: "authors.messages.archived", failed: "authors.messages.archiveFailed" }}
           archive={() => Promise.resolve({ type: "good", usedBy: { counts: [] } })}
           onOpenChange={setOpen}
         />

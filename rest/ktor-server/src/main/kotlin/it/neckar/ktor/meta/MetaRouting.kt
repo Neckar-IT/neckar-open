@@ -38,6 +38,7 @@ import it.neckar.ktor.AuthenticationRequirement
 import it.neckar.ktor.KtorRoutes
 import it.neckar.ktor.authenticateIfRequired
 import it.neckar.ktor.dumpRoutes
+import it.neckar.ktor.exemptFromServerSimulation
 import it.neckar.ktor.get
 import it.neckar.ktor.getProtocolVersionString
 import it.neckar.ktor.health.exemptFromReadinessGating
@@ -123,7 +124,7 @@ class MetaRouting(
       // Never gated: a gated global-health would turn a down dependency into a container restart.
       get(endpoints.GlobalHealth) {
         call.respond<GlobalHealthResponse>(GlobalHealthResponse.good(call.application.globalHealth()))
-      }.exemptFromReadinessGating().doc {
+      }.exemptFromServerSimulation().exemptFromReadinessGating().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetGlobalHealth")
         tag = HealthTag
@@ -137,7 +138,7 @@ class MetaRouting(
       get(endpoints.MetaTags) {
         val response = MetaTagsResponse.good(VersionInformation.toMetaTags())
         call.respond<MetaTagsResponse>(response)
-      }.doc {
+      }.exemptFromServerSimulation().doc {
         category = OpenApiMetaData.Category.Meta
         operationId = OperationId("GetMetaTags")
         tag = ConfigurationTag
@@ -156,7 +157,7 @@ class MetaRouting(
         get(endpoints.RuntimeContext) {
           val response = RuntimeContextDetailsResponse.good(RuntimeContext.current.toDetails())
           call.respond<RuntimeContextDetailsResponse>(response)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetRuntimeContext")
           tag = DiagnosticsTag
@@ -173,7 +174,7 @@ class MetaRouting(
 
         get(endpoints.BasePath) {
           call.respond<String>("${service.serviceName} up and running @ ${VersionInformation.artifactIdentity}")
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetRoot")
           tag = HealthTag
@@ -190,7 +191,7 @@ class MetaRouting(
 
         get(endpoints.Version) {
           call.respond<String>(VersionInformation.versionAsStringVerbose)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetVersion")
           tag = HealthTag
@@ -208,7 +209,7 @@ class MetaRouting(
         get(endpoints.FeatureFlags_Available) {
           val response = FeatureFlagsResponse.good(FeatureFlag.available)
           call.respond<FeatureFlagsResponse>(response)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetAvailableFeatureFlags")
           tag = ConfigurationTag
@@ -231,7 +232,7 @@ class MetaRouting(
           )
           val response = ServiceInfoResponse.good(serviceInfo)
           call.respond<ServiceInfoResponse>(response)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetServiceInfo")
           tag = ConfigurationTag
@@ -257,7 +258,7 @@ class MetaRouting(
             throw RestProtocolVersionProblemException.invalidClientVersion(VersionInformation.gitHash, versionString)
           }
           call.respondText(versionString)
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetVerifyClientVersion")
           tag = HealthTag
@@ -280,7 +281,7 @@ class MetaRouting(
 
         get(endpoints.Client_Role) {
           call.respond<ClientRoleResponse>(ClientRoleResponse.good(call.request.headers.findClientRole))
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetClientRole")
           tag = ConfigurationTag
@@ -294,7 +295,7 @@ class MetaRouting(
 
         get(endpoints.Client_Id) {
           call.respond<ClientIdResponse>(ClientIdResponse.good(call.request.headers.findClientId))
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetClientId")
           tag = ConfigurationTag
@@ -308,7 +309,7 @@ class MetaRouting(
 
         get(endpoints.Boom) {
           throw IllegalStateException("Something is broken!")
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetBoom")
           tag = DiagnosticsTag
@@ -321,7 +322,7 @@ class MetaRouting(
 
         get(endpoints.DumpRoutes) {
           call.respond<String>(call.application.dumpRoutes(call))
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetDumpRoutes")
           tag = DiagnosticsTag
@@ -341,7 +342,7 @@ class MetaRouting(
 
           call.response.cookies.append("Test-Cookie", "Test-Value @ ${nowMillis().formatUtcForDebug()}")
           call.respondText("Cookies:\n$cookiesAsString")
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetDumpCookies")
           tag = DiagnosticsTag
@@ -388,7 +389,7 @@ class MetaRouting(
               appendLine("  $header: ${value ?: "(not present)"}")
             }
           })
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetDumpProxy")
           tag = DiagnosticsTag
@@ -421,7 +422,7 @@ class MetaRouting(
             appendLine("------------------------------")
             appendLine(call.request.headers.entries().joinToString("\n") { "${it.key}=${it.value.joinToString(",")}" })
           })
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetDumpHeaders")
           tag = DiagnosticsTag
@@ -469,7 +470,7 @@ class MetaRouting(
             appendLine("  version: ${originRequest.version}")
             appendLine()
           })
-        }.doc {
+        }.exemptFromServerSimulation().doc {
           category = OpenApiMetaData.Category.Meta
           operationId = OperationId("GetDumpRequest")
           tag = DiagnosticsTag

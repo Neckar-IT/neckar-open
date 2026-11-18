@@ -50,7 +50,7 @@ import it.neckar.projects.common.ServiceDescriptor
  *    request-derived URLs resolve to the public scheme/host.
  * 3. [installProductCors] — CORS derived from the [serviceDescriptor] and the [domains]; extend per service via [corsConfig].
  * 4. [installFeatureFlagSupport] — `NeckarIT-Feature-Flags` request header support, the default flags of the local `run` and
- *    the `realisticLatency` delay on every request.
+ *    the simulation effects of [FeatureFlagsPlugin]; installs routing.
  * 5. [installCallId] — `X-Request-Id` propagation / generation.
  * 6. [installCallLogging] — request logging with MDC client identity.
  * 7. [installCompression] — response compression.
@@ -60,7 +60,7 @@ import it.neckar.projects.common.ServiceDescriptor
  *
  * Plugins deliberately **not** bundled — install them per service after this call, because
  * they are either service-specific or order-sensitive relative to this bundle:
- * authentication, status pages, content negotiation / JSON, `IgnoreTrailingSlash`, routing,
+ * authentication, status pages, content negotiation / JSON, `IgnoreTrailingSlash`,
  * `OpenApiPlugin`, meta / metrics routing.
  *
  * A service that deliberately omits one of the bundled plugins must not call this helper for

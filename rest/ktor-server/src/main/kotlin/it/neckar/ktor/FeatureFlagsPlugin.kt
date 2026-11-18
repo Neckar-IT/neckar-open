@@ -33,6 +33,7 @@ import io.ktor.util.*
 import it.neckar.common.featureflags.FeatureFlag
 import it.neckar.common.featureflags.FeatureFlags
 import it.neckar.common.featureflags.FeatureFlagsElement
+import it.neckar.open.kotlin.lang.requireNotNull
 import it.neckar.projects.common.DefaultFeatureFlagsEnvironmentVariable
 import kotlinx.coroutines.*
 
@@ -87,10 +88,12 @@ class FeatureFlagsPluginConfiguration {
  * After installation, any suspend function in the request pipeline can read the flags
  * via [it.neckar.common.featureflags.currentFeatureFlags] — no explicit parameter passing required.
  *
- * The plugin delays every response if [FeatureFlag.realisticLatency] is set.
- * The other simulation side effects (slow server, forced errors) stay opt-in per route via `featureFlags().handle()`.
+ * Simulation effects:
+ * - [FeatureFlag.realisticLatency] delays every call, also a 404 and a CORS preflight.
+ * - [FeatureFlag.slowServer] delays and [FeatureFlag.forceServerError] fails every call that resolves to a route without
+ *   [exemptFromServerSimulation]; health, metrics, meta, OpenAPI and MongoDB meta routes carry the marker.
  *
- * Install once at the application level via [installFeatureFlagSupport].
+ * Install once at the application level via [installFeatureFlagSupport]; the plugin installs [RoutingRoot] if it is missing.
  */
 val FeatureFlagsPlugin: ApplicationPlugin<FeatureFlagsPluginConfiguration> = createApplicationPlugin("FeatureFlags", ::FeatureFlagsPluginConfiguration) {
   application.attributes.put(DefaultFeatureFlagsAttribute, pluginConfig.defaultFlags)
@@ -100,6 +103,49 @@ val FeatureFlagsPlugin: ApplicationPlugin<FeatureFlagsPluginConfiguration> = cre
       call.appendSimulatedDelay(flags.delayIfRealisticLatencyEnabled())
       proceed()
     }
+  }
+  application.routing {
+    install(ServerSimulationPlugin)
+  }
+}
+
+private val ServerSimulationExemptAttribute: AttributeKey<Unit> = AttributeKey("ServerSimulationExempt")
+
+/**
+ * Keeps [FeatureFlag.slowServer] and [FeatureFlag.forceServerError] away from exactly this route; reserved for diagnosis,
+ * among them the DevTools reading the available feature flags to switch them off again. Routes below it keep simulating.
+ */
+@IgnorableReturnValue
+fun Route.exemptFromServerSimulation(): Route {
+  attributes.put(ServerSimulationExemptAttribute, Unit)
+  return this
+}
+
+/**
+ * Runs [handler] in the [ApplicationCallPipeline.Call] phase of the route: after every route-scoped plugin of the resolved route,
+ * [io.ktor.server.auth.authenticate] included, before the route handler.
+ */
+private object BeforeRouteHandler : Hook<suspend (ApplicationCall) -> Unit> {
+  override fun install(pipeline: ApplicationCallPipeline, handler: suspend (ApplicationCall) -> Unit) {
+    pipeline.intercept(ApplicationCallPipeline.Call) {
+      handler(call)
+    }
+  }
+}
+
+/**
+ * Runs on the routing root, because only there the resolved route and its [exemptFromServerSimulation] marker are known.
+ * The effects run after authentication: a request without valid credentials answers 401 under [FeatureFlag.forceServerError].
+ */
+private val ServerSimulationPlugin: RouteScopedPlugin<Unit> = createRouteScopedPlugin("ServerSimulation") {
+  on(BeforeRouteHandler) { call ->
+    val resolvedRoute: Route = (call as RoutingPipelineCall).route
+    if (resolvedRoute.attributes.contains(ServerSimulationExemptAttribute)) {
+      return@on
+    }
+    val flags: FeatureFlags = currentCoroutineContext()[FeatureFlagsElement].requireNotNull { "FeatureFlagsPlugin sets the FeatureFlagsElement" }.flags
+    call.appendSimulatedDelay(flags.delayIfSlowServerEnabled())
+    flags.forceInternalErrorIfEnabled()
   }
 }
 

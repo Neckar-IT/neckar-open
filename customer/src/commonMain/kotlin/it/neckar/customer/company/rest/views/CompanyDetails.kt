@@ -34,7 +34,6 @@ import it.neckar.customer.company.CompanyLegalInformation
 import it.neckar.customer.company.ContactInformation
 import it.neckar.lifeCycle.ArchiveState
 import it.neckar.open.annotations.DataView
-import it.neckar.open.http.Url
 import kotlinx.serialization.Serializable
 
 /**
@@ -58,7 +57,6 @@ data class CompanyDetails(
   val contactInformation: ContactInformation?,
   val bankAccountInformation: BankAccountInformation?,
   val legalInformation: CompanyLegalInformation?,
-  val logoUrl: Url,
   val archiveState: ArchiveState,
 )
 
@@ -74,7 +72,6 @@ fun Company.toDetails(): CompanyDetails = CompanyDetails(
   contactInformation = contactInformation,
   bankAccountInformation = bankAccountInformation,
   legalInformation = legalInformation,
-  logoUrl = logoUrl,
   archiveState = archiveState,
 )
 
@@ -92,6 +89,5 @@ fun CompanyDetails.toDomain(): Company = Company(
   contactInformation = contactInformation,
   bankAccountInformation = bankAccountInformation,
   legalInformation = legalInformation,
-  logoUrl = logoUrl,
   archiveState = archiveState,
 )

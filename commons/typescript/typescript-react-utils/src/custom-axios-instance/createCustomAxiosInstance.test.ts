@@ -135,7 +135,7 @@ describe("httpClient", () => {
 
   it("should add the access token from the auth store", async () => {
     const server = setupServer(authMeHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await getApiAuthMe();
     server.close();
@@ -147,7 +147,7 @@ describe("httpClient", () => {
     mocks.getAccessToken.mockReturnValueOnce("invalid-access-token");
 
     const server = setupServer(authMeHandler, authRefreshHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await getApiAuthMe();
     server.close();
@@ -161,7 +161,7 @@ describe("httpClient", () => {
     mocks.getRefreshToken.mockReturnValueOnce("invalid-refresh-token");
 
     const server = setupServer(authMeHandler, authRefreshHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     let errorWasThrown = false;
     try {
@@ -190,7 +190,7 @@ describe("httpClient", () => {
     });
 
     const server = setupServer(authMeHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     let errorWasThrown = false;
     try {
@@ -226,7 +226,7 @@ describe("httpClient", () => {
     });
 
     const server = setupServer(authMeHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     let errorWasThrown = false;
     try {
@@ -244,7 +244,7 @@ describe("httpClient", () => {
 
   it("should add the client and request id to the header", async () => {
     const server = setupServer(requestIdsHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await httpClient<{ clientId: string; requestId: string }>({ url: "/test/ids", method: "GET" });
     server.close();
@@ -258,7 +258,7 @@ describe("httpClient", () => {
 
   it("should add the feature flags to the header", async () => {
     const server = setupServer(featureFlagsHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await httpClient<{ featureFlags: string }>({ url: "/test/feature-flags", method: "GET" });
     server.close();
@@ -268,7 +268,7 @@ describe("httpClient", () => {
 
   it("should add the git hash as NeckarIT-Protocol-Version header", async () => {
     const server = setupServer(protocolVersionHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await httpClient<{ protocolVersion: string }>({ url: "/test/protocol-version", method: "GET" });
     server.close();
@@ -278,7 +278,7 @@ describe("httpClient", () => {
 
   it("should state no protocol version without a git hash", async () => {
     const server = setupServer(protocolVersionHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
     const instanceWithoutGitHash = createCustomAxiosInstance({
       baseUrl,
       onRefreshTokenPair: async () => Promise.resolve({ type: "bad/InvalidRefreshToken" }),
@@ -293,7 +293,7 @@ describe("httpClient", () => {
 
   it("should set Accept header to application/json by default", async () => {
     const server = setupServer(acceptHeaderHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await httpClient<{ accept: string }>({ url: "/test/accept-header", method: "GET" });
     server.close();
@@ -303,7 +303,7 @@ describe("httpClient", () => {
 
   it("should not override an explicitly set Accept header", async () => {
     const server = setupServer(acceptHeaderHandler);
-    server.listen({ onUnhandledRequest: "error" });
+    server.listen({ onUnhandledFrame: "error" });
 
     const data = await httpClient<{ accept: string }>({
       url: "/test/accept-header",

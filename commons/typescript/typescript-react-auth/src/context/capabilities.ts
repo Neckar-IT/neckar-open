@@ -35,11 +35,11 @@ export function useHasCapability(capability: string): boolean {
 }
 
 /**
- * The tenant the current user acts for. Null in a product without tenants.
+ * The id of the tenant the current user acts for. Null in a product without tenants.
  *
  * Comes from the server rather than from the token, so no frontend decodes a JWT or compares
  * against a hardcoded tenant id.
  */
 export function useTenantId(): string | null {
-  return useUser().tenantId ?? null;
+  return useUser().tenant?.id ?? null;
 }

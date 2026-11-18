@@ -6,15 +6,19 @@ import { I18nProvider } from "@neckar-hub/typescript-react-i18n";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { type ArchiveOutcome, EntityArchiveDialog } from "./EntityArchiveDialog";
+import { type ArchiveOutcome, EntityArchiveDialog, type EntityArchiveMessages } from "./EntityArchiveDialog";
 
 const toastSuccessMock = vi.fn();
+const toastErrorMock = vi.fn();
 const warnAboutActiveUsageMock = vi.fn();
 const withActionFailedToastMock = vi.fn((_actionLabel: string, mutation: Promise<unknown>) => mutation);
 
 vi.mock("../../feedback", async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  toast: { success: (...args: unknown[]) => toastSuccessMock(...args) },
+  toast: {
+    success: (...args: unknown[]) => toastSuccessMock(...args),
+    error: (...args: unknown[]) => toastErrorMock(...args),
+  },
   warnAboutActiveUsage: (...args: unknown[]) => warnAboutActiveUsageMock(...args),
   withActionFailedToast: (actionLabel: string, mutation: Promise<unknown>) => withActionFailedToastMock(actionLabel, mutation),
 }));
@@ -29,16 +33,21 @@ afterAll(() => {
  * Tests
  *
  * EntityArchiveDialog heads the confirmation with the translated title and the entity, shows the usage below the
- * description, runs `archive` on confirm and closes, toasts, warns about active usage and reports only after `archive`
- * resolved.
+ * description, runs `archive` on confirm and closes, then toasts per answer; only a `good` answer warns about active usage
+ * and reports the archive.
  */
 
 const translations = {
   en: {
     translation: {
       authors: {
-        archive: { title: "Archive:", description: "The author is hidden from new books.", confirm: "Archive author" },
-        messages: { archived: "Author archived" },
+        archive: {
+          title: "Archive:",
+          description: "The author is hidden from new books.",
+          confirm: "Archive author",
+          refused: "The author still writes an active book",
+        },
+        messages: { archived: "Author archived", archiveFailed: "Author could not be archived" },
       },
     },
   },
@@ -48,7 +57,13 @@ const archive = vi.fn<() => Promise<ArchiveOutcome>>();
 const onOpenChange = vi.fn<(open: boolean) => void>();
 const onArchived = vi.fn<() => void>();
 
-function renderEntityArchiveDialog(): void {
+const messages: EntityArchiveMessages = {
+  archived: "authors.messages.archived",
+  refused: "authors.archive.refused",
+  failed: "authors.messages.archiveFailed",
+};
+
+function renderEntityArchiveDialog(dialogMessages: EntityArchiveMessages = messages): void {
   render(
     <I18nProvider languageResources={translations}>
       <EntityArchiveDialog
@@ -57,7 +72,7 @@ function renderEntityArchiveDialog(): void {
         description="authors.archive.description"
         usage={<div>Used by 3 active books</div>}
         confirmLabel="authors.archive.confirm"
-        archivedMessage="authors.messages.archived"
+        messages={dialogMessages}
         archive={archive}
         onOpenChange={onOpenChange}
         onArchived={onArchived}
@@ -98,16 +113,50 @@ describe("EntityArchiveDialog", () => {
     expect(warnAboutActiveUsageMock).toHaveBeenCalledWith(usedBy);
   });
 
-  it("closes and reports an answer that is not good without the usage warning", async () => {
+  it("closes and shows the refused toast on a refusal without the success toast", async () => {
+    archive.mockResolvedValue({ type: "bad/Refused" });
+    renderEntityArchiveDialog();
+
+    await userEvent.click(screen.getByRole("button", { name: "Archive author" }));
+
+    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledWith("The author still writes an active book"));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(toastSuccessMock).not.toHaveBeenCalled();
+    expect(warnAboutActiveUsageMock).not.toHaveBeenCalled();
+    expect(onArchived).not.toHaveBeenCalled();
+  });
+
+  it("closes and shows the failed toast on bad/AlreadyArchived without the success toast", async () => {
     archive.mockResolvedValue({ type: "bad/AlreadyArchived" });
     renderEntityArchiveDialog();
 
     await userEvent.click(screen.getByRole("button", { name: "Archive author" }));
 
-    await waitFor(() => expect(onArchived).toHaveBeenCalledOnce());
+    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledWith("Author could not be archived"));
     expect(onOpenChange).toHaveBeenCalledWith(false);
-    expect(toastSuccessMock).toHaveBeenCalledWith("Author archived");
+    expect(toastSuccessMock).not.toHaveBeenCalled();
     expect(warnAboutActiveUsageMock).not.toHaveBeenCalled();
+    expect(onArchived).not.toHaveBeenCalled();
+  });
+
+  it("shows the failed toast on bad/NotFound", async () => {
+    archive.mockResolvedValue({ type: "bad/NotFound" });
+    renderEntityArchiveDialog();
+
+    await userEvent.click(screen.getByRole("button", { name: "Archive author" }));
+
+    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledWith("Author could not be archived"));
+    expect(toastSuccessMock).not.toHaveBeenCalled();
+  });
+
+  it("shows the failed toast on a refusal when no refused message is given", async () => {
+    archive.mockResolvedValue({ type: "bad/IsReleased" });
+    renderEntityArchiveDialog({ archived: "authors.messages.archived", failed: "authors.messages.archiveFailed" });
+
+    await userEvent.click(screen.getByRole("button", { name: "Archive author" }));
+
+    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledWith("Author could not be archived"));
+    expect(toastSuccessMock).not.toHaveBeenCalled();
   });
 
   it("stays open and reports nothing while archive is pending", async () => {
@@ -120,6 +169,7 @@ describe("EntityArchiveDialog", () => {
     expect(onOpenChange).not.toHaveBeenCalledWith(false);
     expect(onArchived).not.toHaveBeenCalled();
     expect(toastSuccessMock).not.toHaveBeenCalled();
+    expect(toastErrorMock).not.toHaveBeenCalled();
     expect(warnAboutActiveUsageMock).not.toHaveBeenCalled();
   });
 

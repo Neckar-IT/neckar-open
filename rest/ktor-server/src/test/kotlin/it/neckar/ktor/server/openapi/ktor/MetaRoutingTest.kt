@@ -34,9 +34,12 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.server.testing.*
 import it.neckar.rest.test.*
 import it.neckar.ktor.client.bodyAsTextSuccess
+import it.neckar.common.featureflags.FeatureFlags
+import it.neckar.ktor.FeatureFlagsPlugin
 import it.neckar.ktor.configure
 import it.neckar.ktor.installJson
 import it.neckar.ktor.AuthenticationRequirement
@@ -329,5 +332,25 @@ class MetaRoutingTest {
       //field cannot pass by matching itself
       assertThat(runtimeContextData!!.hostname.value).isNotEmpty()
     }
+  }
+
+  @Test
+  fun `the available feature flags answer under forceServerError`() = testApplication {
+    application {
+      installJson()
+      install(FeatureFlagsPlugin)
+
+      MetaRouting(
+        service = ServiceDescriptor("test-service", apiPrefix = "test-service", Port(1234)),
+        baseUrl = Url.pattern("test-service/meta"),
+        authenticationRequirement = AuthenticationRequirement.None,
+      ).configure(this)
+    }
+
+    val response = client.get("test-service/meta/feature-flags/available") {
+      header(FeatureFlags.HeaderKey, "forceServerError")
+    }
+
+    assertThat(response).isOk()
   }
 }

@@ -149,10 +149,6 @@ class CustomerOpenApiGeneratorTest {
                       "type" : "null"
                     } ]
                   },
-                  "logoUrl" : {
-                    "type" : "string",
-                    "format" : "uri"
-                  },
                   "archiveState" : {
                     "$ref" : "#/components/schemas/ArchiveState"
                   }

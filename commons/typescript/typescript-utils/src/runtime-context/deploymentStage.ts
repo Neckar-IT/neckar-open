@@ -78,7 +78,7 @@ export function narrowDeploymentStage(raw: string | undefined): DeploymentStage 
  * stage — an injected value always wins — it only decides what *absence* means, and absence has two
  * very different causes:
  *
- * - **a development machine** (`pnpm dev`, `pnpm ladle`, vitest): a vitest run has no dev server to
+ * - **a development machine** (`pnpm dev`, `pnpm storybook`, vitest): a vitest run has no dev server to
  *   inject anything, and a dev server fills only the tags its HTML carries. `Development` is correct.
  * - **a built image whose HTML carries no `runtime-context.deploymentStage` meta tag yet**: most
  *   frontends are in this state. Assuming `Development` there would unlock developer-only UI — the
@@ -86,7 +86,7 @@ export function narrowDeploymentStage(raw: string | undefined): DeploymentStage 
  *   read, and a frontend opts into the truth by adding the meta tag to its HTML.
  *
  * `import.meta.env.DEV` is `true` under both the Vite dev server and vitest, and `false` in anything
- * `vite build` or `ladle build` produced. The explicit assertion avoids pulling `vite/client`
+ * `vite build` or `storybook build` produced. The explicit assertion avoids pulling `vite/client`
  * ambient types into this commons package, which would mean adding vite as a devDependency just for
  * the type.
  */

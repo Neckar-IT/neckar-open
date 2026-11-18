@@ -57,7 +57,6 @@ data class UpsertCompanyRequest(
   val contactInformation: ContactInformation?,
   val bankAccountInformation: BankAccountInformationFields?,
   val legalInformation: CompanyLegalInformationFields?,
-  val logoUrl: Url = Company.logoPlaceholder,
 ) {
 
   /**
@@ -78,7 +77,6 @@ data class UpsertCompanyRequest(
     contactInformation = contactInformation,
     bankAccountInformation = parsedBankAccountInformation,
     legalInformation = legalInformation?.toCompanyLegalInformation(),
-    logoUrl = logoUrl,
   )
 
   companion object {
@@ -90,7 +88,6 @@ data class UpsertCompanyRequest(
       contactInformation = company.contactInformation,
       bankAccountInformation = company.bankAccountInformation?.let { BankAccountInformationFields.fromBankAccountInformation(it) },
       legalInformation = company.legalInformation?.let { CompanyLegalInformationFields.fromCompanyLegalInformation(it) },
-      logoUrl = company.logoUrl,
     )
   }
 }

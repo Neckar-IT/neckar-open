@@ -28,8 +28,10 @@
 package it.neckar.ktor.status
 
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -43,6 +45,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.mockk.mockk
 import it.neckar.ktor.archive.archiveFilterFromQuery
+import it.neckar.ktor.getInstantOrFail
 import it.neckar.ktor.getLongOrFail
 import it.neckar.ktor.installJson
 import it.neckar.ktor.rest.requireIdMatchesPath
@@ -123,6 +126,15 @@ class StatusPagesStatusCodeTest {
   }
 
   @Test
+  fun `an unparseable instant parameter answers 400 naming the parameter`() = testApplication {
+    installStatusPagesApplication()
+
+    val response = jsonClient().get("/api/instant/kein-datum")
+    assertThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
+    assertThat(response.body<ApplicationError>().fallbackMessage).isNotNull().contains("validFrom")
+  }
+
+  @Test
   fun `a missing uuid parameter answers 400`() = testApplication {
     installStatusPagesApplication()
 
@@ -167,6 +179,9 @@ class StatusPagesStatusCodeTest {
         }
         get("/api/long/{count}") {
           call.respondText(call.parameters.getLongOrFail(UrlParameterName("count")).toString())
+        }
+        get("/api/instant/{validFrom}") {
+          call.respondText(call.parameters.getInstantOrFail(UrlParameterName("validFrom")).toString())
         }
         get("/api/uuid") {
           call.respondText(call.parameters.uuid().toString())
