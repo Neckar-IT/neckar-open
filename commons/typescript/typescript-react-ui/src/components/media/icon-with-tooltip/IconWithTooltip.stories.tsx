@@ -4,11 +4,12 @@ import { IconWithTooltip } from "./IconWithTooltip";
 
 const meta = {
   title: "Media / IconWithTooltip",
+  component: IconWithTooltip,
 } satisfies Meta;
 
 export default meta;
 
-export const IconWithTooltipStory: StoryObj<typeof meta> = {
+export const IconWithTooltipStory: StoryObj = {
   render: () => {
     return (
       <div className="flex flex-col gap-8">

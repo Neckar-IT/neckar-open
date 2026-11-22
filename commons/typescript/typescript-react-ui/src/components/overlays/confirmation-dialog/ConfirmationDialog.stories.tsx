@@ -9,12 +9,9 @@ import { Button } from "../../primitives/button";
 import { ConfirmationDialog, type ConfirmationDialogProps } from "./ConfirmationDialog";
 import { DestructiveConfirmationDialog } from "./DestructiveConfirmationDialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Overlays / ConfirmationDialog",
+  component: ConfirmationDialog,
 } satisfies Meta<ConfirmationDialogProps>;
 
 export default meta;
@@ -26,10 +23,6 @@ export default meta;
 interface StoryProps extends Pick<ConfirmationDialogProps, "title" | "description" | "isPending"> {
   asyncAction: boolean;
 }
-
-/**
- * Stories
- */
 
 export const ConfirmationDialogStory: StoryObj<StoryProps> = {
   name: "ConfirmationDialog",
@@ -108,7 +101,7 @@ export const DestructiveConfirmationDialogStory: StoryObj<StoryProps> = {
  * `confirmationDialog.title` for the neutral dialog, `destructiveConfirmationDialog.description`
  * for the destructive wrapper.
  */
-export const ConfirmationDialogDefaultsStory: StoryObj<typeof meta> = {
+export const ConfirmationDialogDefaultsStory: StoryObj = {
   name: "ConfirmationDialog (textKey defaults)",
   render: () => {
     const [open, setOpen] = useState(true);
@@ -123,7 +116,7 @@ export const ConfirmationDialogDefaultsStory: StoryObj<typeof meta> = {
   },
 };
 
-export const DestructiveConfirmationDialogDefaultsStory: StoryObj<typeof meta> = {
+export const DestructiveConfirmationDialogDefaultsStory: StoryObj = {
   name: "DestructiveConfirmationDialog (default description)",
   render: () => {
     const [open, setOpen] = useState(true);

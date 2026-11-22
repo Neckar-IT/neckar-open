@@ -29,11 +29,12 @@ import { ButtonGroup } from "./ButtonGroup";
 
 const meta = {
   title: "Primitives / ButtonGroup",
+  component: ButtonGroup,
 } satisfies Meta;
 
 export default meta;
 
-export const ButtonGroupStory: StoryObj<typeof meta> = {
+export const ButtonGroupStory: StoryObj = {
   name: "ButtonGroup",
   render: () => {
     const [label, setLabel] = React.useState("personal");

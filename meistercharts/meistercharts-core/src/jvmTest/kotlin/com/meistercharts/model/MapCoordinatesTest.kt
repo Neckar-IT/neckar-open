@@ -17,10 +17,10 @@ package com.meistercharts.model
 
 import assertk.*
 import assertk.assertions.*
-import com.meistercharts.maps.Example
 import com.meistercharts.maps.Latitude
 import com.meistercharts.maps.Longitude
 import com.meistercharts.maps.MapCoordinates
+import com.meistercharts.maps.MapCoordinatesExample
 import org.junit.jupiter.api.Test
 
 @Suppress("TestMethodWithoutAssertion", "SpellCheckingInspection")
@@ -28,7 +28,7 @@ class MapCoordinatesTest {
 
   @Test
   fun `test North East`() {
-    val coordsLizergy = MapCoordinates.Companion.Example.lizergy
+    val coordsLizergy = MapCoordinatesExample.lizergy
     assertThat(coordsLizergy.latitude.isNorth()).isTrue()
     assertThat(coordsLizergy.latitude.isSouth()).isFalse()
     assertThat(coordsLizergy.longitude.isWest()).isFalse()
@@ -71,8 +71,8 @@ class MapCoordinatesTest {
 
   @Test
   fun testGpsConvert() {
-    assertThat(MapCoordinates.Companion.Example.lizergy.formatMapCoordinatesToGps()).isEqualTo("""48°28'50.7"N 8°24'29.0"E""")
-    assertThat(MapCoordinates.Companion.Example.neckarIt.formatMapCoordinatesToGps()).isEqualTo("""48°24'49.8"N 9°3'3.1"E""")
+    assertThat(MapCoordinatesExample.lizergy.formatMapCoordinatesToGps()).isEqualTo("""48°28'50.7"N 8°24'29.0"E""")
+    assertThat(MapCoordinatesExample.neckarIt.formatMapCoordinatesToGps()).isEqualTo("""48°24'49.8"N 9°3'3.1"E""")
     assertThat(MapCoordinates(Latitude(0.0), Longitude(0.0)).formatMapCoordinatesToGps()).isEqualTo("""0°0'0.0"N 0°0'0.0"E""")
   }
 }

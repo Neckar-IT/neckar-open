@@ -7,12 +7,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { SortingToggle } from "./SortingToggle";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Actions / SortingToggle",
+  component: SortingToggle,
 } satisfies Meta;
 
 export default meta;
@@ -23,11 +20,7 @@ export default meta;
 
 const sortByName = "name" as const;
 const sortByAge = "age" as const;
-/**
- * Stories
- */
-
-export const SortingToggleStory: StoryObj<typeof meta> = {
+export const SortingToggleStory: StoryObj = {
   name: "Sorting Toggle",
   render: () => {
     const [alphabeticalSort, setAlphabeticalSort] = useState<{ sortBy: "name"; sortOrder: SortOrder } | undefined>(undefined);

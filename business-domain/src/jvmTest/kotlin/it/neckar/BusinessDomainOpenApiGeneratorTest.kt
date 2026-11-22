@@ -35,6 +35,7 @@ import it.neckar.price.rest.messages.ArticleConditionsPriceSummaryResponse
 import it.neckar.price.rest.messages.PriceTimelineEntriesFilterCriteria
 import it.neckar.price.rest.messages.PriceTimelineEntriesSortCriteria
 import it.neckar.price.rest.messages.UpsertPriceTimelineEntryRequest
+import it.neckar.price.rest.messages.ValueTimelineEntryStatus
 import it.neckar.price.rest.views.ArticleConditionsLabourPriceRow
 import it.neckar.price.rest.views.ArticleConditionsPriceRow
 import it.neckar.price.rest.views.ArticleConditionsPriceSummary
@@ -98,6 +99,7 @@ class BusinessDomainOpenApiGeneratorTest {
         add(SchemaDescriptor.of(UpsertPriceTimelineEntryRequest::class))
         add(SchemaDescriptor.of(PriceTimelineEntriesSortCriteria::class))
         add(SchemaDescriptor.of(PriceTimelineEntriesFilterCriteria.State::class))
+        add(SchemaDescriptor.of(ValueTimelineEntryStatus::class))
         add(SchemaDescriptor.of(ArticleConditionsPriceSummaryRequest::class))
         add(SchemaDescriptor.of(ArticleConditionsPriceSummaryResponse::class))
         add(SchemaDescriptor.of(ArticleConditionsPriceSummary::class))

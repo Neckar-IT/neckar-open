@@ -45,6 +45,17 @@ class OpenProjectsTest {
   }
 
   @Test
+  fun `the export of MeisterCharts resolves a MeisterCharts entry below its root and an open entry below internal open`() {
+    val registry = MeisterchartsExportRegistry()
+
+    assertThat(registry.open.meistercharts.meisterchartsCore.path).isEqualTo(GradleProjectPath(":meistercharts-core"))
+    assertThat(registry.open.meistercharts.path).isEqualTo(GradleProjectPath.Root)
+    assertThat(registry.open.annotations.path).isEqualTo(GradleProjectPath(":internal:open:annotations"))
+    assertThat(registry.findOrNull(":meistercharts-core")).isEqualTo(registry.open.meistercharts.meisterchartsCore)
+    assertThat(registry.accessorNameViolations()).isEmpty()
+  }
+
+  @Test
   fun `every property is named after its directory`() {
     assertThat(StandaloneRegistry().accessorNameViolations()).isEmpty()
   }
@@ -56,4 +67,8 @@ internal class MonorepoRegistry : ProjectRoot() {
 
 internal class StandaloneRegistry : ProjectRoot() {
   val open: OpenProjects = OpenProjects(this, GradleProjectPath.Root)
+}
+
+internal class MeisterchartsExportRegistry : ProjectRoot() {
+  val open: OpenProjects = OpenProjects(this, GradleProjectPath(":internal:open"), meisterchartsPath = GradleProjectPath.Root)
 }

@@ -1,11 +1,22 @@
 import it.neckar.gradle.declaresOrvalCodegen
 import it.neckar.gradle.openapi.openapiSpecTask
 import it.neckar.projects.Projects
+import it.neckar.projects.project
+import it.neckar.projects.sharing.OpenSharedFiles
+import it.neckar.projects.sharing.resolvedFiles
 
 description = """ common typescript utilities """
 
+// The Vitest of `src/payment-formats` reads the corpora of the Kotlin value classes it mirrors.
+val paymentFormatCases by resolvedFiles(OpenSharedFiles.PaymentFormatCases)
+
+dependencies {
+  paymentFormatCases(project(Projects.open.customer))
+  paymentFormatCases(project(Projects.open.commons.payment))
+}
 
 tasks.named("pnpmRunBuild") {
+  inputs.files(paymentFormatCases).withPropertyName("paymentFormatCases").withPathSensitivity(PathSensitivity.NAME_ONLY)
   dependsOn(Projects.open.rest.model.openapiSpecTask)
   dependsOn(Projects.open.authRestApi.openapiSpecTask)
   dependsOn(Projects.open.businessDomain.openapiSpecTask)

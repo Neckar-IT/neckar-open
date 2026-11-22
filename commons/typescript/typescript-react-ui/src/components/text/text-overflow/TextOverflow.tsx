@@ -117,7 +117,7 @@ export function TruncateTextContent({ children }: React.PropsWithChildren): Reac
  * Attaches `truncateTextContentClass` to `document.body`, activating default
  * text truncation for every descendant marked with `data-text-content`.
  *
- * Call once at app startup from `main.tsx` (alongside `initializeOtel` etc.) to
+ * Call once at app startup from `main.tsx` (alongside `bootstrapObservability`) to
  * avoid an extra wrapper `<div>` between `<body>` and the app root.
  *
  * Idempotent: `DOMTokenList.add` ignores tokens that are already present, so

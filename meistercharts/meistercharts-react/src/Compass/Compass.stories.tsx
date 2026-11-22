@@ -5,17 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Compass } from "./Compass";
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Compass" } satisfies Meta;
+const meta = { title: "Compass", component: Compass } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Minimal: StoryObj<{ currentValue: number }> = {
   args: {

@@ -8,12 +8,9 @@ import { Button } from "../button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../dropdown-menu";
 import { TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, Table as TableRoot, TableRow } from "./Table";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Table",
+  component: TableRoot,
 } satisfies Meta;
 
 export default meta;
@@ -67,11 +64,7 @@ const invoices = [
   },
 ];
 
-/**
- * Stories
- */
-
-export const Table: StoryObj<typeof meta> = {
+export const Table: StoryObj = {
   render: () => {
     return (
       <TableRoot>

@@ -37,6 +37,3 @@ object TaxIdExample {
   val italy: TaxId = TaxId("IT07643520567")
   val netherlands: TaxId = TaxId("NL123456789B01")
 }
-
-val TaxId.Companion.Example: TaxIdExample
-  get() = TaxIdExample

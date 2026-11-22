@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { DatePicker, type DatePickerProps } from "./Picker";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Date Picker",
+  component: DatePicker,
   args: {
     defaultMonth: new Date(2024, 5, 28),
     disabled: false,
@@ -21,10 +18,6 @@ const meta = {
 } satisfies Meta<DatePickerProps>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<DatePickerProps> = {
   render: (args: DatePickerProps) => {

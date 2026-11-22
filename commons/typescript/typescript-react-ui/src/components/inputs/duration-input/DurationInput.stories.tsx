@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { DurationInput } from "./DurationInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / DurationInput",
+  component: DurationInput,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const DurationInputStory: StoryObj<typeof meta> = {
+export const DurationInputStory: StoryObj = {
   name: "DurationInput",
   render: () => {
     const [value, setValue] = useState<number>(0);

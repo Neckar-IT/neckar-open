@@ -1,6 +1,7 @@
 import { ArchiveState, type ConfirmationStatus } from "@neckar-hub/typescript-utils/openapi-types";
 import { ConfirmationStatusBadge } from "../../draft-confirmed/ConfirmationStatusBadge";
-import { ArchivedBadge, type ArchivedBadgeVariants } from "../archived-badge/ArchivedBadge";
+import { ArchivedBadge } from "../archived-badge/ArchivedBadge";
+import type { StatusBadgeVariant } from "../status-badge/StatusBadge";
 
 interface EntityLike {
   archiveState: ArchiveState;
@@ -9,7 +10,7 @@ interface EntityLike {
 
 interface EntityStatusBadgeProps<T extends EntityLike = EntityLike> {
   entity: T | null;
-  variant?: ArchivedBadgeVariants;
+  variant?: StatusBadgeVariant;
   className?: string;
 }
 

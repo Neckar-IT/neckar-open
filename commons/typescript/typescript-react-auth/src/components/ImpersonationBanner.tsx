@@ -11,7 +11,7 @@ import { formatUserName } from "./formatUserName";
  */
 export function ImpersonationBanner({ user }: { user: UserDetails }): ReactElement {
   const { t } = useEmbeddedTranslation();
-  const name = formatUserName(user) || (user.email ?? user.loginName);
+  const name = formatUserName(user, user.email ?? user.loginName);
 
   return (
     <div

@@ -52,6 +52,4 @@ data class BankAccountInformation(
    * Bank Identifier Code (SWIFT).
    */
   val bic: BIC,
-) {
-  companion object
-}
+)

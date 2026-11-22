@@ -11,11 +11,12 @@ import { Button } from "../../primitives/button";
 
 const meta = {
   title: "Actions / CancelButton",
+  component: CancelButton,
 } satisfies Meta;
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
+export const Default: StoryObj = {
   render: () => (
     <div className="p-8">
       <CancelButton onClick={() => {}} />
@@ -62,6 +63,6 @@ function CancelClickVsBlurValidationStory(): React.ReactElement {
   );
 }
 
-export const CancelClickVsBlurValidation: StoryObj<typeof meta> = {
+export const CancelClickVsBlurValidation: StoryObj = {
   render: () => <CancelClickVsBlurValidationStory />,
 };

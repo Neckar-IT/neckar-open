@@ -1,6 +1,6 @@
 import { type ParseKeys, useTranslation } from "@neckar-hub/typescript-react-i18n";
 import type { ReactElement, ReactNode } from "react";
-import { toast, withActionFailedToast } from "../../feedback";
+import { toast } from "../../feedback";
 import { TitleWithEntity } from "../../text/title-with-entity";
 import { ConfirmationDialog } from "../confirmation-dialog";
 
@@ -47,7 +47,7 @@ export function EntityUnarchiveDialog({
   const { t } = useTranslation();
 
   const handleUnarchive = async () => {
-    await withActionFailedToast(t(confirmLabel), unarchive());
+    await unarchive();
     onOpenChange(false);
     toast.success(t(unarchivedMessage));
     onUnarchived?.();

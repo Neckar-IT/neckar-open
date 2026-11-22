@@ -37,6 +37,3 @@ object BICExample {
   val volksbank: BIC = BIC("GENODEFF701")
   val shortForm: BIC = BIC("COBADEFF")
 }
-
-val BIC.Companion.Example: BICExample
-  get() = BICExample

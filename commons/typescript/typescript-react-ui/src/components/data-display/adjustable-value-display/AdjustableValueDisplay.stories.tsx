@@ -5,19 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AdjustableValueDisplay } from "./AdjustableValueDisplay";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Data display / AdjustableValueDisplay",
+  component: AdjustableValueDisplay,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-export const AdjustableValueDisplayStory: StoryObj<typeof meta> = {
+export const AdjustableValueDisplayStory: StoryObj = {
   name: "AdjustableValueDisplay",
   render: () => (
     <div className="flex max-w-md flex-col gap-4">

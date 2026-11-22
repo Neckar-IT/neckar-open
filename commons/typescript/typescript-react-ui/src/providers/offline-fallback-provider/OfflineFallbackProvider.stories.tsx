@@ -5,19 +5,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { OfflineFallbackProvider, type OfflineFallbackProviderProps } from "./OfflineFallbackProvider";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Providers / Offline Fallback Provider",
+  component: OfflineFallbackProvider,
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Online: StoryObj<OfflineFallbackProviderProps> = {
   args: {

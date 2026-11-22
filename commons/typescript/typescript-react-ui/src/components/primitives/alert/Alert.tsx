@@ -1,7 +1,3 @@
-/**
- * Inline alert/callout box with severity variants.
- */
-
 import { Alert as ShadcnAlert } from "@neckar-hub/typescript-react-ui-primitives/ui/alert";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
@@ -24,6 +20,9 @@ const ownAlertVariants = cva("", {
 
 type AlertProps = Omit<React.ComponentProps<typeof ShadcnAlert>, "variant"> & VariantProps<typeof ownAlertVariants>;
 
+/**
+ * Inline alert/callout box with severity variants.
+ */
 export function Alert({ className, variant, ...props }: AlertProps): React.ReactElement {
   return (
     <ShadcnAlert

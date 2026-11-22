@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge as BadgeComponent } from "./Badge";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Badge",
+  component: BadgeComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Badge: StoryObj<typeof meta> = {
+export const Badge: StoryObj = {
   render: () => {
     return (
       <div>

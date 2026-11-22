@@ -18,21 +18,14 @@ import {
   DialogTrigger,
 } from "./Dialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Dialog",
+  component: DialogRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Dialog: StoryObj<typeof meta> = {
+export const Dialog: StoryObj = {
   render: () => {
     const [isOpen, setIsOpen] = useState(true);
 
@@ -76,7 +69,7 @@ export const Dialog: StoryObj<typeof meta> = {
   },
 };
 
-export const DialogWithLongContent: StoryObj<typeof meta> = {
+export const DialogWithLongContent: StoryObj = {
   render: () => {
     const [isOpen, setIsOpen] = useState(true);
 

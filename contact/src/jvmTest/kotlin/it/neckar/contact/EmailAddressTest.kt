@@ -189,10 +189,10 @@ class EmailAddressTest {
 
   @Test
   fun `examples are already in canonical form`() {
-    assertThat(EmailAddress.Example.info.value).isEqualTo("info@example.com")
-    assertThat(EmailAddress.Example.support.value).isEqualTo("support@example.com")
-    assertThat(EmailAddress.Example.personal.value).isEqualTo("max.mustermann@example.de")
-    assertThat(EmailAddress.Example.admin.value).isEqualTo("admin@example.org")
+    assertThat(EmailAddressExample.info.value).isEqualTo("info@example.com")
+    assertThat(EmailAddressExample.support.value).isEqualTo("support@example.com")
+    assertThat(EmailAddressExample.personal.value).isEqualTo("max.mustermann@example.de")
+    assertThat(EmailAddressExample.admin.value).isEqualTo("admin@example.org")
   }
 }
 

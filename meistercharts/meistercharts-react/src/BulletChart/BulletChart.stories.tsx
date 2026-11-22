@@ -16,22 +16,14 @@ const config = {
   ],
 };
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Bullet Chart" } satisfies Meta;
+const meta = { title: "Bullet Chart", component: BulletChart } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => <BulletChart configuration={config} />,
 };
 
-export const CustomHeight: StoryObj<typeof meta> = {
+export const CustomHeight: StoryObj = {
   render: () => <BulletChart configuration={config} style={{ height: "300px" }} />,
 };

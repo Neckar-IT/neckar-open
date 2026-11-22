@@ -153,11 +153,11 @@ class PhoneNumberTest {
 
   @Test
   fun `examples are already in canonical form`() {
-    assertThat(PhoneNumber.Example.landlineWithTrunkPrefix.value).isEqualTo("+49 (0) 7071 555 0100")
-    assertThat(PhoneNumber.Example.mobile.value).isEqualTo("+49 170 1234567")
-    assertThat(PhoneNumber.Example.landline.value).isEqualTo("+49 7071 12345")
-    assertThat(PhoneNumber.Example.austria.value).isEqualTo("+43 1 234567")
-    assertThat(PhoneNumber.Example.switzerland.value).isEqualTo("+41 44 1234567")
+    assertThat(PhoneNumberExample.landlineWithTrunkPrefix.value).isEqualTo("+49 (0) 7071 555 0100")
+    assertThat(PhoneNumberExample.mobile.value).isEqualTo("+49 170 1234567")
+    assertThat(PhoneNumberExample.landline.value).isEqualTo("+49 7071 12345")
+    assertThat(PhoneNumberExample.austria.value).isEqualTo("+43 1 234567")
+    assertThat(PhoneNumberExample.switzerland.value).isEqualTo("+41 44 1234567")
   }
 }
 

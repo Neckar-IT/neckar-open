@@ -134,9 +134,9 @@ class RegistrationNumberTest {
 
   @Test
   fun `examples carry their canonical value`() {
-    assertThat(RegistrationNumber.Example.handelsregisterAbteilungA.value).isEqualTo("HRA 95175")
-    assertThat(RegistrationNumber.Example.handelsregisterAbteilungB.value).isEqualTo("HRB 25478")
-    assertThat(RegistrationNumber.Example.genossenschaftsregister.value).isEqualTo("GnR 1234")
-    assertThat(RegistrationNumber.Example.vereinsregister.value).isEqualTo("VR 4321")
+    assertThat(RegistrationNumberExample.handelsregisterAbteilungA.value).isEqualTo("HRA 95175")
+    assertThat(RegistrationNumberExample.handelsregisterAbteilungB.value).isEqualTo("HRB 25478")
+    assertThat(RegistrationNumberExample.genossenschaftsregister.value).isEqualTo("GnR 1234")
+    assertThat(RegistrationNumberExample.vereinsregister.value).isEqualTo("VR 4321")
   }
 }

@@ -41,6 +41,8 @@ export { type OnPaginationChange, Pagination, type PaginationProps, type Paginat
 export {
   createSidebarNavMenuItem,
   createSidebarNavMenuSubItem,
+  SidebarNavCategory,
+  type SidebarNavCategoryProps,
   SidebarNavExternalLinkItem,
   type SidebarNavExternalLinkItemProps,
   type SidebarNavMenuItemProps,

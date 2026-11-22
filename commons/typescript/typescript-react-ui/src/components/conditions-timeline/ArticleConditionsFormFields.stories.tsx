@@ -17,6 +17,7 @@ import {
 
 const meta = {
   title: "Conditions timeline / ArticleConditionsFormFields",
+  component: ArticleConditionsFormFields,
 } satisfies Meta;
 
 export default meta;
@@ -33,7 +34,7 @@ function useConditionsForm() {
 }
 
 /** A per-piece article (a book): the mandatory core alone, no optional parts. */
-export const CoreOnly: StoryObj<typeof meta> = {
+export const CoreOnly: StoryObj = {
   name: "Core only",
   render: () => {
     const form = useConditionsForm();
@@ -53,7 +54,7 @@ export const CoreOnly: StoryObj<typeof meta> = {
 };
 
 /** A fully-featured article: the core composed with every optional block. */
-export const FullComposition: StoryObj<typeof meta> = {
+export const FullComposition: StoryObj = {
   name: "Full composition",
   render: () => {
     const form = useConditionsForm();

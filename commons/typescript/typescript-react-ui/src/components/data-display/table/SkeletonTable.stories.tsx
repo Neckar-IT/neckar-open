@@ -4,6 +4,7 @@ import { SkeletonTable } from "./SkeletonTable";
 
 const meta = {
   title: "Data display / Skeleton Table",
+  component: SkeletonTable,
 } satisfies Meta;
 
 export default meta;
@@ -23,22 +24,22 @@ const config: TableConfig<Invoice, "invoice" | "totalAmount"> = {
   ],
 };
 
-export const DefaultStory: StoryObj<typeof meta> = {
+export const DefaultStory: StoryObj = {
   name: "Default (10 rows)",
   render: () => <SkeletonTable config={config} rowCount={10} />,
 };
 
-export const FewRowsStory: StoryObj<typeof meta> = {
+export const FewRowsStory: StoryObj = {
   name: "Few Rows",
   render: () => <SkeletonTable config={config} rowCount={3} />,
 };
 
-export const ManyRowsStory: StoryObj<typeof meta> = {
+export const ManyRowsStory: StoryObj = {
   name: "Many Rows",
   render: () => <SkeletonTable config={config} rowCount={25} />,
 };
 
-export const LargerRowHeightStory: StoryObj<typeof meta> = {
+export const LargerRowHeightStory: StoryObj = {
   name: "Larger Row Height (estimatedRowHeight: 96)",
   render: () => <SkeletonTable config={{ ...config, estimatedRowHeight: 96 }} rowCount={5} />,
 };

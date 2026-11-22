@@ -7,12 +7,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Chart",
+  component: ChartContainer,
 } satisfies Meta;
 
 export default meta;
@@ -41,7 +38,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const Chart: StoryObj<typeof meta> = {
+export const Chart: StoryObj = {
   render: () => {
     // disable animations for screenshot tests
     const testMode = isTestMode();

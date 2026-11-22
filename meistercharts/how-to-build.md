@@ -34,4 +34,4 @@ The task `npmCopyBundleContent` copies `meistercharts-api/meistercharts-easy-api
 
 ## Build as a build of its own
 
-https://github.com/Neckar-IT/meistercharts holds this directory as a Gradle build of its own. It builds the library modules from their sources and resolves the `it.neckar.open` libraries from Maven Central in the version `neckarOpenVersion` of `gradle.properties`.
+https://github.com/Neckar-IT/meistercharts holds this directory as a Gradle build of its own. It builds the library modules from their sources. Every other project of `internal/open`, named in the build scripts as `project(Projects.open.…)`, resolves from Maven Central as `it.neckar.open` library in the version `neckarOpenVersion` of `gradle.properties`.

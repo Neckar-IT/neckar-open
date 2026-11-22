@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { PhoneNumberInputFormField } from "./PhoneNumberInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / PhoneNumberInputFormField",
+  component: PhoneNumberInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -32,11 +29,7 @@ const formSchema = zod.object({
 
 type FormSchema = zod.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
-export const PhoneNumberInputFormFieldStory: StoryObj<typeof meta> = {
+export const PhoneNumberInputFormFieldStory: StoryObj = {
   name: "PhoneNumberInputFormField",
   render: () => {
     const form = useForm<FormSchema>({

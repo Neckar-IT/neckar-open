@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Beaker Full Icon
+ * Beaker filled to the top.
  */
 
 export function BeakerFullIcon(props: React.ComponentProps<"svg"> & CustomIconProps) {

@@ -104,6 +104,22 @@ subprojects {
   // the artifacts are built by then anyway.
   tasks.named("build") {
     dependsOn(tasks.withType(GenerateModuleMetadata::class.java))
+    dependsOn(tasks.withType(GenerateMavenPom::class.java))
+  }
+
+  // Maven Central rejects the whole deployment for one POM dependency without a version, which a dependency declared by
+  // coordinates alone produces; the check runs with every build instead of first in the tag pipeline.
+  tasks.withType<GenerateMavenPom>().configureEach {
+    doLast {
+      // Read at execution: the java publication of a JVM-only module sets the destination after this block.
+      val pomFile = (this as GenerateMavenPom).destination
+      val versionless = Regex("<dependency>(.*?)</dependency>", RegexOption.DOT_MATCHES_ALL).findAll(pomFile.readText())
+        .map { it.groupValues[1] }
+        .filterNot { it.contains("<version>") }
+        .map { Regex("<artifactId>(.*?)</artifactId>").find(it)?.groupValues?.get(1) ?: it.trim() }
+        .toList()
+      check(versionless.isEmpty()) { "$pomFile names dependencies without a version: ${versionless.joinToString()}" }
+    }
   }
 
   extensions.configure<MavenPublishBaseExtension>("mavenPublishing") {

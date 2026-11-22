@@ -5,12 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input as InputComponent } from "./Input";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Input",
+  component: InputComponent,
   decorators: [
     (Story) => (
       <div className="w-80">
@@ -22,11 +19,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Input: StoryObj<typeof meta> = {
+export const Input: StoryObj = {
   render: () => {
     return <InputComponent placeholder="Email" type="email" />;
   },

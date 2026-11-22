@@ -12,12 +12,9 @@ import { Form } from "../../forms/form";
 import { Button } from "../../primitives/button";
 import { DateRangePickerFormField } from "./FormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Date Range Picker / Form Field",
+  component: DateRangePickerFormField,
   decorators: [
     (Component) => (
       <div className="flex items-center justify-start px-4">
@@ -54,10 +51,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<Args> = {
   args: {

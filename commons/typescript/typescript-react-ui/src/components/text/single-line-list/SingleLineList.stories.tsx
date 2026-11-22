@@ -5,6 +5,7 @@ import { SingleLineList } from "./SingleLineList";
 
 const meta = {
   title: "Text / SingleLineList",
+  component: SingleLineList,
 } satisfies Meta;
 
 export default meta;
@@ -22,7 +23,7 @@ const images: string[] = [
 ];
 
 /** One table row per list length; every row keeps the height of one line. */
-export const SingleLineListStory: StoryObj<typeof meta> = {
+export const SingleLineListStory: StoryObj = {
   name: "SingleLineList",
   render: () => (
     <TooltipProvider>

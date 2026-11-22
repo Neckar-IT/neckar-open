@@ -2,38 +2,8 @@
  * Imports
  */
 
+import { type ObservabilityConfig, TraceIdPlaceholder } from "@neckar-hub/typescript-utils/observability";
 import { createContext, useContext, type PropsWithChildren } from "react";
-
-/**
- * Type Declarations
- */
-
-/**
- * Placeholder substituted with the concrete trace ID inside
- * [ObservabilityConfig.traceLinkTemplate].
- */
-export const TraceIdPlaceholder = "__TRACE_ID__";
-
-export interface ObservabilityConfig {
-  /**
-   * Full Grafana-Tempo deep-link URL template with the literal placeholder
-   * [TraceIdPlaceholder] where the concrete trace ID is substituted.
-   *
-   * Built by the app config from the environment-specific Grafana base URL, so
-   * the version-dependent Grafana Explore URL schema lives in exactly one place
-   * outside this library. When `undefined`, the trace ID is shown as plain text
-   * without a link.
-   */
-  traceLinkTemplate?: string;
-
-  /**
-   * Optional getter for a locally generated trace ID, used for errors that
-   * never reached the backend (no `NeckarIT-Trace-Id` response header). Injected by
-   * apps that run the frontend OpenTelemetry SDK, so this library never imports
-   * `@opentelemetry/api` directly.
-   */
-  getCurrentTraceId?: () => string | undefined;
-}
 
 /**
  * Context

@@ -8,8 +8,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEmbeddedTranslation } from "../localization/useEmbeddedTranslation";
 
 /**
- * Meta Information
- *
  * The one state specific to the TokenAuthProvider. Its pending state looks exactly like
  * "Auth Screens / Authenticating" and is not repeated here.
  */
@@ -19,10 +17,6 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const InvalidLoginToken: StoryObj<typeof meta> = {
   name: "Invalid login token",

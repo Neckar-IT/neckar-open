@@ -4,11 +4,9 @@ import { useState } from "react";
 import { Button } from "../../primitives/button";
 import { FileUploadSlot } from "./FileUploadSlot";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Media / FileUploadSlot",
+  component: FileUploadSlot,
 } satisfies Meta;
 
 export default meta;
@@ -21,9 +19,6 @@ interface Args {
   maximumSize: number;
 }
 
-/**
- * Stories
- */
 export const FileUploadSlotStory: StoryObj<Args> = {
   name: "File Upload Slot",
   args: {
@@ -77,12 +72,12 @@ function HeldUpload({ uploadProgress }: { uploadProgress: UploadProgress }): Rea
   );
 }
 
-export const FileUploadSlotTransferStory: StoryObj<typeof meta> = {
+export const FileUploadSlotTransferStory: StoryObj = {
   name: "File Upload Slot Transfer (62 %)",
   render: () => <HeldUpload uploadProgress={{ kind: "uploading", fraction: 0.62 }} />,
 };
 
-export const FileUploadSlotProcessingStory: StoryObj<typeof meta> = {
+export const FileUploadSlotProcessingStory: StoryObj = {
   name: "File Upload Slot Processing",
   render: () => <HeldUpload uploadProgress={{ kind: "processing" }} />,
 };

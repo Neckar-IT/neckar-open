@@ -7,21 +7,14 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { Toggle as ToggleComponent } from "./Toggle";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Toggle",
+  component: ToggleComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Toggle: StoryObj<typeof meta> = {
+export const Toggle: StoryObj = {
   render: () => {
     const [state, setState] = useState(false);
 

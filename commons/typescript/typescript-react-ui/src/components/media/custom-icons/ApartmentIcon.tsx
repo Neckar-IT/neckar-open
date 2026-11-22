@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Apartment icon
+ * Apartment: a door inside a building outline.
  */
 
 export function ApartmentIcon(props: React.ComponentProps<"svg"> & CustomIconProps) {

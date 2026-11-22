@@ -62,10 +62,6 @@ export interface RegistrationScreenProps {
   textKeys?: RegistrationScreenTextKeys;
 }
 
-/**
- * RegistrationScreen Component
- */
-
 export function RegistrationScreen(props: RegistrationScreenProps): React.ReactElement {
   const textKeys = {
     htmlTitle: props.textKeys?.htmlTitle ?? "registrationScreen.htmlTitle",

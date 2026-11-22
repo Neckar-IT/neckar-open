@@ -13,12 +13,9 @@ import { SelectItem } from "../../primitives/select";
 import { Form } from "../form";
 import { SelectFormField } from "./SelectFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / SelectFormField",
+  component: SelectFormField,
 } satisfies Meta;
 
 export default meta;
@@ -43,10 +40,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const SelectFormFieldStory: StoryObj<Args> = {
   name: "SelectFormField",

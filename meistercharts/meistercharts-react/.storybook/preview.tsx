@@ -19,6 +19,8 @@ function StoryFrame({ colorMode, children }: { colorMode: StorybookColorMode; ch
 }
 
 const preview: Preview = {
+  // A docs page per story file next to its stories, with the props table of its `component`.
+  tags: ["autodocs"],
   decorators: [
     (Story, context) => (
       <StoryFrame colorMode={storybookColorMode(context.globals)}>

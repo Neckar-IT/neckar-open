@@ -7,19 +7,12 @@ import { useState } from "react";
 import { Button } from "../../primitives/button";
 import { SaveDialog, type SaveDialogProps } from "./SaveDialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Overlays / SaveDialog",
+  component: SaveDialog,
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const SaveDialogStory: StoryObj<Pick<SaveDialogProps, "size">> = {
   name: "SaveDialog",

@@ -27,69 +27,54 @@
  */
 package it.neckar.customer.company
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNull
+import assertk.assertions.messageContains
+import it.neckar.open.resources.getResourceSafe
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.TestFactory
 
+/**
+ * Holds [BIC] to the conformance corpus `BIC.cases.json`, which the Vitest of `validateBicShape` in
+ * `@neckar-hub/typescript-utils/payment-formats` reads as well.
+ */
 class BICTest {
 
-  @Test
-  fun `normalizes to uppercase`() {
-    assertThat(BIC("cobadeffxxx").value).isEqualTo("COBADEFFXXX")
-  }
+  private val corpus: Corpus = Json.decodeFromString(javaClass.getResourceSafe("/BIC.cases.json").readText())
 
-  @Test
-  fun `trims whitespace`() {
-    assertThat(BIC("  COBADEFFXXX  ").value).isEqualTo("COBADEFFXXX")
-  }
+  @TestFactory
+  fun `parse decides every conformance case`(): List<DynamicTest> = corpus.cases.map { case ->
+    DynamicTest.dynamicTest("\"${case.input}\"") {
+      when (val parsed = BIC.parse(case.input)) {
+        is BicParseResult.Valid -> {
+          assertThat(case.violation, "expected a violation for \"${case.input}\"").isNull()
+          assertThat(parsed.bic.value).isEqualTo(case.canonical)
+        }
 
-  @Test
-  fun `removes spaces`() {
-    assertThat(BIC("COBA DEFF XXX").value).isEqualTo("COBADEFFXXX")
-  }
-
-  @Test
-  fun `normalizes combined input`() {
-    assertThat(BIC("  coba deff xxx  ").value).isEqualTo("COBADEFFXXX")
-  }
-
-  @Test
-  fun `different input formats produce equal instances`() {
-    val withSpaces = BIC("COBA DEFF XXX")
-    val lowercase = BIC("cobadeffxxx")
-    val trimmed = BIC("  COBADEFFXXX  ")
-
-    assertThat(withSpaces).isEqualTo(lowercase)
-    assertThat(withSpaces).isEqualTo(trimmed)
-  }
-
-  @Test
-  fun `accepts 8-character BIC`() {
-    assertThat(BIC("COBADEFF").value).isEqualTo("COBADEFF")
-  }
-
-  @Test
-  fun `accepts 11-character BIC`() {
-    assertThat(BIC("COBADEFFXXX").value).isEqualTo("COBADEFFXXX")
-  }
-
-  @Test
-  fun `rejects blank input`() {
-    assertThrows<IllegalArgumentException> {
-      BIC("   ")
+        is BicParseResult.Invalid -> {
+          assertThat(case.canonical, "expected \"${case.input}\" to be valid").isNull()
+          assertThat(parsed.violation).isEqualTo(case.violation)
+        }
+      }
     }
   }
 
   @Test
-  fun `rejects invalid length`() {
-    assertThrows<IllegalArgumentException> {
-      BIC("COBADE")
-    }
-    assertThrows<IllegalArgumentException> {
-      BIC("COBADEFFXXXY")
-    }
+  fun `invoke throws for an input parse rejects`() {
+    assertFailure { BIC("COBADE") }
+      .isInstanceOf(IllegalArgumentException::class)
+      .messageContains("InvalidLength")
+  }
+
+  @Test
+  fun `the corpus covers every violation`() {
+    assertThat(corpus.cases.mapNotNull { it.violation }.toSet()).isEqualTo(BicFormatViolation.entries.toSet())
   }
 
   @Test
@@ -114,23 +99,17 @@ class BICTest {
   }
 
   @Test
-  fun `parse returns Valid for a well-formed input in any format`() {
-    val result = BIC.parse("coba deff xxx")
-    assertThat(result).isEqualTo(BicParseResult.Valid(BIC("COBADEFFXXX")))
-  }
-
-  @Test
-  fun `parse returns Invalid InvalidLength for a too short input`() {
-    val result = BIC.parse("COBADE")
-    assertThat(result).isEqualTo(BicParseResult.Invalid(BicFormatViolation.InvalidLength))
-  }
-
-  @Test
   fun `examples carry their canonical value`() {
-    assertThat(BIC.Example.commerzbank.value).isEqualTo("COBADEFFXXX")
-    assertThat(BIC.Example.deutscheBank.value).isEqualTo("DEUTDEDBFRA")
-    assertThat(BIC.Example.sparkasse.value).isEqualTo("SOLADES1TBB")
-    assertThat(BIC.Example.volksbank.value).isEqualTo("GENODEFF701")
-    assertThat(BIC.Example.shortForm.value).isEqualTo("COBADEFF")
+    assertThat(BICExample.commerzbank.value).isEqualTo("COBADEFFXXX")
+    assertThat(BICExample.deutscheBank.value).isEqualTo("DEUTDEDBFRA")
+    assertThat(BICExample.sparkasse.value).isEqualTo("SOLADES1TBB")
+    assertThat(BICExample.volksbank.value).isEqualTo("GENODEFF701")
+    assertThat(BICExample.shortForm.value).isEqualTo("COBADEFF")
   }
+
+  @Serializable
+  private data class Corpus(val purpose: String, val frontendDetectable: List<BicFormatViolation>, val cases: List<Case>)
+
+  @Serializable
+  private data class Case(val input: String, val canonical: String? = null, val violation: BicFormatViolation? = null)
 }

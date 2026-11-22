@@ -56,7 +56,7 @@ type EntityProp<TPropName extends string, TEntity> = {
  *   call site: `<BookTitle book={...} />`. Currying keeps `propName` the only generic
  *   of the outer call so TS reliably infers it as a literal.
  * - `<TEntity, TExtra?>` are the inner generics: the entity type and an optional bag
- *   of extra props (e.g. `{ badgeVariant: "icon" | "with-text" }` for `*Display`).
+ *   of extra props (e.g. `{ badgeVariant?: StatusBadgeVariant }` for `*Display`).
  * - Inside `render`, the argument is always `entity` regardless of the outer prop name.
  *
  * Caller convention for the entity value:
@@ -95,7 +95,7 @@ type EntityProp<TPropName extends string, TEntity> = {
  *
  * @example Composite with custom layout — `baseClassName` for the wrap, `TExtra` for extra props
  * ```tsx
- * export const BookDisplay = entityPropertyRenderer("book")<BookPreview | BookTableEntry | BookDetails, { badgeVariant?: "icon" | "with-text" }>({
+ * export const BookDisplay = entityPropertyRenderer("book")<BookPreview | BookTableEntry | BookDetails, { badgeVariant?: StatusBadgeVariant }>({
  *   displayName: "BookDisplay",
  *   baseClassName: "inline-flex items-center gap-2",
  *   render: ({ entity, badgeVariant = "icon" }) => (

@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StepDivider as StepDividerComponent } from "./StepDivider";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Layout / StepDivider",
+  component: StepDividerComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const StepDivider: StoryObj<typeof meta> = {
+export const StepDivider: StoryObj = {
   render: () => {
     return (
       <div className="flex items-center rounded-md border">

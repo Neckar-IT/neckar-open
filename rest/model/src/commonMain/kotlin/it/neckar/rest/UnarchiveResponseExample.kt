@@ -35,6 +35,3 @@ object UnarchiveResponseExample {
   val alreadyActive: UnarchiveResponse = UnarchiveResponse.alreadyActive()
   val notFound: UnarchiveResponse = UnarchiveResponse.notFound()
 }
-
-val UnarchiveResponse.Companion.Example: UnarchiveResponseExample
-  get() = UnarchiveResponseExample

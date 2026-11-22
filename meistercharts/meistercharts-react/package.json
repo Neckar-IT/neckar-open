@@ -35,7 +35,7 @@
     "test": "pnpm run typecheck && pnpm run test:unit",
     "test:unit": "vitest run",
     "test:watch": "vitest watch",
-    "storybook": "storybook dev --no-open",
+    "storybook": "storybook dev --no-open --host 127.0.0.1",
     "storybook:build": "storybook build --output-dir build/storybook",
     "push": "pnpm run build:deps && pnpm run test && pnpm run lint && pnpm run build && pnpm publish --access public",
     "push:dry": "pnpm run build:deps && pnpm run test && pnpm run lint && pnpm run build && pnpm publish --access public --no-git-checks --dry-run"
@@ -49,6 +49,7 @@
     "@neckar-hub/typescript-config": "workspace:*",
     "@neckar-hub/typescript-react-utils": "workspace:*",
     "@neckar-hub/vite-config": "workspace:*",
+    "@storybook/addon-docs": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/jest-dom": "catalog:",

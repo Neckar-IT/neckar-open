@@ -37,6 +37,3 @@ object ArchiveResponseExample {
   val alreadyArchived: ArchiveResponse<Nothing> = ArchiveResponse.alreadyArchived()
   val notFound: ArchiveResponse<Nothing> = ArchiveResponse.notFound()
 }
-
-val ArchiveResponse.Companion.Example: ArchiveResponseExample
-  get() = ArchiveResponseExample

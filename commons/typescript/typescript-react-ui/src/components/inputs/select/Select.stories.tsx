@@ -8,12 +8,9 @@ import { CodeBlock } from "../../data-display/code-block";
 import { SelectGroup, SelectItem, SelectLabel, SelectSeparator } from "../../primitives/select";
 import { Select } from "./Select";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Select",
+  component: Select,
 } satisfies Meta;
 
 export default meta;
@@ -26,10 +23,6 @@ interface Args {
   disabled: boolean;
   isInvalid: boolean;
 }
-
-/**
- * Stories
- */
 
 export const SelectStory: StoryObj<Args> = {
   name: "Select",

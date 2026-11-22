@@ -6,12 +6,9 @@ import type { TextKey } from "@neckar-hub/typescript-react-i18n";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LoadingIndicator as LoadingIndicatorComponent } from "./LoadingIndicator";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / LoadingIndicator",
+  component: LoadingIndicatorComponent,
 } satisfies Meta;
 
 export default meta;
@@ -23,10 +20,6 @@ export default meta;
 interface Args {
   textKey: TextKey;
 }
-
-/**
- * Stories
- */
 
 export const LoadingIndicator: StoryObj<Args> = {
   args: {

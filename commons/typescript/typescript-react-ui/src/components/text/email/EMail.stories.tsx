@@ -3,11 +3,12 @@ import { EMail } from "./EMail";
 
 const meta = {
   title: "Text / EMail",
+  component: EMail,
 } satisfies Meta;
 
 export default meta;
 
-export const EMailStory: StoryObj<typeof meta> = {
+export const EMailStory: StoryObj = {
   name: "E Mail",
   render: () => {
     return <EMail value="test@email.com" />;

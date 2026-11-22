@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { TextInputFormField } from "./TextInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / TextInputFormField",
+  component: TextInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -43,10 +40,6 @@ const formSchema = z.object({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const TextInputFormFieldStory: StoryObj<Args> = {
   name: "TextInputFormField",

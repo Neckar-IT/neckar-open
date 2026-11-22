@@ -11,11 +11,12 @@ import {
 
 const meta = {
   title: "Price timeline / PriceTimelineEntryFormFields",
+  component: PriceTimelineEntryFormFields,
 } satisfies Meta;
 
 export default meta;
 
-export const PriceTimelineEntryFormFieldsStory: StoryObj<typeof meta> = {
+export const PriceTimelineEntryFormFieldsStory: StoryObj = {
   name: "PriceTimelineEntryFormFields",
   render: () => {
     const form = useForm<PriceTimelineEntryUpsertRequestSchema>({

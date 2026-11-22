@@ -7,12 +7,9 @@ import { CheckIcon } from "lucide-react";
 import { Button } from "../button";
 import { CardContent, CardDescription, CardFooter, CardHeader, Card as CardRoot, CardTitle } from "./Card";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Card",
+  component: CardRoot,
 } satisfies Meta;
 
 export default meta;
@@ -39,11 +36,7 @@ const notifications = [
   },
 ];
 
-/**
- * Stories
- */
-
-export const Card: StoryObj<typeof meta> = {
+export const Card: StoryObj = {
   render: () => {
     return (
       <CardRoot className="w-96">

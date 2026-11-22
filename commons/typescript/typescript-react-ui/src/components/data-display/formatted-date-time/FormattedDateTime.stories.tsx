@@ -3,11 +3,12 @@ import { FormattedDateTime as FormattedDateTimeComponent } from "./FormattedDate
 
 const meta = {
   title: "Data display / FormattedDateTime",
+  component: FormattedDateTimeComponent,
 } satisfies Meta;
 
 export default meta;
 
-export const FormattedDateTime: StoryObj<typeof meta> = {
+export const FormattedDateTime: StoryObj = {
   render: () => (
     <div className="space-y-2">
       <div>

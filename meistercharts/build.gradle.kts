@@ -117,7 +117,6 @@ tasks.register("generateFiddleExamplesUrl") {
 }
 
 delivery {
-  product = ProductId("meistercharts")
   tagPrefix = GitTagPrefix("meistercharts")
   versionScheme = VersionScheme.Semver
   versionProperty = "meistercharts.version"

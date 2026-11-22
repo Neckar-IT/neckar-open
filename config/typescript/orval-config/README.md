@@ -117,8 +117,17 @@ export default config;
 ### Extract example data from the OpenAPI specification
 
 You can extract example data from the OpenAPI specification and use it in your Typescript code. This will create an 
-examples folder with a file for each example type (`x-type-ref`) at the same place where the typescript file was generated.
+examples folder with a file for each distinct example value of a route, named after its type (`x-type-ref`), at the same place where the
+typescript file was generated.
 Every Orval run deletes the examples folder first, so a file placed there by hand is lost.
+
+`x-type-ref` names the variant, also for a generic response: the good example of `GET /api/authors/{authorId}` is
+`foundResponseGoodAuthorDetailsWithType.example.ts`, and a test reads its `.data` without narrowing. The first example of
+a type in spec order keeps the plain name. A later example of the same type with another value goes to:
+
+- `<type>For<OperationName>.example.ts`, e.g. `foundResponseGoodAuthorDetailsWithTypeForPostDuplicateForAuthor.example.ts`
+- `<type>For<OperationName><ExampleId>.example.ts` once that operation has a file of the type, e.g.
+  `electroProjectConfigurationWorkflowStateResponseGoodWithTypeForGetWorkflowForConfigurationForElectroQuoteSent.example.ts`
 
 ```typescript
 /**

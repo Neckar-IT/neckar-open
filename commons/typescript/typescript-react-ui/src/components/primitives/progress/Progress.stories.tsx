@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CodeBlock } from "../../data-display/code-block";
 import { Progress as ProgressComponent } from "./Progress";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Progress",
+  component: ProgressComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Story
- */
-
-export const Progress: StoryObj<typeof meta> = {
+export const Progress: StoryObj = {
   render: () => (
     <div className="mx-auto flex w-3/5 flex-col gap-8">
       <div className="flex flex-col gap-2">

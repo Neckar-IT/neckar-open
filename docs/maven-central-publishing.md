@@ -37,6 +37,13 @@ Phasen, Versionsregeln und Exit-Codes: `tools/bin/nit-release --help`. Der Relea
 
 Auf dem Tag `open-<X.Y.Z>` veröffentlicht der Job `📦 Publish open to Maven Central` in [`gitlab-ci.d/tag.yml`](../../../gitlab-ci.d/tag.yml) die Artefakte; Ablauf und Exit-Codes: [`publish-to-maven-central.sh`](../../../gitlab-ci.d/scripts/publish-to-maven-central.sh). Eine veröffentlichte Version lässt sich auf Maven Central nie wieder ersetzen; der Review-Punkt ist deshalb der Release-MR.
 
+Die Pipeline des Release-MR führt den Job `📦 Verify open Maven Central publication` in [`gitlab-ci.d/mr.yml`](../../../gitlab-ci.d/mr.yml) aus, für `buildplatform` den Job `📦 Verify buildplatform Maven Central publication`:
+
+1. [`verify-maven-central-publication.sh`](../../../gitlab-ci.d/scripts/verify-maven-central-publication.sh) checkt den Commit mit dem Trailer `Release-Tag:` aus, den die Tag-Pipeline baut.
+2. Das Skript führt die Gradle-Argumente des Publish-Jobs aus `gitlab-ci.d/tag.yml` aus, mit `publishToMavenLocal` statt `publishToMavenCentral`. Ein Wegwerf-Key signiert, denn der Signing-Key liegt in `secret/ci/protected` und ist nur auf geschützten Refs lesbar.
+3. [`check-maven-central-publication.py`](../../../gitlab-ci.d/scripts/check-maven-central-publication.py) prüft jedes POM auf die Regeln, nach denen Maven Central ein Deployment ablehnt.
+4. [`create-gitlab-release.sh`](../../../gitlab-ci.d/scripts/create-gitlab-release.sh) schreibt mit `--dry-run` den Payload des GitLab Release nach `build-reports/maven-central-verification/`.
+
 Ein Retry von `📦 Publish open to Maven Central` lädt ein zweites Deployment hoch. Ein hochgeladenes Deployment, das `PUBLISHED` nicht erreicht hat, gibt der manuelle Job `📦 Finish open Maven Central deployment` mit `MAVEN_CENTRAL_DEPLOYMENT_ID=<deployment-id>` frei; die Fehlermeldung des Publish-Jobs nennt die ID.
 
 ## `tools/bin/nit-maven-central poll`
@@ -70,18 +77,9 @@ Credentials kommen aus `ORG_GRADLE_PROJECT_mavenCentralUsername`/`…Password`; 
 Einmalige Einrichtung für Maven Central Publishing.
 
 
-## Namespaces
+## Namespace
 
-Ein verifizierter Namespace erlaubt den Upload seiner eigenen Gruppe und jeder Untergruppe. Der Sonatype-Account hält unter https://central.sonatype.com/publishing/namespaces diese Namespaces:
-
-| Namespace | Organisation | Status | Gruppen im Repository |
-|---|---|---|---|
-| `it.neckar` | Neckar IT | Verified, SNAPSHOTs enabled | - `it.neckar.open`<br>- `it.neckar.buildplatform` |
-| `com.meistercharts` | Meistercharts | Verified | keine |
-| `com.cedarsoft` | Cedarsoft | Verified | keine |
-| `com.clashinspector` | Clashinspector | Verified | keine |
-
-Maven Central nimmt Snapshots nur für einen Namespace mit „SNAPSHOTs enabled“ an.
+Der verifizierte Namespace `it.neckar` des Sonatype-Accounts erlaubt den Upload jeder Gruppe `it.neckar.*`, Snapshots eingeschlossen.
 
 ## Sonatype User Token generieren
 

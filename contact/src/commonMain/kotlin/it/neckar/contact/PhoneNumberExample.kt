@@ -37,6 +37,3 @@ object PhoneNumberExample {
   val austria: PhoneNumber = PhoneNumber("+43 1 234567")
   val switzerland: PhoneNumber = PhoneNumber("+41 44 1234567")
 }
-
-val PhoneNumber.Companion.Example: PhoneNumberExample
-  get() = PhoneNumberExample

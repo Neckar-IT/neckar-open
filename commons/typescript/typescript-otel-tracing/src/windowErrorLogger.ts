@@ -7,7 +7,7 @@ let installed = false;
  * and unhandled promise rejections to the OTEL logging pipeline.
  *
  * Safe to call multiple times — listeners are only installed once.
- * Call this once in main.tsx after initializeOtel().
+ * `bootstrapObservability` calls it once, after `initializeOtel`.
  */
 export function installWindowErrorLogger(): void {
   if (installed) {

@@ -14,20 +14,20 @@ the static site served at that URL.
 All components are located in `src/components` and grouped by function. Each category is one export,
 `@neckar-hub/typescript-react-ui/<category>`, backed by `src/components/<category>/index.ts`.
 
-| Category       | Content                                                                                                                                                                           |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `inputs`       | Inputs without form context: `TextInput`, `NumberInput`, `DatePicker`, `Select`, `Combobox`, `Checkbox`, `Switch`                                                                 |
-| `filters`      | Filter inputs and filter bars: `FilterByEntity`, `FilterByYear`, `FilterTrigger`, `Filters`                                                                                       |
-| `forms`        | React Hook Form binding: `Form`, `FormFieldBase`, every `*FormField`, `Label`, `useUpsertAction`                                                                                  |
-| `data-display` | Displaying data: `ResponsiveTable`, `DataTable`, `DescriptionList`, `EntityDetailsList`, `KeyValueGrid`, `NumberOutput`, `ChartContainer`                                         |
-| `feedback`     | Status, progress, messages: `ToastProvider`, `LoadingIndicator`, `Empty`, `Badge`, `Alert`, `Skeleton`                                                                            |
-| `navigation`   | Orientation: `Pagination`, `Breadcrumbs`, `TimelineNav`, `Tabs`, `Sidebar`, `MultiStep`, `createSidebarNavMenuItem`, `createHeaderNavItem`                                        |
-| `layout`       | Containers and Semantic Layout Components: `Page`, `ButtonBar`, `BadgeBar`, `DataContainer`, `Card`, `Accordion`                                                                  |
-| `overlays`     | Dialogs, popovers, sheets: `FormDialog`, `SaveDialog`, `ConfirmationDialog`, `Dialog`, `Sheet`, `Tooltip`, `createEntityDialogAction`, `createEntityDialogAtom`, `DialogRegistry` |
-| `actions`      | Triggers: `Button`, `AddButton`, `ActionButton`, `DropdownMenu`, `Toggle`                                                                                                         |
-| `media`        | Images, icons, uploads: `Image`, `ImageUpload`, `IconWithTooltip`, `Avatar`                                                                                                       |
-| `text`         | Text rendering: `HighlightText`, `NoValue`, `EMail`, `PhoneNumber`                                                                                                                |
-| `quantities`   | Units: `current`, `energy`, `fraction`, `money`, `percentage`, `power`, `time`, `voltage`                                                                                         |
+| Category       | Content                                                                                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inputs`       | Inputs without form context: `TextInput`, `NumberInput`, `DatePicker`, `Select`, `Combobox`, `Checkbox`, `Switch`                                     |
+| `filters`      | Filter inputs and filter bars: `FilterByEntity`, `FilterByYear`, `FilterTrigger`, `Filters`                                                           |
+| `forms`        | React Hook Form binding: `Form`, `FormFieldBase`, every `*FormField`, `Label`, `useUpsertAction`                                                      |
+| `data-display` | Displaying data: `ResponsiveTable`, `DataTable`, `DescriptionList`, `EntityDetailsList`, `KeyValueGrid`, `NumberOutput`, `ChartContainer`             |
+| `feedback`     | Status, progress, messages: `ToastProvider`, `LoadingIndicator`, `Empty`, `Badge`, `Alert`, `Skeleton`                                                |
+| `navigation`   | Orientation: `Pagination`, `Breadcrumbs`, `TimelineNav`, `Tabs`, `Sidebar`, `MultiStep`, `createSidebarNavMenuItem`, `createHeaderNavItem`            |
+| `layout`       | Containers and Semantic Layout Components: `Page`, `ButtonBar`, `BadgeBar`, `DataContainer`, `Card`, `Accordion`                                      |
+| `overlays`     | Dialogs, popovers, sheets: `FormDialog`, `SaveDialog`, `ConfirmationDialog`, `Dialog`, `Sheet`, `Tooltip`, `createEntityDialogAtom`, `DialogRegistry` |
+| `actions`      | Triggers: `Button`, `AddButton`, `ActionButton`, `DropdownMenu`, `Toggle`                                                                             |
+| `media`        | Images, icons, uploads: `Image`, `ImageUpload`, `IconWithTooltip`, `Avatar`                                                                           |
+| `text`         | Text rendering: `HighlightText`, `NoValue`, `EMail`, `PhoneNumber`                                                                                    |
+| `quantities`   | Units: `current`, `energy`, `fraction`, `money`, `percentage`, `power`, `time`, `voltage`                                                             |
 
 Every component lives in its own directory `src/components/<category>/<component>/`. Inside the package, import the
 component directory (`../inputs/text-input`), never a category barrel.
@@ -155,6 +155,7 @@ This package screenshots all Storybook stories and compares them against the bas
   ```typescript
   const meta = {
     title: "Actions / Button",
+    component: Button,
     tags: ["no-screenshot"],
   } satisfies Meta;
   ```
@@ -164,6 +165,7 @@ This package screenshots all Storybook stories and compares them against the bas
   ```typescript
   const meta = {
     title: "Actions / Button",
+    component: Button,
     tags: ["responsive"],
   } satisfies Meta;
   ```

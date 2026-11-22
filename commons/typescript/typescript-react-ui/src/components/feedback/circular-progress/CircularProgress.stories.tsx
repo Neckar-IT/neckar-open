@@ -5,12 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CircularProgress as CircularProgressComponent, type Props } from "./CircularProgress";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / CircularProgress",
+  component: CircularProgressComponent,
   decorators: [
     (Component) => (
       <div className="flex items-center justify-center">
@@ -31,10 +28,6 @@ const meta = {
 } satisfies Meta<Props>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const CircularProgress: StoryObj<Props> = {
   args: {

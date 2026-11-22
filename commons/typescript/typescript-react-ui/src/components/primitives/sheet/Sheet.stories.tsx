@@ -18,21 +18,14 @@ import {
   SheetTrigger,
 } from "./Sheet";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Sheet",
+  component: SheetRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Sheet: StoryObj<typeof meta> = {
+export const Sheet: StoryObj = {
   render: () => {
     const [isOpen, setIsOpen] = useState(true);
 

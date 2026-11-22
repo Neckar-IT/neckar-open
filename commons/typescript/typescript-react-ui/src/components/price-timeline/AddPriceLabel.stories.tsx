@@ -3,15 +3,16 @@ import { AddPriceLabel } from "./AddPriceLabel";
 
 const meta = {
   title: "Price timeline / AddPriceLabel",
+  component: AddPriceLabel,
 } satisfies Meta;
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
+export const Default: StoryObj = {
   render: () => <AddPriceLabel />,
 };
 
-export const WrappedInLink: StoryObj<typeof meta> = {
+export const WrappedInLink: StoryObj = {
   render: () => (
     <a href="/price-timeline/new" className="underline-offset-4 hover:underline">
       <AddPriceLabel />

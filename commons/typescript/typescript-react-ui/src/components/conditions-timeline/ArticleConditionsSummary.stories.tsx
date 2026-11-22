@@ -18,6 +18,7 @@ import {
 
 const meta = {
   title: "Conditions timeline / ArticleConditionsSummary",
+  component: ArticleConditionsSummary,
 } satisfies Meta;
 
 export default meta;
@@ -78,7 +79,7 @@ const cases: Case[] = [
   { label: "summary null", summary: null },
 ];
 
-export const ArticleConditionsSummaryStory: StoryObj<typeof meta> = {
+export const ArticleConditionsSummaryStory: StoryObj = {
   name: "ArticleConditionsSummary",
   render: () => {
     return (

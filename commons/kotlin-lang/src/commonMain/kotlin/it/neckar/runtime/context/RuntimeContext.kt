@@ -52,7 +52,7 @@ data class RuntimeContext<HostType: ServiceHost>(
   /**
    * Business / lifecycle environment — which functional stage of delivery
    * the application is in.
-   * Examples: Development, Staging, Demo, Production, QA, Sandbox.
+   * Examples: Development, QA, Staging, Demo, Production.
    */
   val stage: DeploymentStage,
 
@@ -102,7 +102,7 @@ data class RuntimeContext<HostType: ServiceHost>(
     /**
      * Business / lifecycle environment — which functional stage of delivery
      * the application is in.
-     * Examples: Development, Staging, Demo, Production, QA, Sandbox.
+     * Examples: Development, QA, Staging, Demo, Production.
      */
     val deploymentStage: DeploymentStage
       get() {

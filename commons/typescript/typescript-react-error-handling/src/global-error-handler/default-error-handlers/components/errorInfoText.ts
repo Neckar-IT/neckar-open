@@ -2,10 +2,11 @@
  * Imports
  */
 
+import { type ObservabilityConfig } from "@neckar-hub/typescript-utils/observability";
 import { AxiosError } from "axios";
 import { extractTraceId } from "../../extractTraceId";
 import { formatErrorBody, MaxResponseBodyLength } from "../../formatErrorBody";
-import { buildTraceLinkUrl, type ObservabilityConfig } from "../../ObservabilityContext";
+import { buildTraceLinkUrl } from "../../ObservabilityContext";
 import { type VersionInfoData } from "../../VersionInfoContext";
 
 /**

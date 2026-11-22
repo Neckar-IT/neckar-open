@@ -48,6 +48,7 @@
     "@neckar-hub/vite-config": "workspace:*",
     "@orval/core": "catalog:",
     "@redocly/cli": "catalog:",
+    "@types/node": "catalog:",
     "jsdom": "catalog:",
     "orval": "catalog:",
     "oxlint": "catalog:",

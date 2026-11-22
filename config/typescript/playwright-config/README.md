@@ -71,7 +71,7 @@ expect(problems).toEqual([]);
 `openStorybookBuildUnderStaticSitePolicy` serves the `build/storybook/` output with the policy header of the
 `static-site` base image, rendered from [`content-security-policy-header.conf.template`](../../../../infrastructure/common/static-site/templates/includes/content-security-policy-header.conf.template)
 and the `CSP_*` defaults of its [`Dockerfile`](../../../../infrastructure/common/static-site/Dockerfile).
-It returns every page error and every Content Security Policy violation until the first story
+It opens the first story of `index.json` and returns every page error and every Content Security Policy violation until the story
 rendered and the network was idle, and throws with them when no story renders within 15 s or
 Storybook shows its error page. `storybookBuild` moves the inline scripts of `build/storybook/`
 into files beside their pages, because `script-src 'self'` blocks the inline scripts `storybook build`
@@ -90,6 +90,24 @@ await page.locator("input[type=file]").setInputFiles(testDataFile("author-portra
 
 `testDataFile` returns the absolute path below `test-data/` at the root of the Git repository and
 throws for a missing file. A renamed file under `test-data/` therefore fails every test that names it.
+
+## Sign-in at Keycloak
+
+```typescript
+import { baseOriginPattern, signInAtKeycloak } from "@neckar-hub/playwright-config/keycloak-sign-in";
+
+await signInAtKeycloak(page, "https://patterns.localdev");
+
+// after a later redirect through Keycloak
+await page.waitForURL(baseOriginPattern("https://patterns.localdev"));
+```
+
+`signInAtKeycloak` opens the app, fills the login form of Keycloak and waits for the app's `h1`:
+
+- **Target `https://<product>.localdev`:** the form of the local Keycloak `auth.localdev` receives its test user `dev@auth.localdev` / `dev-password`.
+- **Every other target:** the form of `auth.neckar.it` receives the environment variables `PLAYWRIGHT_KEYCLOAK_USER` and `PLAYWRIGHT_KEYCLOAK_PASSWORD`, which the package's `playwright.smoke.config.ts` loads from the `.env` file of the repository root.
+
+`baseOriginPattern` matches a URL on the app's origin alone; the Keycloak URL carries the app's host in its `redirect_uri`.
 
 ## Runs and baselines
 

@@ -11,6 +11,7 @@ import { FieldArrayAddButton, FieldArrayRemoveButton } from "./FieldArrayButtons
 
 const meta = {
   title: "Layout / FieldArray",
+  component: FieldArray,
 } satisfies Meta;
 
 export default meta;
@@ -36,7 +37,7 @@ const emptyArea: FormSchema["areas"][number] = { label: "", x: 0, y: 0, width: 0
  * with a title, a field grid, and a remove button; a full-width add button follows. For a compact
  * one-line list of narrow value objects, use `FormArrayRow` instead.
  */
-export const MultiFieldCards: StoryObj<typeof meta> = {
+export const MultiFieldCards: StoryObj = {
   render: () => {
     const form = useForm<FormSchema>({
       resolver: zodResolver(formSchema),

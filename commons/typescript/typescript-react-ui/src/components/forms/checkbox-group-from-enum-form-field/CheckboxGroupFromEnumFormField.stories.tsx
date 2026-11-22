@@ -21,12 +21,9 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / CheckboxGroupFromEnumFormField",
+  component: CheckboxGroupFromEnumFormField,
 } satisfies Meta;
 
 export default meta;
@@ -51,10 +48,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const CheckboxGroupFromEnumFormFieldStory: StoryObj<Args> = {
   name: "CheckboxGroupFromEnumFormField",

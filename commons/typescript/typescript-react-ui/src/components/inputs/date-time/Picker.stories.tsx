@@ -5,6 +5,7 @@ import { DateTimePicker, type DateTimePickerProps } from "./Picker";
 
 const meta = {
   title: "Inputs / Date Time Picker",
+  component: DateTimePicker,
   args: {
     defaultMonth: new Date(2024, 5, 28),
     disabled: false,

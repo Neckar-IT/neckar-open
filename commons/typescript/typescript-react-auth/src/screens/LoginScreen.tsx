@@ -45,10 +45,6 @@ interface LoginScreenProps {
   textKeys?: LoginScreenTextKeys;
 }
 
-/**
- * Login Screen
- */
-
 export function LoginScreen(props: LoginScreenProps): React.ReactElement {
   const textKeys = {
     htmlTitle: props.textKeys?.htmlTitle ?? "loginScreen.htmlTitle",

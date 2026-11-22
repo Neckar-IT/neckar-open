@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Marker, MarkerContent } from "./Marker";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Marker",
+  component: Marker,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const MarkerSeparator: StoryObj<typeof meta> = {
+export const MarkerSeparator: StoryObj = {
   render: () => {
     return (
       <div className="w-80 space-y-4">

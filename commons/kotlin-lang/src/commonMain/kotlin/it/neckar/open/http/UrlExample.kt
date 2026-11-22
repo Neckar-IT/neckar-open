@@ -46,6 +46,3 @@ object UrlExample {
     )
   }
 }
-
-val Url.Companion.Example: UrlExample
-  get() = UrlExample

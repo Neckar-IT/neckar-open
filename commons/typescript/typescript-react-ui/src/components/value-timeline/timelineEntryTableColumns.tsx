@@ -1,11 +1,11 @@
-import { PriceTimelineEntriesSortCriteria } from "@neckar-hub/typescript-utils/openapi-types";
+import { PriceTimelineEntriesSortCriteria, ValueTimelineEntryStatus } from "@neckar-hub/typescript-utils/openapi-types";
 import type { ReactNode } from "react";
 import { TranslateEmbedded } from "../../localization/TranslateEmbedded";
 import { ActionsDropdown } from "../actions";
 import type { ResponsiveColumnDefinition } from "../data-display/responsive-table";
-import { classifyTimelineEntry, type TimelineEntryStatus } from "./classifyTimelineEntry";
+import { classifyTimelineEntry } from "./classifyTimelineEntry";
 import type { TimelineEntryLike, TimelineSummaryLike } from "./timeline.types";
-import { TimelineEntryStatusBadge } from "./TimelineEntryStatusBadge";
+import { TimelineEntryBadge } from "./TimelineEntryBadge";
 import { TimelineEntryValidFrom } from "./TimelineEntryValidFrom";
 
 /**
@@ -43,7 +43,7 @@ export function statusColumn<TEntry extends TimelineEntryLike>({
     id: "status",
     header: <TranslateEmbedded textKey="timeline.fields.status" />,
     fixedWidth: "144px",
-    cell: (entry) => <TimelineEntryStatusBadge status={classifyTimelineEntry(entry, summary, now)} />,
+    cell: (entry) => <TimelineEntryBadge status={classifyTimelineEntry(entry, summary, now)} />,
   };
 }
 
@@ -63,8 +63,8 @@ export function rowActionsColumn<TEntry extends TimelineEntryLike>({
     cellClassName: "text-right",
     fixedWidth: "72px",
     cell: (entry) => {
-      const status: TimelineEntryStatus = classifyTimelineEntry(entry, summary, now);
-      if (status !== "future") return null;
+      const status: ValueTimelineEntryStatus = classifyTimelineEntry(entry, summary, now);
+      if (status !== ValueTimelineEntryStatus.Future) return null;
       return <ActionsDropdown>{rowActions(entry)}</ActionsDropdown>;
     },
   };

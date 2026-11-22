@@ -3,11 +3,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { FileSlot } from "./FileSlot";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Media / FileSlot",
+  component: FileSlot,
 } satisfies Meta;
 
 export default meta;
@@ -19,9 +17,6 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Stories
- */
 export const FileSlotStory: StoryObj<Args> = {
   name: "File Slot",
   args: {

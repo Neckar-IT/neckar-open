@@ -1,15 +1,8 @@
 import { Button, type ButtonProps } from "@neckar-hub/typescript-react-ui/actions";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@neckar-hub/typescript-react-ui/overlays";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@neckar-hub/typescript-react-ui/overlays";
 import { isDefined } from "@neckar-hub/typescript-utils/lang";
 import type { Action } from "./Action";
+import { DisabledReasonTooltip } from "./DisabledReasonTooltip";
 import { useActionState } from "./useActionState";
 
 export interface ActionButtonProps extends Omit<ButtonProps, "onClick" | "children"> {
@@ -42,18 +35,7 @@ export function ActionButton({ action, variant, disabled, loading, ...buttonProp
   );
 
   if (state.disabled && isDefined(state.disabledReason)) {
-    // A disabled button fires no pointer events, so the tooltip hangs on a wrapper; the own provider keeps the button usable
-    // in an app that mounts none.
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild tabIndex={0}>
-            <span className="inline-flex">{button}</span>
-          </TooltipTrigger>
-          <TooltipContent>{state.disabledReason}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
+    return <DisabledReasonTooltip reason={state.disabledReason}>{button}</DisabledReasonTooltip>;
   }
 
   if (isDefined(action.hoverContent)) {

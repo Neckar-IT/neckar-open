@@ -34,6 +34,3 @@ object MandateReferenceExample {
   val standard: MandateReference = MandateReference("MNDT-2026-000042")
   val withSlashes: MandateReference = MandateReference("REF/2026/0815")
 }
-
-val MandateReference.Companion.Example: MandateReferenceExample
-  get() = MandateReferenceExample

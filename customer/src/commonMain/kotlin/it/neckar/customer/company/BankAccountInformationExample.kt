@@ -38,6 +38,3 @@ object BankAccountInformationExample {
   /** An eight-character BIC, where every other example carries the eleven-character form. */
   val shortBic: BankAccountInformation = BankAccountInformation("Ostsächsische Sparkasse Dresden", "Beispiel Bau GmbH", IBAN("DE 55 8505 0300 0123 4567 00"), BIC("OSDDDE81"))
 }
-
-val BankAccountInformation.Companion.Example: BankAccountInformationExample
-  get() = BankAccountInformationExample

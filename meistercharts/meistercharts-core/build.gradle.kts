@@ -1,5 +1,7 @@
 import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 
 description = """Meistercharts - Core"""
 
@@ -8,8 +10,6 @@ plugins {
   kspBoxing
 }
 
-val neckarOpenVersion: String by project
-
 kotlin {
   addKotlinDependencies(project)
   addKotlinTestDependencies(project)
@@ -17,18 +17,18 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api("it.neckar.open:annotations:$neckarOpenVersion")
+        api(project(Projects.open.annotations))
 
-        api("it.neckar.open:i18n:$neckarOpenVersion")
-        api("it.neckar.open:unit:$neckarOpenVersion")
-        api("it.neckar.open:geometry:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-lang:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-async:$neckarOpenVersion")
-        api("it.neckar.open:disposable:$neckarOpenVersion")
-        api("it.neckar.open:observable:$neckarOpenVersion")
-        api("it.neckar.open:provider:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-collections:$neckarOpenVersion")
-        api("it.neckar.open:datetime-minimal:$neckarOpenVersion")
+        api(project(Projects.open.commons.i18n))
+        api(project(Projects.open.units.unit))
+        api(project(Projects.open.commons.geometry))
+        api(project(Projects.open.commons.kotlinLang))
+        api(project(Projects.open.commons.kotlinAsync))
+        api(project(Projects.open.commons.disposable))
+        api(project(Projects.open.commons.observable))
+        api(project(Projects.open.commons.provider))
+        api(project(Projects.open.commons.kotlinCollections))
+        api(project(Projects.open.commons.datetimeMinimal))
         api(libs.kotlinx.serialization.core)
       }
     }
@@ -50,15 +50,15 @@ kotlin {
 
     jvmMain {
       dependencies {
-        api("it.neckar.open:time:$neckarOpenVersion")
+        api(project(Projects.open.commons.time))
       }
     }
 
     jvmTest {
       dependencies {
-        implementation("it.neckar.open:test-utils:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.testUtils))
 
-        implementation("it.neckar.open:kotlinx-serialization-test-utils:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.kotlinxSerializationTestUtils))
 
         implementation(libs.controlsfx)
 

@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Bold, Italic, Underline } from "lucide-react";
 import { ToggleGroupItem, ToggleGroup as ToggleGroupRoot } from "./ToggleGroup";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / ToggleGroup",
+  component: ToggleGroupRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const ToggleGroup: StoryObj<typeof meta> = {
+export const ToggleGroup: StoryObj = {
   render: () => {
     return (
       <ToggleGroupRoot type="multiple" variant="outline">

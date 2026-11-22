@@ -66,6 +66,4 @@ data class CompanyLegalInformation(
       return director.isNotBlank()
         && registerCourt.isNotBlank()
     }
-
-  companion object
 }

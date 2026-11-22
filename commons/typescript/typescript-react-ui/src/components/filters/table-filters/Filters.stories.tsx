@@ -29,6 +29,7 @@ import {
 
 const meta = {
   title: "Filters / Filters",
+  component: Filters,
   tags: ["responsive"],
 } satisfies Meta;
 
@@ -109,11 +110,11 @@ function FilteredOrders({ initialValues }: { initialValues?: Partial<OrderParams
   );
 }
 
-export const WithoutValue: StoryObj<typeof meta> = {
+export const WithoutValue: StoryObj = {
   render: () => <FilteredOrders />,
 };
 
-export const WithActivePrimaryFilters: StoryObj<typeof meta> = {
+export const WithActivePrimaryFilters: StoryObj = {
   render: () => (
     <FilteredOrders
       initialValues={{
@@ -128,7 +129,7 @@ export const WithActivePrimaryFilters: StoryObj<typeof meta> = {
   ),
 };
 
-export const WithActiveSecondaryFilters: StoryObj<typeof meta> = {
+export const WithActiveSecondaryFilters: StoryObj = {
   render: () => (
     <FilteredOrders initialValues={{ deliveryDateFrom: "2026-10-01", totalAmountMin: 3, totalAmountMax: 12, totalPriceMax: 25000 }} />
   ),

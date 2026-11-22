@@ -5,6 +5,7 @@ import { EntityStatusBadge } from "./EntityStatusBadge";
 
 const meta = {
   title: "Entities / EntityStatusBadge",
+  component: EntityStatusBadge,
 } satisfies Meta;
 
 export default meta;
@@ -32,7 +33,7 @@ const cases: Case[] = [
   { label: "null entity (renders nothing)", entity: null },
 ];
 
-export const EntityStatusBadgeStory: StoryObj<typeof meta> = {
+export const EntityStatusBadgeStory: StoryObj = {
   name: "EntityStatusBadge",
   render: () => {
     return (

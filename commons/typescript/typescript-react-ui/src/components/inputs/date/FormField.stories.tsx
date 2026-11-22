@@ -12,12 +12,9 @@ import { Form } from "../../forms/form";
 import { Button } from "../../primitives/button";
 import { DatePickerFormField } from "./FormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Date Picker / Form Field",
+  component: DatePickerFormField,
 } satisfies Meta;
 
 export default meta;
@@ -37,10 +34,6 @@ interface Args {
   description: string;
   disabled: boolean;
 }
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<Args> = {
   args: {

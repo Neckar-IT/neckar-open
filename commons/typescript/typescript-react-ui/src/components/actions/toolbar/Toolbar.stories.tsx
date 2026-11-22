@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MousePointerIcon, TrashIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "./Toolbar";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Actions / Toolbar",
+  component: Toolbar,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const ToolbarStory: StoryObj<typeof meta> = {
+export const ToolbarStory: StoryObj = {
   name: "Toolbar",
   render: () => {
     return (

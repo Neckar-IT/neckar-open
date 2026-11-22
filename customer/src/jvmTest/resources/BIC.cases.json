@@ -1,0 +1,22 @@
+{
+  "purpose": "Conformance corpus for it.neckar.customer.company.BIC. Read by the Kotlin BICTest and the Vitest of validateBicShape in @neckar-hub/typescript-utils/payment-formats, so a divergence of the two implementations fails both builds.",
+  "frontendDetectable": ["InvalidLength"],
+  "cases": [
+    { "input": "COBADEFF", "canonical": "COBADEFF" },
+    { "input": "COBADEFFXXX", "canonical": "COBADEFFXXX" },
+    { "input": "cobadeffxxx", "canonical": "COBADEFFXXX" },
+    { "input": "  COBADEFFXXX  ", "canonical": "COBADEFFXXX" },
+    { "input": "COBA DEFF XXX", "canonical": "COBADEFFXXX" },
+    { "input": "  coba deff xxx  ", "canonical": "COBADEFFXXX" },
+    { "input": "COBA DEFF", "canonical": "COBADEFF" },
+    { "input": "COBADEß", "canonical": "COBADESS" },
+    { "input": "COBADEFF\ud840\udc00", "canonical": "COBADEFF" },
+
+    { "input": "", "violation": "InvalidLength" },
+    { "input": "   ", "violation": "InvalidLength" },
+    { "input": "COBADE", "violation": "InvalidLength" },
+    { "input": "COBADEF", "violation": "InvalidLength" },
+    { "input": "COBADEFFX", "violation": "InvalidLength" },
+    { "input": "COBADEFFXXXX", "violation": "InvalidLength" }
+  ]
+}

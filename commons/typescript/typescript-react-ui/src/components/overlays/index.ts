@@ -48,10 +48,8 @@ export {
 } from "./confirmation-dialog";
 export {
   actionForArchiveState,
-  createEntityDialogAction,
   createEntityDialogAtom,
   DialogRegistry,
-  type EntityDialogActionOptions,
   type EntityDialogAtom,
   EntityDialogMount,
   type EntityDialogRender,

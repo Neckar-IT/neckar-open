@@ -2,8 +2,9 @@
  * Imports
  */
 
-import { render, screen } from "@test/test-utils";
+import { act, elementAt, render, screen, tooltipTriggerOf } from "@test/test-utils";
 import { describe, expect, it, vi } from "vitest";
+import { ActionLockProvider } from "../actions/ActionLockProvider";
 import { CascadingDraftResetWarningDialog } from "./CascadingDraftResetWarningDialog";
 
 /**
@@ -37,5 +38,20 @@ describe("CascadingDraftResetWarningDialog", () => {
     );
 
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
+  it("disables save anyway inside an ActionLockProvider and names the reason", async () => {
+    render(
+      <ActionLockProvider reason="Gerät offline">
+        <CascadingDraftResetWarningDialog usedByCounts={[]} onOpenChange={vi.fn()} onSubmit={vi.fn()} />
+      </ActionLockProvider>,
+    );
+    const saveAnyway = elementAt(screen.getAllByRole("button"), -1);
+
+    // Focus skips the hover delay, which the modal dialog in jsdom can stretch past the timeout of findByRole.
+    act(() => tooltipTriggerOf(saveAnyway).focus());
+
+    expect(saveAnyway).toBeDisabled();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Gerät offline");
   });
 });

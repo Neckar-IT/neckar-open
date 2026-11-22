@@ -5,13 +5,14 @@ import { ConfirmationStatusBadge } from "./ConfirmationStatusBadge";
 
 const meta = {
   title: "Draft confirmed / ConfirmationStatusBadge",
+  component: ConfirmationStatusBadge,
 } satisfies Meta;
 
 export default meta;
 
 const variants = ["icon", "with-text"] as const;
 
-export const ConfirmationStatusBadgeStory: StoryObj<typeof meta> = {
+export const ConfirmationStatusBadgeStory: StoryObj = {
   render: () => {
     return (
       <div className="grid grid-cols-6 gap-4">

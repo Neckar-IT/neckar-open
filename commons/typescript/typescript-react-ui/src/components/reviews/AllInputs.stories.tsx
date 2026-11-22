@@ -40,10 +40,6 @@ import { Switch } from "../primitives/switch";
 import { Toggle } from "../primitives/toggle";
 import { ToggleGroupItem, ToggleGroup as ToggleGroupRoot } from "../primitives/toggle-group";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Reviews / All Inputs",
 } satisfies Meta;
@@ -250,10 +246,6 @@ const tagsSchema = z.object({
     )
     .nullish(),
 });
-
-/**
- * Stories
- */
 
 export const Primitives: StoryObj<typeof meta> = {
   render: () => {

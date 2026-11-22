@@ -27,81 +27,54 @@
  */
 package it.neckar.customer.company
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNull
+import assertk.assertions.messageContains
+import it.neckar.open.resources.getResourceSafe
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.TestFactory
 
+/**
+ * Holds [IBAN] to the conformance corpus `IBAN.cases.json`, which the Vitest of `validateIbanShape` in
+ * `@neckar-hub/typescript-utils/payment-formats` reads as well.
+ */
 class IBANTest {
 
-  @Test
-  fun `normalizes German IBAN`() {
-    assertThat(IBAN("DE89370400440532013000").value).isEqualTo("DE89 3704 0044 0532 0130 00")
-  }
+  private val corpus: Corpus = Json.decodeFromString(javaClass.getResourceSafe("/IBAN.cases.json").readText())
 
-  @Test
-  fun `normalizes IBAN with spaces`() {
-    assertThat(IBAN("DE89 3704 0044 0532 0130 00").value).isEqualTo("DE89 3704 0044 0532 0130 00")
-  }
+  @TestFactory
+  fun `parse decides every conformance case`(): List<DynamicTest> = corpus.cases.map { case ->
+    DynamicTest.dynamicTest("\"${case.input}\"") {
+      when (val parsed = IBAN.parse(case.input)) {
+        is IbanParseResult.Valid -> {
+          assertThat(case.violation, "expected a violation for \"${case.input}\"").isNull()
+          assertThat(parsed.iban.value).isEqualTo(case.canonical)
+        }
 
-  @Test
-  fun `normalizes lowercase input`() {
-    assertThat(IBAN("de89370400440532013000").value).isEqualTo("DE89 3704 0044 0532 0130 00")
-  }
-
-  @Test
-  fun `trims whitespace`() {
-    assertThat(IBAN("  DE89370400440532013000  ").value).isEqualTo("DE89 3704 0044 0532 0130 00")
-  }
-
-  @Test
-  fun `different input formats produce equal instances`() {
-    val compact = IBAN("DE89370400440532013000")
-    val spaced = IBAN("DE89 3704 0044 0532 0130 00")
-    val lowercase = IBAN("de89370400440532013000")
-
-    assertThat(compact).isEqualTo(spaced)
-    assertThat(compact).isEqualTo(lowercase)
-  }
-
-  @Test
-  fun `accepts short IBAN (15 characters, Norway)`() {
-    // Norwegian IBANs are 15 characters
-    assertThat(IBAN("NO9386011117947").value).isEqualTo("NO93 8601 1117 947")
-  }
-
-  @Test
-  fun `accepts 30-character IBAN (Malta)`() {
-    assertThat(IBAN("MT84MALT011000012345MTLCAST001S").value).isEqualTo("MT84 MALT 0110 0001 2345 MTLC AST0 01S")
-  }
-
-  @Test
-  fun `accepts maximum length IBAN (34 characters)`() {
-    // 34 alphanumeric characters is the maximum per ISO 13616
-    val iban34 = IBAN("MT84MALT011000012345MTLCAST001SABC")
-    assertThat(iban34.value).isEqualTo("MT84 MALT 0110 0001 2345 MTLC AST0 01SA BC")
-  }
-
-  @Test
-  fun `rejects blank input`() {
-    assertThrows<IllegalArgumentException> {
-      IBAN("   ")
+        is IbanParseResult.Invalid -> {
+          assertThat(case.canonical, "expected \"${case.input}\" to be valid").isNull()
+          assertThat(parsed.violation).isEqualTo(case.violation)
+        }
+      }
     }
   }
 
   @Test
-  fun `rejects too short input`() {
-    assertThrows<IllegalArgumentException> {
-      IBAN("DE8937040044")
-    }
+  fun `invoke throws for an input parse rejects`() {
+    assertFailure { IBAN("DE8937040044") }
+      .isInstanceOf(IllegalArgumentException::class)
+      .messageContains("InvalidLength")
   }
 
   @Test
-  fun `rejects too long input`() {
-    assertThrows<IllegalArgumentException> {
-      IBAN("DE89370400440532013000123456789012345")
-    }
+  fun `the corpus covers every violation`() {
+    assertThat(corpus.cases.mapNotNull { it.violation }.toSet()).isEqualTo(IbanFormatViolation.entries.toSet())
   }
 
   @Test
@@ -126,26 +99,20 @@ class IBANTest {
   }
 
   @Test
-  fun `parse returns Valid for a well-formed input in any format`() {
-    val result = IBAN.parse("de89 3704 0044 0532 0130 00")
-    assertThat(result).isEqualTo(IbanParseResult.Valid(IBAN("DE89370400440532013000")))
-  }
-
-  @Test
-  fun `parse returns Invalid InvalidLength for a too short input`() {
-    val result = IBAN.parse("DE8937040044")
-    assertThat(result).isEqualTo(IbanParseResult.Invalid(IbanFormatViolation.InvalidLength))
-  }
-
-  @Test
   fun `examples carry their canonical value`() {
-    assertThat(IBAN.Example.germany.value).isEqualTo("DE89 3704 0044 0532 0130 00")
-    assertThat(IBAN.Example.austria.value).isEqualTo("AT61 1904 3002 3457 3201")
-    assertThat(IBAN.Example.switzerland.value).isEqualTo("CH93 0076 2011 6238 5295 7")
-    assertThat(IBAN.Example.france.value).isEqualTo("FR76 3000 6000 0112 3456 7890 189")
-    assertThat(IBAN.Example.unitedKingdom.value).isEqualTo("GB29 NWBK 6016 1331 9268 19")
-    assertThat(IBAN.Example.netherlands.value).isEqualTo("NL91 ABNA 0417 1643 00")
-    assertThat(IBAN.Example.spain.value).isEqualTo("ES91 2100 0418 4502 0005 1332")
-    assertThat(IBAN.Example.italy.value).isEqualTo("IT60 X054 2811 1010 0000 0123 456")
+    assertThat(IBANExample.germany.value).isEqualTo("DE89 3704 0044 0532 0130 00")
+    assertThat(IBANExample.austria.value).isEqualTo("AT61 1904 3002 3457 3201")
+    assertThat(IBANExample.switzerland.value).isEqualTo("CH93 0076 2011 6238 5295 7")
+    assertThat(IBANExample.france.value).isEqualTo("FR76 3000 6000 0112 3456 7890 189")
+    assertThat(IBANExample.unitedKingdom.value).isEqualTo("GB29 NWBK 6016 1331 9268 19")
+    assertThat(IBANExample.netherlands.value).isEqualTo("NL91 ABNA 0417 1643 00")
+    assertThat(IBANExample.spain.value).isEqualTo("ES91 2100 0418 4502 0005 1332")
+    assertThat(IBANExample.italy.value).isEqualTo("IT60 X054 2811 1010 0000 0123 456")
   }
+
+  @Serializable
+  private data class Corpus(val purpose: String, val frontendDetectable: List<IbanFormatViolation>, val cases: List<Case>)
+
+  @Serializable
+  private data class Case(val input: String, val canonical: String? = null, val violation: IbanFormatViolation? = null)
 }

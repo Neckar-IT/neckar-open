@@ -4,11 +4,16 @@
  */
 
 import { I18nProvider } from "@neckar-hub/typescript-react-i18n";
+import { NowProvider } from "@neckar-hub/typescript-react-utils/providers";
 import { render, type RenderOptions, type RenderResult } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
 
 function AllProviders({ children }: { children: ReactNode }) {
-  return <I18nProvider>{children}</I18nProvider>;
+  return (
+    <I18nProvider>
+      <NowProvider>{children}</NowProvider>
+    </I18nProvider>
+  );
 }
 
 function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">): RenderResult {
@@ -32,5 +37,18 @@ function elementAt<T>(elements: readonly T[], index: number): T {
   return element;
 }
 
+/**
+ * The tooltip trigger `DisabledReasonTooltip` wraps around a disabled button, which takes no focus and no pointer events.
+ */
+function tooltipTriggerOf(button: HTMLElement): HTMLElement {
+  const wrapper = button.parentElement;
+
+  if (wrapper === null) {
+    throw new Error("Expected a tooltip wrapper around the button, but it has no parent");
+  }
+
+  return wrapper;
+}
+
 export * from "@testing-library/react";
-export { elementAt, renderWithProviders as render };
+export { elementAt, renderWithProviders as render, tooltipTriggerOf };

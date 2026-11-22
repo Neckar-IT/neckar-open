@@ -14,10 +14,6 @@ interface StackTraceProps {
   className?: string | undefined;
 }
 
-/**
- * Stack Trace Component
- */
-
 export function StackTrace(props: StackTraceProps) {
   return (
     <CollapsibleSection className={props.className} heading="Stack Trace" initiallyOpen={props.initiallyOpen}>

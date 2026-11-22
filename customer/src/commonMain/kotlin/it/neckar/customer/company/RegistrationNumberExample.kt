@@ -36,6 +36,3 @@ object RegistrationNumberExample {
   val genossenschaftsregister: RegistrationNumber = RegistrationNumber("GnR 1234")
   val vereinsregister: RegistrationNumber = RegistrationNumber("VR 4321")
 }
-
-val RegistrationNumber.Companion.Example: RegistrationNumberExample
-  get() = RegistrationNumberExample

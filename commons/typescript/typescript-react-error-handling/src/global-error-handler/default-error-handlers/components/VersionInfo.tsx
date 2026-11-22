@@ -1,7 +1,3 @@
-/**
- * Imports
- */
-
 import {
   BuildInfoValues,
   DeploymentInfoBox,
@@ -13,18 +9,10 @@ import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTransla
 import { useVersionInfo, type VersionInfoData } from "../../VersionInfoContext";
 import { CollapsibleSection } from "./CollapsibleSection";
 
-/**
- * Prop Types
- */
-
 interface InfoProps {
   errorCaughtBy: string;
   initiallyOpen?: boolean | undefined;
 }
-
-/**
- * Info Component
- */
 
 export function VersionInfo(props: InfoProps) {
   const versionInfo = useVersionInfo();

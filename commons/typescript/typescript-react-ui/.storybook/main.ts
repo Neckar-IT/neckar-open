@@ -12,15 +12,23 @@ import { mergeConfig } from "vite";
 const config: StorybookConfig = {
   framework: "@storybook/react-vite",
   stories: ["../src/**/*.stories.tsx"],
-  // Hands every story the `msw` worker its `beforeEach` registers request handlers with.
-  addons: ["msw-storybook-addon"],
+  // `msw-storybook-addon` hands every story the `msw` worker its `beforeEach` registers request handlers with.
+  addons: ["msw-storybook-addon", "@storybook/addon-docs"],
   core: { disableTelemetry: true },
-  // No story names a `component`, so the argTypes react-docgen reads from it have no reader.
-  typescript: { reactDocgen: false },
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    // The primitives this package re-exports belong to `typescript-react-ui-primitives`; the docgen project includes them.
+    reactDocgenTypescriptOptions: {
+      tsconfigPath: ".storybook/tsconfig.docgen.json",
+      include: ["src/**/*.tsx", "../typescript-react-ui-primitives/src/**/*.tsx"],
+    },
+  },
   managerHead: storybookManagerHead,
   previewHead: storybookPreviewHead,
   viteFinal: (viteConfig) =>
-    mergeConfig(viteConfig, { plugins: [tailwindcss(), commonsSourceExports(), serveTimeInjection(), mswServiceWorker()] }),
+    mergeConfig(viteConfig, {
+      plugins: [tailwindcss(), commonsSourceExports({ alsoInBuild: true }), serveTimeInjection(), mswServiceWorker()],
+    }),
 };
 
 export default config;

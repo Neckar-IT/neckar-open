@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Label } from "../label";
 import { RadioGroupItem, RadioGroup as RadioGroupRoot } from "./RadioGroup";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / RadioGroup",
+  component: RadioGroupRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const RadioGroup: StoryObj<typeof meta> = {
+export const RadioGroup: StoryObj = {
   render: () => {
     return (
       <RadioGroupRoot defaultValue="comfortable">

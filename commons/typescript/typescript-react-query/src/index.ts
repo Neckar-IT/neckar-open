@@ -52,6 +52,11 @@ export {
 export { createQueryClientWithoutGcTimer } from "./createQueryClientWithoutGcTimer";
 
 /**
+ * Test wrapper: a query client of its own per mount, without garbage-collection timer
+ */
+export { QueryClientForTest } from "./QueryClientForTest";
+
+/**
  * Reset that respects `meta.preventBeingResetByMutations`
  */
 export { refetchQueriesExceptPrevented, resetQueriesExceptPrevented } from "./resetQueriesExceptPrevented";

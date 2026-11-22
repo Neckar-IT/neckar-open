@@ -1,4 +1,7 @@
 {
+  "appMobileHeader": {
+    "toggleMenu": "Toggle menu"
+  },
   "example": {
     "cancel": "Cancel",
     "save": "Save"
@@ -40,11 +43,6 @@
     "fields": {
       "validFrom": "Valid from",
       "status": "Status"
-    },
-    "status": {
-      "past": "Past",
-      "current": "Current",
-      "future": "Future"
     },
     "timing": {
       "now": "Immediately",
@@ -398,8 +396,20 @@
     "sendAgain": "Send again",
     "closeForm": "Close form"
   },
+  "nullableBooleanFormField": {
+    "yes": "Yes",
+    "no": "No",
+    "empty": "Not specified"
+  },
   "unavailableService": {
     "unreachable": "Not saved. The application cannot be reached right now.",
     "notReady": "Not saved. The application is unavailable right now."
+  },
+  "enums": {
+    "ValueTimelineEntryStatus": {
+      "Past": "Past",
+      "Current": "Current",
+      "Future": "Future"
+    }
   }
 }

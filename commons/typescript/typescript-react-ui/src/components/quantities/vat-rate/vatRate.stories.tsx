@@ -7,18 +7,12 @@ import { CodeBlock } from "../../data-display/code-block";
 import { Form, FormSubmitButton } from "../../forms/form";
 import { SelectVatRate, SelectVatRateFormField, VatRateOutput } from "./vatRate";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Quantities / vatRate",
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
 export const VatRateStory: StoryObj<typeof meta> = {
   name: "VAT Rate",
   render: () => {

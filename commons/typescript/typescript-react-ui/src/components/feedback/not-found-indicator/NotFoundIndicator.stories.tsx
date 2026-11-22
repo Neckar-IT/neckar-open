@@ -8,12 +8,9 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "../../primitives/button";
 import { NotFoundIndicator as NotFoundIndicatorComponent } from "./NotFoundIndicator";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / NotFoundIndicator",
+  component: NotFoundIndicatorComponent,
 } satisfies Meta;
 
 export default meta;
@@ -25,10 +22,6 @@ export default meta;
 interface Args {
   textKey: TextKey;
 }
-
-/**
- * Stories
- */
 
 export const NotFoundIndicatorStory: StoryObj<Args> = {
   name: "NotFoundIndicator",

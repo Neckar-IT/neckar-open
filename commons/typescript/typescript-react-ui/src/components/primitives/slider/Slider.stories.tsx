@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Slider as SliderComponent } from "./Slider";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Slider",
+  component: SliderComponent,
   decorators: [
     (Component) => (
       <div className="max-w-screen-sm">
@@ -23,11 +20,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Slider: StoryObj<typeof meta> = {
+export const Slider: StoryObj = {
   render: () => {
     const [value, setValue] = useState(50);
 

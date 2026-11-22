@@ -6,19 +6,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { TextInput } from "../text-input";
 
-/**
- * meta Information
- */
-
 const meta = {
   title: "Inputs / InputWrapper",
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const InputWrapperStory: StoryObj<typeof meta> = {
   render: () => {

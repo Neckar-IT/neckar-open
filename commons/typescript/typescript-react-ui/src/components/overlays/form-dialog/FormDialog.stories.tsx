@@ -12,12 +12,9 @@ import { TextInputFormField } from "../../forms/text-input-form-field";
 import { Button } from "../../primitives/button";
 import { FormDialog } from "./FormDialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Overlays / FormDialog",
+  component: FormDialog,
   decorators: [
     (Story) => {
       const [queryClient] = useState(() => new QueryClient());
@@ -44,7 +41,7 @@ const formSchema = zod.object({
 
 type FormSchema = zod.infer<typeof formSchema>;
 
-export const FormDialogStory: StoryObj<typeof meta> = {
+export const FormDialogStory: StoryObj = {
   name: "Form Dialog",
   render: () => {
     const [open, setOpen] = useState(true);

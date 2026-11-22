@@ -40,6 +40,3 @@ object IBANExample {
   val spain: IBAN = IBAN("ES9121000418450200051332")
   val italy: IBAN = IBAN("IT60X0542811101000000123456")
 }
-
-val IBAN.Companion.Example: IBANExample
-  get() = IBANExample

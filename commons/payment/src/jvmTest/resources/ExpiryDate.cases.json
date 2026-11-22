@@ -1,0 +1,8 @@
+{
+  "purpose": "Wire form of it.neckar.financial.payment.card.ExpiryDate against its year and month. Read by the Kotlin ExpiryDateTest and the Vitest of parseExpiryDate and formatExpiryDate in @neckar-hub/typescript-utils/payment-formats. Every year lies after 2090, so the not-in-the-past check never fires.",
+  "cases": [
+    { "wire": "2099-03", "year": 2099, "month": 3 },
+    { "wire": "2095-01", "year": 2095, "month": 1 },
+    { "wire": "2100-12", "year": 2100, "month": 12 }
+  ]
+}

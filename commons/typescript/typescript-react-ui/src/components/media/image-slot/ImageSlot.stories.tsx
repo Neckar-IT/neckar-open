@@ -2,11 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { ImageSlot } from "./ImageSlot";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Media / ImageSlot",
+  component: ImageSlot,
 } satisfies Meta;
 
 export default meta;
@@ -20,9 +18,6 @@ interface Args {
   maximumSizeMb: number;
 }
 
-/**
- * Stories
- */
 export const ImageSlotStory: StoryObj<Args> = {
   args: {
     disabled: false,

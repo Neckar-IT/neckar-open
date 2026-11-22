@@ -12,9 +12,6 @@ export interface BarChartGroupedProps {
   className?: string;
 }
 
-/**
- * Bar Chart Grouped Component
- */
 export function BarChartGrouped({ className, configuration, style }: BarChartGroupedProps) {
   return (
     <LegacyChartWrapper

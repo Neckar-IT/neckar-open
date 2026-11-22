@@ -4,7 +4,7 @@
 
 import { render, screen } from "@test/test-utils";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { ThemeProvider, type ThemeDefinition } from "../../../providers/theme";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
@@ -16,15 +16,6 @@ const themes: ThemeDefinition[] = [
   { id: "neckar", label: "Neckar", colorScheme: "selectable" },
   { id: "terminal", label: "Terminal", colorScheme: "dark" },
 ];
-
-function mockMatchMedia(): void {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: false,
-    media: query,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  }));
-}
 
 function renderThemeSwitcher(availableThemes: ThemeDefinition[]): void {
   render(
@@ -39,10 +30,6 @@ function renderThemeSwitcher(availableThemes: ThemeDefinition[]): void {
  */
 
 describe("ThemeSwitcher", () => {
-  beforeEach(() => {
-    mockMatchMedia();
-  });
-
   afterEach(() => {
     window.localStorage.clear();
     window.document.documentElement.removeAttribute("data-theme");

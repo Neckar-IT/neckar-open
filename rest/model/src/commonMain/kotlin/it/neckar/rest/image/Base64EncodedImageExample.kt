@@ -58,6 +58,3 @@ object Base64EncodedImageExample {
     data = "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=",
   )
 }
-
-val Base64EncodedImage.Companion.Example: Base64EncodedImageExample
-  get() = Base64EncodedImageExample

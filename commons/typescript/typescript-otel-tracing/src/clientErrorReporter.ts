@@ -55,7 +55,7 @@ const reportedErrors: WeakSet<object> = new WeakSet();
 
 /**
  * Sends every error before the login as an OTLP/JSON log record to `/client-errors`, since `/otlp/` requires the login.
- * Call once in main.tsx before `initializeOtel`; an error while its static imports evaluate stays unreported.
+ * `bootstrapObservability` calls it once, before `initializeOtel`; an error while its static imports evaluate stays unreported.
  */
 export function installClientErrorReporter(config: ClientErrorReporterConfig): void {
   if (phase !== "idle") {

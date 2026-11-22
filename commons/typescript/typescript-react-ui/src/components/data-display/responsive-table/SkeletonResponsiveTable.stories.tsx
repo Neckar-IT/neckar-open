@@ -4,6 +4,7 @@ import { SkeletonResponsiveTable } from "./SkeletonResponsiveTable";
 
 const meta = {
   title: "Data display / Skeleton Responsive Table",
+  component: SkeletonResponsiveTable,
   tags: ["responsive"],
 } satisfies Meta;
 
@@ -37,17 +38,17 @@ const config: ResponsiveTableConfig<Invoice, "invoice" | "totalAmount"> = {
   ],
 };
 
-export const DefaultStory: StoryObj<typeof meta> = {
+export const DefaultStory: StoryObj = {
   name: "Default (10 rows)",
   render: () => <SkeletonResponsiveTable config={config} rowCount={10} />,
 };
 
-export const FewRowsStory: StoryObj<typeof meta> = {
+export const FewRowsStory: StoryObj = {
   name: "Few Rows",
   render: () => <SkeletonResponsiveTable config={config} rowCount={3} />,
 };
 
-export const ManyRowsStory: StoryObj<typeof meta> = {
+export const ManyRowsStory: StoryObj = {
   name: "Many Rows",
   render: () => <SkeletonResponsiveTable config={config} rowCount={25} />,
 };
@@ -61,7 +62,7 @@ const configWithoutMobileHeaders: ResponsiveTableConfig<Invoice, "invoice" | "to
   ],
 };
 
-export const WithoutMobileHeadersStory: StoryObj<typeof meta> = {
+export const WithoutMobileHeadersStory: StoryObj = {
   name: "Without Mobile Headers",
   render: () => <SkeletonResponsiveTable config={configWithoutMobileHeaders} rowCount={5} />,
 };

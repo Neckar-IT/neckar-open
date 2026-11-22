@@ -14,6 +14,7 @@ interface Args {
 
 const meta = {
   title: "Forms / RatingInputFormField",
+  component: RatingInputFormField,
 } satisfies Meta;
 
 export default meta;

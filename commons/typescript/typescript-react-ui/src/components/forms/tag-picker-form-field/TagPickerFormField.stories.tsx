@@ -13,12 +13,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { TagPickerFormField } from "./TagPickerFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / TagPickerFormField",
+  component: TagPickerFormField,
 } satisfies Meta;
 
 export default meta;
@@ -40,11 +37,7 @@ const formSchema = zod.object({
 
 type FormSchema = zod.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
-export const TagPickerFormFieldStory: StoryObj<typeof meta> = {
+export const TagPickerFormFieldStory: StoryObj = {
   name: "TagPickerFormField",
   render: () => {
     const form = useForm<FormSchema>({

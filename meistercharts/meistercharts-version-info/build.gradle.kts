@@ -1,11 +1,12 @@
 import it.neckar.gradle.addAnnotationDependencies
 import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 
 plugins {
 }
 
-val neckarOpenVersion: String by project
 val meisterchartsVersion: String by project
 
 description = """Meistercharts - Version-Info"""
@@ -50,7 +51,7 @@ kotlin {
       dependencies {
         kotlin.srcDir(createVersionConstantsTasks)
 
-        api("it.neckar.open:version-info:$neckarOpenVersion")
+        api(project(Projects.open.versionInfo))
       }
     }
 

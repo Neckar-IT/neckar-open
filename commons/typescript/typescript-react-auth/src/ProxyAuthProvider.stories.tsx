@@ -11,14 +11,13 @@ import { ProxyAuthProvider } from "./ProxyAuthProvider";
 import { createUnauthorizedHttpClient } from "./testing/createUnauthorizedHttpClient";
 
 /**
- * Meta Information
- *
  * The provider under a query client with `unauthorizedEndsSession`. Every request of the fake
  * adapter answers HTTP 401; each button sends one, and only a same-origin 401 replaces the page.
  */
 
 const meta = {
   title: "Proxy Auth Provider",
+  component: ProxyAuthProvider,
 } satisfies Meta;
 
 export default meta;
@@ -67,11 +66,7 @@ function Application(): ReactElement {
   );
 }
 
-/**
- * Stories
- */
-
-export const SignedIn: StoryObj<typeof meta> = {
+export const SignedIn: StoryObj = {
   name: "Signed in, every request answers 401",
   render: () => {
     const [queryClient] = useState(() => createQueryClient({ unauthorizedEndsSession: true }));

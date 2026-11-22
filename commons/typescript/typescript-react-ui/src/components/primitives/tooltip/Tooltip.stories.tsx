@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "../button";
 import { TooltipContent, TooltipProvider, Tooltip as TooltipRoot, TooltipTrigger } from "./Tooltip";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Tooltip",
+  component: TooltipRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Tooltip: StoryObj<typeof meta> = {
+export const Tooltip: StoryObj = {
   render: () => {
     return (
       <TooltipProvider>

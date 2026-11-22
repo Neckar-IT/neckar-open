@@ -1,4 +1,7 @@
 {
+  "appMobileHeader": {
+    "toggleMenu": "Menü umschalten"
+  },
   "example": {
     "cancel": "Abbrechen",
     "save": "Speichern"
@@ -40,11 +43,6 @@
     "fields": {
       "validFrom": "Gültig ab",
       "status": "Status"
-    },
-    "status": {
-      "past": "Vergangen",
-      "current": "Aktuell",
-      "future": "Zukünftig"
     },
     "timing": {
       "now": "Sofort",
@@ -398,8 +396,20 @@
     "sendAgain": "Erneut senden",
     "closeForm": "Formular schließen"
   },
+  "nullableBooleanFormField": {
+    "yes": "Ja",
+    "no": "Nein",
+    "empty": "Keine Angabe"
+  },
   "unavailableService": {
     "unreachable": "Nicht gespeichert. Die Anwendung ist gerade nicht erreichbar.",
     "notReady": "Nicht gespeichert. Die Anwendung ist gerade nicht verfügbar."
+  },
+  "enums": {
+    "ValueTimelineEntryStatus": {
+      "Past": "Vergangen",
+      "Current": "Aktuell",
+      "Future": "Zukünftig"
+    }
   }
 }

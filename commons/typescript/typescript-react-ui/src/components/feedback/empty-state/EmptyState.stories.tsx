@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { Action } from "../../actions/Action";
 import { EmptyState as EmptyStateComponent } from "./EmptyState";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / EmptyState",
+  component: EmptyStateComponent,
 } satisfies Meta;
 
 export default meta;
@@ -22,7 +19,7 @@ export default meta;
 
 const createContraption: Action = { icon: undefined, label: "Contraption anlegen", onTrigger: () => {} };
 
-export const EmptyStateStory: StoryObj<typeof meta> = {
+export const EmptyStateStory: StoryObj = {
   name: "EmptyState",
   render: () => {
     return (

@@ -11,6 +11,7 @@ import { CheckboxFormField } from "./CheckboxFormField";
 
 const meta = {
   title: "Forms / CheckboxDependentFields",
+  component: CheckboxDependentFields,
 } satisfies Meta;
 
 export default meta;
@@ -23,12 +24,8 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
-// The gated fields are mounted only while the box is checked, and indented to its label.
-export const CheckboxDependentFieldsStory: StoryObj<typeof meta> = {
+/** The gated fields are mounted only while the box is checked, and indented to its label. */
+export const CheckboxDependentFieldsStory: StoryObj = {
   name: "CheckboxDependentFields",
   render: () => {
     const form = useForm<FormSchema>({

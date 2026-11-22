@@ -8,19 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../primitives/tooltip";
 import { SelectPlaceholder, type SelectPlaceholderProps } from "./SelectPlaceholder";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / SelectPlaceholder",
+  component: SelectPlaceholder,
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const SelectPlaceholderStory: StoryObj<SelectPlaceholderProps> = {
   name: "Select Placeholder",

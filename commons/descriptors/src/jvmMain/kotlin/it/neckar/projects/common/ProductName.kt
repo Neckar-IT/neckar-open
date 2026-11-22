@@ -31,7 +31,7 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
- * A short name a product or a deployment also answers to (kebab-case), e.g. `em` for `elektromeister`.
+ * The `nickname` of a deployment (kebab-case), e.g. `elektromeister-demo`.
  */
 @JvmInline
 @Serializable
@@ -44,7 +44,7 @@ value class ProductName(val value: String) {
 
   companion object {
     /**
-     * The spelling of a short name and of a deployment `nickname`, which resolve in one namespace; [ProductId] shares it as the default nickname of the deployment under its primary domain.
+     * The spelling of a deployment `nickname`; [ProductId] shares it as the default nickname of the deployment under its primary domain.
      */
     val KebabCase: Regex = Regex("[a-z0-9]+(-[a-z0-9]+)*")
   }

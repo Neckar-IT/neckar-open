@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox as CheckboxComponent } from ".";
 import { Label } from "../label";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Checkbox",
+  component: CheckboxComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Checkbox: StoryObj<typeof meta> = {
+export const Checkbox: StoryObj = {
   render: () => {
     return (
       <div>

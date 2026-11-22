@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { PasswordInput } from "./PasswordInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / PasswordInput",
+  component: PasswordInput,
 } satisfies Meta;
 
 export default meta;
@@ -25,10 +22,6 @@ interface Args {
   disabled: boolean;
   isInvalid: boolean;
 }
-
-/**
- * Stories
- */
 
 export const PasswordInputStory: StoryObj<Args> = {
   name: "PasswordInput",

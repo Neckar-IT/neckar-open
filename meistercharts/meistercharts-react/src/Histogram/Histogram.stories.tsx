@@ -20,18 +20,10 @@ const data = {
   ],
 };
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Histogram" } satisfies Meta;
+const meta = { title: "Histogram", component: Histogram } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => <Histogram configuration={{ data }} />,
 };

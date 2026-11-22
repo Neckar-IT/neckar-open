@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Roof Tile Icon
+ * Row of overlapping roof tiles.
  */
 
 export function RoofTileIcon(props: React.ComponentProps<"svg"> & CustomIconProps): React.ReactElement {

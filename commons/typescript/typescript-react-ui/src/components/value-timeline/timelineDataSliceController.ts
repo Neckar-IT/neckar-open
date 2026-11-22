@@ -1,35 +1,47 @@
-import { usePaginationSearchParams, useSortingSearchParams } from "@neckar-hub/typescript-react-utils/search-params";
-import { PriceTimelineEntriesSortCriteria } from "@neckar-hub/typescript-utils/openapi-types";
+import {
+  enumParam,
+  instantParam,
+  type ParamDefinition,
+  useDataSliceControllerFromUrl,
+} from "@neckar-hub/typescript-react-utils/data-slice-filters";
+import { PriceTimelineEntriesSortCriteria, ValueTimelineEntryStatus } from "@neckar-hub/typescript-utils/openapi-types";
 import type { DataSliceController, DataSliceParams } from "../layout/data-slice-view";
 
 /**
- * Pagination + sorting state for a value-timeline overview table.
- *
- * No user-facing filters today — the backend exposes a `validFromAfter` filter
- * for future use but the UI does not surface it. Sort defaults to descending
- * `validFrom` (newest first) on the backend when no `sortBy` is passed.
- *
- * Generic over the parent-specific query-params type so each consumer can pass
- * its own `Get*TimelineFor*Params` (with the parent id baked in) — only the
- * pagination + sorting fields are touched here.
+ * The request parameters every value-timeline overview shares: pagination, sorting and the filters `validFromAfter`
+ * and `status`. The generated `Get*TimelineFor*Params` of each parent extend them.
  */
-export type TimelineDataSliceController<TParams extends DataSliceParams<PriceTimelineEntriesSortCriteria>> = Pick<
+export interface TimelineDataSliceParams extends DataSliceParams<PriceTimelineEntriesSortCriteria> {
+  /** ISO-8601 instant; keeps the entries with a later `validFrom`. */
+  validFromAfter?: string;
+  /** One value of `ValueTimelineEntryStatus`. */
+  status?: string;
+}
+
+/**
+ * Pagination, sorting and filter state of a value-timeline overview table. Sort defaults to descending `validFrom`
+ * (newest first) on the backend when no `sortBy` is passed.
+ */
+export type TimelineDataSliceController<TParams extends TimelineDataSliceParams> = Pick<
   DataSliceController<TParams, PriceTimelineEntriesSortCriteria>,
-  "params" | "setPagination" | "setSorting"
+  "params" | "setPagination" | "setSorting" | "setParam" | "setParams"
 >;
 
-export function useTimelineDataSliceControllerFromUrl<TParams extends DataSliceParams<PriceTimelineEntriesSortCriteria>>(
+export const timelineParamDefinition: ParamDefinition<TimelineDataSliceParams> = {
+  validFromAfter: instantParam(),
+  status: enumParam(ValueTimelineEntryStatus),
+};
+
+/**
+ * The controller of a value-timeline overview whose state lives in the URL; a filter change goes back to the first page.
+ */
+export function useTimelineDataSliceControllerFromUrl<TParams extends TimelineDataSliceParams>(
   prefix?: string,
 ): TimelineDataSliceController<TParams> {
-  const [pagination, setPagination] = usePaginationSearchParams(undefined, prefix);
-  const [sorting, setSorting] = useSortingSearchParams(PriceTimelineEntriesSortCriteria, prefix);
-
-  return {
-    params: {
-      ...pagination,
-      ...sorting,
-    } as TParams,
-    setPagination,
-    setSorting,
-  };
+  // The parent-specific `TParams` add only parameters the overview never sets, such as `scope`.
+  return useDataSliceControllerFromUrl<TParams>(
+    timelineParamDefinition as ParamDefinition<TParams>,
+    PriceTimelineEntriesSortCriteria,
+    prefix,
+  );
 }

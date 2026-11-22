@@ -297,7 +297,3 @@ object CustomerExample {
     YannickGraf
   )
 }
-
-
-val Customer.Companion.Example: CustomerExample
-  get() = CustomerExample

@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Separator as SeparatorComponent } from "./Separator";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Separator",
+  component: SeparatorComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Separator: StoryObj<typeof meta> = {
+export const Separator: StoryObj = {
   render: () => {
     return (
       <div className="w-80">

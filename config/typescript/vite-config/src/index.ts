@@ -1,6 +1,7 @@
 export { chartChunksStayOutOfEntry } from "./chart-chunks-stay-out-of-entry.js";
-export { commonsSourceExports } from "./commons-source-exports.js";
+export { type CommonsSourceExportsOptions, commonsSourceExports } from "./commons-source-exports.js";
 export { localDevAllowedHosts } from "./local-dev-allowed-hosts.js";
+export { localDevServerHost } from "./local-dev-server-host.js";
 export { reactQueryDevtoolsPreBundleIncludes } from "./react-query-devtools-prebundle.js";
 export { servePlaceholders, substitutePlaceholders } from "./serve-placeholders.js";
 export type { PlaceholderValues, PlaceholderValuesSource } from "./serve-placeholders.js";

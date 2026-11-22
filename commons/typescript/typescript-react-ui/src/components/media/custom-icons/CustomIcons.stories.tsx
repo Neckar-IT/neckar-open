@@ -22,10 +22,6 @@ import { SolarPanelIcon } from "./SolarPanelIcon";
 import { StarSolidIcon } from "./StarSolidIcon";
 import { TerracedHouseIcon } from "./TerracedHouseIcon";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Media / CustomIcons",
 } satisfies Meta;
@@ -55,10 +51,6 @@ const iconsList = [
   StarSolidIcon,
   TerracedHouseIcon,
 ];
-
-/**
- * Stories
- */
 
 export const CustomIconsStory: StoryObj<typeof meta> = {
   name: "Custom Icons",

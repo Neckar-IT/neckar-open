@@ -8,8 +8,16 @@
     "email": "info@neckar.IT"
   },
   "type": "module",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./vitest-jsdom-setup": {
+      "types": "./dist/src/vitest-jsdom-setup.d.ts",
+      "import": "./dist/src/vitest-jsdom-setup.js"
+    }
+  },
   "scripts": {
     "build": "pnpm run build:deps && pnpm run build:noDeps",
     "build:noDeps": "pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
@@ -29,12 +37,18 @@
   "devDependencies": {
     "@neckar-hub/oxlint-config": "workspace:*",
     "@neckar-hub/typescript-config": "workspace:*",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "jsdom": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
   },
   "peerDependencies": {
+    "@testing-library/react": "catalog:",
     "vite": "catalog:"
   }
 }

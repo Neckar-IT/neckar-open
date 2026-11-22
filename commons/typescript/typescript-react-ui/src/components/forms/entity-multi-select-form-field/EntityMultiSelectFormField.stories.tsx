@@ -13,12 +13,9 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTi
 import { Form } from "../form";
 import { EntityMultiSelectFormField } from "./EntityMultiSelectFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / EntityMultiSelectFormField",
+  component: EntityMultiSelectFormField,
 } satisfies Meta;
 
 export default meta;
@@ -102,11 +99,7 @@ function BreedSelectDialog({ onOpenChange, selectedBreedIds, onSelectBreed }: Br
   );
 }
 
-/**
- * Stories
- */
-
-export const EntityMultiSelectFormFieldStory: StoryObj<typeof meta> = {
+export const EntityMultiSelectFormFieldStory: StoryObj = {
   name: "EntityMultiSelectFormField",
   render: () => {
     const form = useForm<FormValues>({
@@ -147,7 +140,7 @@ export const EntityMultiSelectFormFieldStory: StoryObj<typeof meta> = {
   },
 };
 
-export const EntityMultiSelectFormFieldStoryWithInitialSelection: StoryObj<typeof meta> = {
+export const EntityMultiSelectFormFieldStoryWithInitialSelection: StoryObj = {
   name: "EntityMultiSelectFormField (with initial selection)",
   render: () => {
     const initialBreeds = [breeds[0]!, breeds[4]!];

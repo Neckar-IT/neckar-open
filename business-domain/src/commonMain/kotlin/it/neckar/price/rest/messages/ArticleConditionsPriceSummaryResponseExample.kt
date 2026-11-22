@@ -38,6 +38,3 @@ object ArticleConditionsPriceSummaryResponseExample {
     ArticleConditionsPriceSummary.calculate(ArticleConditionsPriceSummaryRequestExample.partOnly, hourlyRate = null),
   )
 }
-
-val ArticleConditionsPriceSummaryResponse.Companion.Example: ArticleConditionsPriceSummaryResponseExample
-  get() = ArticleConditionsPriceSummaryResponseExample

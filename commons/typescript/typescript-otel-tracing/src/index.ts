@@ -11,3 +11,5 @@ export {
   type ClientErrorReporterConfig,
 } from "./clientErrorReporter";
 export { installConsoleLogger } from "./installConsoleLogger";
+export { bootstrapObservability, type BootstrapObservabilityOptions } from "./bootstrapObservability";
+export { grafanaTraceObservabilityConfig } from "./grafanaTraceObservabilityConfig";

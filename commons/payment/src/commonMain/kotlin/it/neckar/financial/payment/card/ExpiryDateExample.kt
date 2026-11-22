@@ -43,6 +43,3 @@ object ExpiryDateExample {
   /** Five years out. */
   val farFuture: ExpiryDate = ExpiryDate(year = today().year + 5, month = 12)
 }
-
-val ExpiryDate.Companion.Example: ExpiryDateExample
-  get() = ExpiryDateExample

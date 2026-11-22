@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { OptionContainer } from "./OptionContainer";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Layout / OptionContainer",
+  component: OptionContainer,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const OptionContainerStory: StoryObj<typeof meta> = {
+export const OptionContainerStory: StoryObj = {
   name: "Option Container",
   render: () => {
     const [checked, setChecked] = useState(false);

@@ -8,11 +8,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { AdjustableValueNumberInput, type AdjustableValueNumberNullable } from "./AdjustableValueNumberInput";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Inputs / AdjustableValueNumberInput",
+  component: AdjustableValueNumberInput,
 } satisfies Meta;
 
 export default meta;
@@ -30,9 +28,6 @@ const initial: AdjustableValueDouble = {
   value: 42,
 };
 
-/**
- * Stories
- */
 export const AdjustableValueNumberInputStory: StoryObj<Args> = {
   name: "Default",
   args: {

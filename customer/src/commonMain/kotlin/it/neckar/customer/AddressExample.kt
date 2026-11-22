@@ -133,6 +133,3 @@ object AddressExample {
 
   val test: Address.Confirmed = Address("Teststraße", "99", "77777", "Test-Stadt", "Germany")
 }
-
-val Address.Companion.Example: AddressExample
-  get() = AddressExample

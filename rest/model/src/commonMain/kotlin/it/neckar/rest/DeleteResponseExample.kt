@@ -34,6 +34,3 @@ object DeleteResponseExample {
   val good: DeleteResponse = DeleteResponse.good()
   val notFound: DeleteResponse = DeleteResponse.notFound()
 }
-
-val DeleteResponse.Companion.Example: DeleteResponseExample
-  get() = DeleteResponseExample

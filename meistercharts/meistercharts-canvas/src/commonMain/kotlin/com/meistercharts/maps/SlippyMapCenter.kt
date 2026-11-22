@@ -76,10 +76,10 @@ class SlippyMapCenter(
   }
 
   companion object {
-    val neckarItCenter: SlippyMapCenter = SlippyMapCenter(MapCoordinates.Companion.Example.neckarIt, 15)
+    val neckarItCenter: SlippyMapCenter = SlippyMapCenter(MapCoordinatesExample.neckarIt, 15)
 
     @Suppress("SpellCheckingInspection")
-    val emmendingen: SlippyMapCenter = SlippyMapCenter(MapCoordinates.Companion.Example.emmendingen, 12)
+    val emmendingen: SlippyMapCenter = SlippyMapCenter(MapCoordinatesExample.emmendingen, 12)
   }
 }
 
@@ -91,4 +91,3 @@ fun SlippyMapCenter.withLatitude(latitude: @deg Double): SlippyMapCenter {
 fun SlippyMapCenter.withLongitude(longitude: @deg Double): SlippyMapCenter {
   return SlippyMapCenter(coordinates.latitude, Longitude(longitude), defaultSlippyMapZoom)
 }
-

@@ -8,11 +8,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { AdjustableValueSelect, type AdjustableValueSelectValue } from "./AdjustableValueSelect";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Inputs / AdjustableValueSelect",
+  component: AdjustableValueSelect,
 } satisfies Meta;
 
 export default meta;
@@ -27,9 +25,6 @@ interface Args {
 
 const options = ["silver", "black"];
 
-/**
- * Stories
- */
 export const AdjustableValueSelectStory: StoryObj<Args> = {
   name: "AdjustableValueSelect",
   args: {

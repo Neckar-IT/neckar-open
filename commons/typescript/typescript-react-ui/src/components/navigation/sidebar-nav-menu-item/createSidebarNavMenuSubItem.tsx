@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import { SidebarMenuSubButton, SidebarMenuSubItem } from "../../primitives/sidebar";
 import { createUseIsActive, type NavItemDeps } from "../createUseIsActive";
 import { sidebarNavItemAriaCurrent } from "./sidebarNavItemAriaCurrent";
+import { SidebarNavMenuDisabledClasses } from "./sidebarNavMenuItemClasses";
 
 export type SidebarNavMenuSubItemProps<AppRoutes extends Record<string, Record<string, string> | NoParams>> =
   LinkPropsPrimitive<AppRoutes> & {
@@ -47,10 +48,7 @@ export function createSidebarNavMenuSubItem<AppRoutes extends Record<string, Rec
     if (disabled) {
       return (
         <SidebarMenuSubItem>
-          <SidebarMenuSubButton
-            className="text-muted-foreground hover:text-muted-foreground hover:cursor-not-allowed hover:bg-transparent"
-            isActive={isActive}
-          >
+          <SidebarMenuSubButton className={SidebarNavMenuDisabledClasses} isActive={isActive}>
             <span>{title}</span>
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>

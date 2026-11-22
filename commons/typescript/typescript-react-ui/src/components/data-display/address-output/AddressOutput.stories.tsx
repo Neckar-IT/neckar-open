@@ -5,11 +5,12 @@ import { AddressOutput } from "./AddressOutput";
 
 const meta = {
   title: "Data display / AddressOutput",
+  component: AddressOutput,
 } satisfies Meta;
 
 export default meta;
 
-export const AddressOutputStory: StoryObj<typeof meta> = {
+export const AddressOutputStory: StoryObj = {
   name: "AddressOutput",
   render: () => {
     const address: AddressDraft = {

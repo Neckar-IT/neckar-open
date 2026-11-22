@@ -261,6 +261,3 @@ object CompanyExample {
     Fertigo
   )
 }
-
-val Company.Companion.Example: CompanyExample
-  get() = CompanyExample

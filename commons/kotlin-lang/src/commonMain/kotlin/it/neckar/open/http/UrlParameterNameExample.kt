@@ -42,6 +42,3 @@ object UrlParameterNameExample {
   val from: UrlParameterName = UrlParameterName("from")
   val to: UrlParameterName = UrlParameterName("to")
 }
-
-val UrlParameterName.Companion.Example: UrlParameterNameExample
-  get() = UrlParameterNameExample

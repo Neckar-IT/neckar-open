@@ -25,10 +25,6 @@ interface GlobalErrorFallbackProps {
   recover?: () => void;
 }
 
-/**
- * Global Error Fallback Component
- */
-
 export function GlobalErrorFallback(props: GlobalErrorFallbackProps): React.ReactNode {
   const [errorPage, setErrorPage] = useState<{ component: React.ReactNode; sequence: number } | null>(null);
 

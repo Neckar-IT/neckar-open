@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { PasswordInputFormField } from "./PasswordInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / PasswordInputFormField",
+  component: PasswordInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -32,17 +29,8 @@ const formSchema = zod.object({
 
 type FormSchema = zod.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
 export const PasswordInputFormFieldStory: StoryObj = {
   name: "PasswordInputFormField",
-  args: {
-    label: "Password",
-    disabled: false,
-    required: true,
-  },
   render: () => {
     const form = useForm<FormSchema>({
       resolver: zodResolver(formSchema),

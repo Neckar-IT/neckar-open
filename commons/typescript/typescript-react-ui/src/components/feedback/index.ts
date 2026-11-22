@@ -2,7 +2,6 @@ export { Alert, AlertDescription, AlertTitle } from "../primitives/alert";
 export { Badge, badgeVariants } from "../primitives/badge";
 export { Progress } from "../primitives/progress";
 export { Skeleton } from "../primitives/skeleton";
-export { BadgeWithHint } from "./badge-with-hint";
 export { CircularProgress } from "./circular-progress";
 export { Delayed } from "./delayed";
 export { Empty } from "./empty";

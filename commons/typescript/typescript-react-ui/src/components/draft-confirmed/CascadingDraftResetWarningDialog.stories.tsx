@@ -8,12 +8,9 @@ import { useState } from "react";
 import { Button } from "../primitives/button";
 import { CascadingDraftResetWarningDialog } from "./CascadingDraftResetWarningDialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Draft confirmed / CascadingDraftResetWarningDialog",
+  component: CascadingDraftResetWarningDialog,
 } satisfies Meta;
 
 export default meta;
@@ -52,7 +49,7 @@ function CascadingDraftResetWarningDialogStoryBody({
 /**
  * Two entity types with confirmed records: the list renders below the description, outside it.
  */
-export const CascadingDraftResetWarningDialogStory: StoryObj<typeof meta> = {
+export const CascadingDraftResetWarningDialogStory: StoryObj = {
   name: "CascadingDraftResetWarningDialog",
   render: () => (
     <CascadingDraftResetWarningDialogStoryBody
@@ -67,7 +64,7 @@ export const CascadingDraftResetWarningDialogStory: StoryObj<typeof meta> = {
 /**
  * No entity has confirmed records: the dialog shows the description only.
  */
-export const CascadingDraftResetWarningDialogWithoutListStory: StoryObj<typeof meta> = {
+export const CascadingDraftResetWarningDialogWithoutListStory: StoryObj = {
   name: "CascadingDraftResetWarningDialog (no list)",
   render: () => <CascadingDraftResetWarningDialogStoryBody usedByCounts={[]} />,
 };

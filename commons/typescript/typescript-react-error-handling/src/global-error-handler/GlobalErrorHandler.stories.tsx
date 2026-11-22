@@ -9,12 +9,9 @@ import axios from "axios";
 import { http, HttpResponse } from "msw";
 import { GlobalErrorHandler } from "./GlobalErrorHandler";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Error Handling / Global Error Handler",
+  component: GlobalErrorHandler,
   beforeEach: ({ msw }) => {
     msw.use(
       http.get("/network-error", () => {
@@ -64,11 +61,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const GlobalErrorHandlerStory: StoryObj<typeof meta> = {
+export const GlobalErrorHandlerStory: StoryObj = {
   name: "GlobalErrorHandler",
   render: () => {
     const throwError = () => {

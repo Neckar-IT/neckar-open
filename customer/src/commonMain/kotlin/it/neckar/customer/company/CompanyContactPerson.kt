@@ -48,8 +48,6 @@ data class CompanyContactPerson(
   val cellphone: PhoneNumber? = null,
   val email: EmailAddress? = null,
 ) {
-  companion object
-
   @JvmInline
   @Serializable
   value class Id(override val uuid: NativeUuid) : ValueClassUuid {

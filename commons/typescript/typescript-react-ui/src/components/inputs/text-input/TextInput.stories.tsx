@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { TextInput } from "./TextInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / TextInput",
+  component: TextInput,
 } satisfies Meta;
 
 export default meta;
@@ -25,10 +22,6 @@ interface Args {
   isInvalid: boolean;
   disabled: boolean;
 }
-
-/**
- * Stories
- */
 
 export const TextInputStory: StoryObj<Args> = {
   name: "TextInput",

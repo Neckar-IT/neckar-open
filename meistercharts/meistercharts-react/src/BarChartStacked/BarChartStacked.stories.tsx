@@ -21,18 +21,10 @@ const config = {
   },
 };
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Bar Chart Stacked" } satisfies Meta;
+const meta = { title: "Bar Chart Stacked", component: BarChartStacked } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => <BarChartStacked configuration={config} />,
 };

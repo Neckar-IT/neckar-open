@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Skeleton as SkeletonComponent } from "./Skeleton";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Skeleton",
+  component: SkeletonComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Skeleton: StoryObj<typeof meta> = {
+export const Skeleton: StoryObj = {
   render: () => {
     return (
       <div className="flex items-center space-x-4">

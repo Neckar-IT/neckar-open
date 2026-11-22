@@ -23,10 +23,6 @@ export interface TimelineNavParentProps extends TimelineNavParentType {
   lastElement?: boolean | undefined;
 }
 
-/**
- * Component
- */
-
 export function TimelineNavParent(props: TimelineNavParentProps): React.ReactElement {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(() => {

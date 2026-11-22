@@ -6,6 +6,8 @@ plugins {
 
 dependencies {
   api(project(":meistercharts-projects"))
+  // `Projects.open`: the build scripts name the open projects outside MeisterCharts by the registry of the monorepo.
+  api("it.neckar.open.project-registry:open-projects")
   // The settings classpath is the parent of every build script classpath: the build scripts under internal/open/meistercharts apply
   // the convention plugins by id, without a version.
   api("it.neckar.buildplatform:conventions")

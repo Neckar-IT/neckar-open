@@ -40,7 +40,7 @@ import it.neckar.runtime.context.RuntimeContext
 fun Route.developmentOnly(stage: DeploymentStage = initializedDeploymentStage(), build: Route.() -> Unit): Route {
   when (stage) {
     DeploymentStage.Development -> build()
-    DeploymentStage.Staging, DeploymentStage.Demo, DeploymentStage.Production, DeploymentStage.QA, DeploymentStage.Sandbox -> Unit
+    DeploymentStage.Staging, DeploymentStage.Demo, DeploymentStage.Production, DeploymentStage.QA -> Unit
   }
   return this
 }

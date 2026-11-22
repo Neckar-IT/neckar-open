@@ -4,7 +4,7 @@
 
 import { act, render, renderHook, screen } from "@test/test-utils";
 import { createStore, Provider } from "jotai";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { DialogRegistry } from "./DialogRegistry";
 import { createEntityDialogAtom, useOpenEntityDialog } from "./entityDialogAtom";
 
@@ -32,9 +32,11 @@ describe("DialogRegistry", () => {
     expect(screen.getByText("Archive Emma")).toBeInTheDocument();
   });
 
-  it("opens a dialog through useOpenEntityDialog", () => {
+  it("opens a dialog through useOpenEntityDialog and runs onDone when the dialog is done", () => {
     const store = createStore();
-    const dialogAtom = createEntityDialogAtom<string>(({ entity }) => <p>{`Confirm ${entity}`}</p>);
+    const dialogAtom = createEntityDialogAtom<string>(({ entity, onDone }) => (
+      <button type="button" onClick={() => onDone?.()}>{`Confirm ${entity}`}</button>
+    ));
     render(
       <Provider store={store}>
         <DialogRegistry />
@@ -43,9 +45,11 @@ describe("DialogRegistry", () => {
     const { result } = renderHook(() => useOpenEntityDialog(dialogAtom), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
     });
+    const onDone = vi.fn();
 
-    act(() => result.current("Persuasion"));
+    act(() => result.current("Persuasion", onDone));
+    act(() => screen.getByRole("button", { name: "Confirm Persuasion" }).click());
 
-    expect(screen.getByText("Confirm Persuasion")).toBeInTheDocument();
+    expect(onDone).toHaveBeenCalledTimes(1);
   });
 });

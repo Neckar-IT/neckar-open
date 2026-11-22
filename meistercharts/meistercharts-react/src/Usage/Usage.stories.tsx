@@ -21,17 +21,9 @@ const config: BarChartGroupedConfiguration = {
   },
 };
 
-/**
- * Meta Information
- */
-
 const meta = { title: "Usage" } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const NoDiv: StoryObj<typeof meta> = {
   render: () => {

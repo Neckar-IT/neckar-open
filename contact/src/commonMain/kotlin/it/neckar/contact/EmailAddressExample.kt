@@ -36,6 +36,3 @@ object EmailAddressExample {
   val personal: EmailAddress = EmailAddress("max.mustermann@example.de")
   val admin: EmailAddress = EmailAddress("admin@example.org")
 }
-
-val EmailAddress.Companion.Example: EmailAddressExample
-  get() = EmailAddressExample

@@ -1,12 +1,12 @@
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 
 description = """Meistercharts - History Core"""
 
 plugins {
   kotlinxSerialization
 }
-
-val neckarOpenVersion: String by project
 
 repositories {
   mavenCentral()
@@ -20,18 +20,18 @@ kotlin {
       dependencies {
         // workaround: dependency=libs:kotlin:2.4.20 observed-on=2026-10-07 upstream=https://youtrack.jetbrains.com/issue/KT-43500
         // compileOnly is unsupported for Kotlin/JS: Kotlin 2.4.20 reports IncorrectCompileOnlyDependencyWarning.
-        implementation("it.neckar.open:annotations:$neckarOpenVersion")
+        implementation(project(Projects.open.annotations))
 
-        api("it.neckar.open:unit:$neckarOpenVersion")
-        api("it.neckar.open:provider:$neckarOpenVersion")
-        api("it.neckar.open:disposable:$neckarOpenVersion")
-        api("it.neckar.open.meistercharts:meistercharts-core")
+        api(project(Projects.open.units.unit))
+        api(project(Projects.open.commons.provider))
+        api(project(Projects.open.commons.disposable))
+        api(project(Projects.open.meistercharts.meisterchartsCore))
 
-        api("it.neckar.open:i18n:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-collections:$neckarOpenVersion")
+        api(project(Projects.open.commons.i18n))
+        api(project(Projects.open.commons.kotlinCollections))
 
         //Required for serializers
-        api("it.neckar.open:kotlinx-serializers:$neckarOpenVersion")
+        api(project(Projects.open.commons.kotlinxSerializers))
 
         api(libs.kotlinx.serialization.core)
       }
@@ -54,7 +54,7 @@ kotlin {
 
     jvmMain {
       dependencies {
-        api("it.neckar.open:annotations:$neckarOpenVersion")
+        api(project(Projects.open.annotations))
 
         api(libs.threeten.extra)
       }
@@ -62,8 +62,8 @@ kotlin {
 
     jvmTest {
       dependencies {
-        implementation("it.neckar.open:test-utils:$neckarOpenVersion")
-        implementation("it.neckar.open:kotlinx-serialization-test-utils:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.testUtils))
+        implementation(project(Projects.open.commons.kotlinxSerializationTestUtils))
       }
     }
   }

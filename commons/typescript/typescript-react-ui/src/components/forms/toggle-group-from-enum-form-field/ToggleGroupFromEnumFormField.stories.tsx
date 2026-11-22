@@ -21,12 +21,9 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / ToggleGroupFromEnumFormField",
+  component: ToggleGroupFromEnumFormField,
 } satisfies Meta;
 
 export default meta;
@@ -50,10 +47,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const ToggleGroupFromEnumFormFieldStory: StoryObj<Args> = {
   name: "ToggleGroupFromEnumFormField",

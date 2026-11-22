@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Room Icon
+ * Room: the outline of a floor plan.
  */
 
 export function RoomIcon(props: React.ComponentProps<"svg"> & CustomIconProps) {

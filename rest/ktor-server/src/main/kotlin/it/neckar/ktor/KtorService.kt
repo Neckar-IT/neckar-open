@@ -42,6 +42,7 @@ import it.neckar.open.health.ServiceState
 import it.neckar.open.health.ServiceStateHolder
 import it.neckar.open.http.Url
 import it.neckar.open.version.VersionInformation
+import it.neckar.projects.common.LocalDev
 import it.neckar.projects.common.Port
 import it.neckar.projects.common.ServiceDescriptor
 import it.neckar.projects.common.ServiceName
@@ -55,6 +56,7 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
+import java.net.BindException
 import java.net.URI
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -149,11 +151,30 @@ fun launchService(
 ) {
   try {
     val stallReaction = StallReaction(processStartWatchdogMode())
-    server(service, port, stallReaction).watchEventLoop(port, stallReaction).start(wait = true)
+    server(service, port, stallReaction).watchEventLoop(port, stallReaction).startNamingFailedBind(wait = true)
   } catch (e: Exception) {
     logger.error("Failed to start service [${service.serviceDescriptor.serviceName}] on port [$port]", e)
     throw e
   }
+}
+
+/**
+ * [EmbeddedServer.start]; a failed bind of a local run is logged with its addresses, because it fails when the Dev-IP is missing on `lo`
+ * or the port is taken.
+ */
+private fun EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>.startNamingFailedBind(wait: Boolean) {
+  try {
+    start(wait = wait)
+  } catch (e: Exception) {
+    bindFailureHint(e, engineConfig.connectors.map { it.host })?.let { logger.error(it) }
+    throw e
+  }
+}
+
+/** The hint for [failure] of a server bound to [boundAddresses]: a text when a bind failed and the Dev-IP is among them, else null. */
+internal fun bindFailureHint(failure: Throwable, boundAddresses: List<String>): String? {
+  val bindFailed = generateSequence(failure) { it.cause }.any { it is BindException }
+  return "The server binds $boundAddresses; `./gradlew verify` names a missing Dev-IP".takeIf { bindFailed && LocalDev.Address in boundAddresses }
 }
 
 /**
@@ -169,18 +190,20 @@ fun server(
    * creates keeps [WatchdogMode.LogOnly].
    */
   stallReaction: StallReaction = StallReaction(WatchdogMode.LogOnly),
+  /** Every port listens on each of its addresses. */
+  bindHost: BindHost = BindHost.current(),
 ): EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration> = embeddedServer(
   factory = Netty,
   environment = applicationEnvironment {
     log = logger
   },
   configure = {
-    connector {
-      this.port = port.value
-    }
-    service.additionalPorts.takeIf { service.portOverride == null }.orEmpty().forEach { additionalPort ->
-      connector {
-        this.port = additionalPort.value
+    (listOf(port) + service.additionalPorts.takeIf { service.portOverride == null }.orEmpty()).forEach { listenedPort ->
+      bindHost.addresses.forEach { address ->
+        connector {
+          this.host = address
+          this.port = listenedPort.value
+        }
       }
     }
     // Increase from Netty's default of 8192 bytes. OIDC session cookies are ~4.4 KB
@@ -247,7 +270,8 @@ fun KtorService.launchWithStartupSequence(
   logServiceStartup()
 
   val stallReaction = StallReaction(processStartWatchdogMode())
-  val embeddedServer = server(this, effectivePort, stallReaction).watchEventLoop(effectivePort, stallReaction).start(wait = false)
+  val embeddedServer = server(this, effectivePort, stallReaction).watchEventLoop(effectivePort, stallReaction)
+  embeddedServer.startNamingFailedBind(wait = false)
 
   //A failed start ends the process; stopping the server first also stops its watchdogs
   try {
@@ -347,14 +371,14 @@ fun KtorService.launch() {
 }
 
 /**
- * The banner every start writes: version, description and the port the server binds to.
+ * The banner every start writes: version, description and the addresses and port the server binds to.
  */
 private fun KtorService.logServiceStartup() {
   logger.info("Starting Service [${this.serviceDescriptor.serviceName}]: ${VersionInformation.versionAsStringVerbose}")
   serviceDescriptor.description?.let {
     logger.info("\t${it}")
   }
-  logger.info("\tPort: [${effectivePort}] API Prefix: [${serviceDescriptor.apiPrefix}]")
+  logger.info("\tAddresses: ${BindHost.current().addresses} Port: [${effectivePort}] API Prefix: [${serviceDescriptor.apiPrefix}]")
 }
 
 /** As often as the Docker healthcheck asks, so the state stands near every probe in the log. */

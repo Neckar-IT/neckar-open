@@ -111,7 +111,7 @@ class RepositoryReadInTest(config: Config) : Rule(
     report(
       Finding(
         Entity.from(element),
-        "$finding A test reads only its classpath: the producer publishes the file with publishFiles(SharedFiles.…) (build-logic/core), " +
+        "$finding A test reads only its classpath: the producer publishes the file with publishFiles(SharedFiles.…) (internal/buildplatform/conventions), " +
           "the consumer resolves it with resolvedFiles(SharedFiles.…) and copies it onto the test classpath with processTestResources { from(configuration) }.",
       ),
     )

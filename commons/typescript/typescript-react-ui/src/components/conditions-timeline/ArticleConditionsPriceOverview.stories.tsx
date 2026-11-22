@@ -4,6 +4,7 @@ import { ArticleConditionsPriceOverview } from "./ArticleConditionsPriceOverview
 
 const meta = {
   title: "Conditions timeline / ArticleConditionsPriceOverview",
+  component: ArticleConditionsPriceOverview,
 } satisfies Meta;
 
 export default meta;
@@ -17,18 +18,18 @@ const fullSummary: ArticleConditionsPriceSummary = {
 };
 
 /** Part, accessory and labour — the article that ships with small material and is mounted. */
-export const Full: StoryObj<typeof meta> = {
+export const Full: StoryObj = {
   render: () => <ArticleConditionsPriceOverview summary={fullSummary} />,
 };
 
 /** A book: the part row alone. */
-export const PartOnly: StoryObj<typeof meta> = {
+export const PartOnly: StoryObj = {
   name: "Part only",
   render: () => <ArticleConditionsPriceOverview summary={{ ...fullSummary, accessory: null, labour: null, customerPrice: 2500 }} />,
 };
 
 /** An accessory price is still empty, so its surcharge and the customer price are too. */
-export const Incomplete: StoryObj<typeof meta> = {
+export const Incomplete: StoryObj = {
   render: () => (
     <ArticleConditionsPriceOverview
       summary={{
@@ -41,6 +42,6 @@ export const Incomplete: StoryObj<typeof meta> = {
 };
 
 /** Before the companion first answered. */
-export const Pending: StoryObj<typeof meta> = {
+export const Pending: StoryObj = {
   render: () => <ArticleConditionsPriceOverview summary={undefined} />,
 };

@@ -90,6 +90,7 @@ Import: `@neckar-hub/typescript-react-ui/forms`
 | `Form` | Creates a new Form with [FormProvider], wraps children in a `<form>` element, and adds [FormDebug] for debugging purposes. |
 | `ImageUploadFormField` | File upload input with image preview, bound to a react-hook-form field. |
 | `Label` | Accessible form label that automatically links to its peer input and dims when the input is disabled. |
+| `NullableBooleanFormField` | Yes, no or empty for a `boolean \| null` form field; each state is reachable from each other one. |
 | `NumberInputFormField` | Form-field wrapper around `NumberInput`. |
 | `PasswordInputFormField` | Password input with show/hide toggle, bound to a react-hook-form field. |
 | `PhoneNumberInputFormField` | Phone number input with country-code formatting, bound to a react-hook-form field. |
@@ -151,10 +152,9 @@ Import: `@neckar-hub/typescript-react-ui/feedback`
 | --- | --- |
 | `Alert` | Inline alert/callout box with severity variants. |
 | `Badge` | Small inline label used to highlight status, counts, or categories with color variants. |
-| `BadgeWithHint` | A badge that explains itself: hovering or focusing it opens a tooltip with its meaning and facts. |
 | `CircularProgress` | SVG ring that fills proportionally to a 0-100 percentage value. |
-| `Delayed` | Component that renders it's children after a delay. |
-| `Empty` | Empty Icon |
+| `Delayed` | Renders its children after a delay, so a loading indicator of a fast request does not flicker. |
+| `Empty` | Custom Icon to symbolize an empty list. |
 | `EmptyState` | Icon, label and optional action button shown in place of a list that holds no record yet. |
 | `ErrorIndicator` | Error state indicator with an X-circle icon and optional label, used when a data fetch or action fails. |
 | `LoadingIndicator` | Animated spinner with optional label shown while data or an action is pending. |
@@ -176,10 +176,11 @@ Import: `@neckar-hub/typescript-react-ui/navigation`
 | `MultiStep` | Stepped wizard layout with a step list, current step content, and previous/next navigation buttons. |
 | `Pagination` | Custom Pagination Component, inspired by shadcn's Task Table Pagination (https://ui.shadcn.com/examples/tasks) |
 | `Sidebar` | Collapsible navigation panel that adapts to a slide-in Sheet on mobile; wrap in SidebarProvider. |
+| `SidebarNavCategory` | A sidebar nav item that opens and closes a list of sub-items on click. |
 | `SidebarNavExternalLinkItem` | A sidebar nav item pointing at another application. |
 | `SidebarToggleButton` | Icon Button to toggle the sidebar between expanded and collapsed states. |
 | `Tabs` | Tabbed content switcher; compose with TabsList, TabsTrigger, and TabsContent. |
-| `TimelineNav` | Timeline Navigation |
+| `TimelineNav` | This component can display a series of steps in a timeline and allows navigation between the steps. |
 
 ## Layout
 
@@ -188,6 +189,9 @@ Import: `@neckar-hub/typescript-react-ui/layout`
 | Component | Description |
 | --- | --- |
 | `Accordion` | Collapsible panel set where one or multiple items can be expanded to reveal their content. |
+| `AppDesktopHeader` | The fixed header of height `h-12` with sidebar toggle and breadcrumbs; renders from tablet width only. |
+| `AppMain` | The content column of a page: [AppMobileHeader] with icon and app name as brand, [AppDesktopHeader], the page content centered at `max-w-7xl`, and the document title derived by `useAutoPageTitle`. |
+| `AppMobileHeader` | The brand bar with the menu toggle of an app inside a `SidebarProvider`; renders on mobile only. [AppMain] renders it itself; an app with its own page frame places it above its route outlet, so the menu stays reachable on every page. |
 | `BadgeBar` | Horizontal bar laying out badges with configurable alignment; it shrinks below its content inside a flex cell, so a text item in it can truncate. |
 | `ButtonBar` | Horizontal bar laying out buttons with configurable alignment. |
 | `Card` | Bordered surface grouping related content, with header, title, description, action, content, and footer slots. |
@@ -222,7 +226,7 @@ Import: `@neckar-hub/typescript-react-ui/overlays`
 | `EntityDialogMount` | Renders the dialog of `atom` while it is visible; closing the dialog hides it. |
 | `EntitySelectDialog` | The frame of an entity's pick dialog: heading, the select table as body and a cancel button. |
 | `EntityUnarchiveDialog` | Dialog to confirm reactivating (unarchiving) an entity. |
-| `FormDialog` | Dialog that wraps a form with a cancel and submit button |
+| `FormDialog` | Dialog that wraps a form with a cancel and submit button. |
 | `HoverCard` | Popover card that appears when the user hovers over a trigger element, used to show preview details. |
 | `Popover` | Floating popover anchored to a trigger element, with optional lock-open behavior. |
 | `SaveDialog` | Base Dialog with preconfigured Header and Footer |
@@ -236,13 +240,13 @@ Import: `@neckar-hub/typescript-react-ui/actions`
 | Component | Description |
 | --- | --- |
 | `ActionButton` | Button that renders a single `Action` (label, icon, click handler, loading state). |
-| `ActionLockProvider` | Locks every `ActionButton`, `FormSubmitActionButton`, `ActionsDropdownItem` and `ConfirmationDialog` below, e.g. while the device is offline. |
+| `ActionLockProvider` | Locks every `ActionButton`, `FormSubmitActionButton`, `ActionsDropdownItem`, `ConfirmationDialog`, `FormSubmitButton`, `ConfirmButton`, `SaveDialog`, `CascadingDraftResetWarningDialog` and generated lifecycle dropdown below, e.g. while the device is offline. |
 | `ActionsDropdown` | Dropdown menu grouping several `Action`s behind a single trigger button. |
 | `ActionsDropdownItem` | Single `Action` rendered as an item inside an `ActionsDropdown`. |
 | `AddButton` | Button that can be used to open a dialog to add a new item to an entity |
 | `Button` | Clickable button with multiple style variants, sizes, and an optional built-in loading spinner. |
 | `ButtonGroup` | Row or column of buttons joined into one control, with separators and text segments between them. |
-| `CancelButton` | Basic Cancel Button |
+| `CancelButton` | This button can be used to close dialogs or cancel other actions. |
 | `ClearButton` | Ghost icon button with an X icon for clearing an input or selection. |
 | `CopyTextToClipboardButton` | Button that copies the given text to the clipboard. |
 | `DropdownMenu` | Trigger-anchored menu with items, checkboxes, radio groups, sub-menus, and a destructive item variant. |
@@ -260,15 +264,15 @@ Import: `@neckar-hub/typescript-react-ui/media`
 
 | Component | Description |
 | --- | --- |
-| `ApartmentIcon` | Apartment icon |
+| `ApartmentIcon` | Apartment: a door inside a building outline. |
 | `Avatar` | Circular user image with automatic fallback to initials or a placeholder when the image fails to load. |
-| `BeakerEmptyIcon` | Beaker Empty Icon |
-| `BeakerFullIcon` | Beaker Full Icon |
-| `BeakerHalfFullIcon` | Beaker Half Full Icon |
+| `BeakerEmptyIcon` | Empty beaker. |
+| `BeakerFullIcon` | Beaker filled to the top. |
+| `BeakerHalfFullIcon` | Beaker filled to half. |
 | `CircleLockIcon` | Lock-in-a-circle icon |
 | `CirclePencilIcon` | Pencil-in-a-circle edit icon. |
 | `CircleSendIcon` | Paper-plane send icon in a circle. |
-| `ConnectorIcon` | Connector icon |
+| `ConnectorIcon` | Connector: a line between two points. |
 | `ConstructionIcon` | Construction icon |
 | `FileEuroIcon` | File-with-euro-sign icon |
 | `FileSlot` | One uploaded file that belongs to an entity but is not one of its form fields: it is written through endpoints of its own (upload, remove) rather than through the entity's upsert, so it never appears in a form schema. |
@@ -279,12 +283,12 @@ Import: `@neckar-hub/typescript-react-ui/media`
 | `ImageUpload` | Image upload field with drag-and-drop and preview. |
 | `InverterIcon` | Inverter Icon |
 | `PdfSlot` | One uploaded PDF that belongs to an entity but is not one of its form fields: it is written through endpoints of its own (upload, remove) rather than through the entity's upsert, so it never appears in a form schema. |
-| `RoofTileIcon` | Roof Tile Icon |
-| `RoomIcon` | Room Icon |
-| `SemiDetachedHouseIcon` | Semi Detached House Icon |
-| `SolarPanelIcon` | Solar Panel Icon |
+| `RoofTileIcon` | Row of overlapping roof tiles. |
+| `RoomIcon` | Room: the outline of a floor plan. |
+| `SemiDetachedHouseIcon` | Semi-detached house: two houses sharing one wall. |
+| `SolarPanelIcon` | Solar panel: a tilted photovoltaic module. |
 | `StarSolidIcon` | Star Solid Icon (i.e. star completely filled in) |
-| `TerracedHouseIcon` | Terraced House Icon |
+| `TerracedHouseIcon` | Terraced house: a row of houses sharing their side walls. |
 
 ## Text
 
@@ -404,7 +408,7 @@ Barrel modules of one business domain that export several related symbols under 
 | Export | Description |
 | --- | --- |
 | `ArchivedBadge` | Badge marking an entity as archived; renders nothing when the entity is active. |
-| `ArchivedEditLockReason` | Why the edit action of an archived record is disabled; its `disabledReason`, beside the `ArchivedEntityBanner`. |
+| `ArchivedEditLockReason` | Why the edit and the save action of an archived record are disabled; its `disabledReason`, beside the `ArchivedEntityBanner`. |
 | `ArchivedEntityBanner` | Top-of-page banner shown on detail pages when the entity is archived. |
 | `ArchiveScope` | The view switch over an entity's archive state, a scope rather than a filter because archiving is a soft delete: a toggle group with the options only active, only archived and all, of which exactly one is selected. |
 | `EntityStatusBadge` | Combined status badge for an entity's archive state and confirmation status. |

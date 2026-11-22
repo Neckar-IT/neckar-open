@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { SelectIdFromListFormField } from "./SelectIdFromListFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / SelectIdFromListFormField",
+  component: SelectIdFromListFormField,
 } satisfies Meta;
 
 export default meta;
@@ -50,11 +47,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
-export const SelectIdFromListFormFieldStory: StoryObj<typeof meta> = {
+export const SelectIdFromListFormFieldStory: StoryObj = {
   name: "SelectIdFromListFormField",
   render: () => {
     const form = useForm<FormValues>({

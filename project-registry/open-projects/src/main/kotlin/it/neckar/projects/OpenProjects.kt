@@ -9,10 +9,17 @@ import it.neckar.projects.KotlinTarget.WasmJs
  * The projects under `internal/open`. The monorepo registers them below `:internal:open`, a build rooted at
  * `internal/open` below `:`.
  */
-class OpenProjects(parent: ConfiguredProject, relativePath: GradleProjectPath) : ConfiguredProject(parent, relativePath, ProjectType.Intermediate, ProjectRole.Container) {
+class OpenProjects(
+  parent: ConfiguredProject,
+  relativePath: GradleProjectPath,
+  /** The full path of [meistercharts]: `:` in the export of `internal/open/meistercharts`, whose root project is MeisterCharts. */
+  meisterchartsPath: GradleProjectPath = parent.path.resolve(relativePath).resolve(MeisterchartsDirectory),
+) : ConfiguredProject(parent, relativePath, ProjectType.Intermediate, ProjectRole.Container) {
   companion object {
     /** This file, relative to `internal/open`. */
     const val RegistryFile: String = "project-registry/open-projects/src/main/kotlin/it/neckar/projects/OpenProjects.kt"
+
+    private val MeisterchartsDirectory: GradleProjectPath = GradleProjectPath(":meistercharts")
   }
 
   val annotations: ConfiguredProject = multiplatform("annotations", ProjectRole.Library, Jvm, Js, WasmJs, LinuxX64)
@@ -27,7 +34,7 @@ class OpenProjects(parent: ConfiguredProject, relativePath: GradleProjectPath) :
   val financial: ConfiguredProject = multiplatform("financial", ProjectRole.Library, Jvm, Js)
   val integrations: Integrations = Integrations(this)
   val ksp: Ksp = Ksp(this)
-  val meistercharts: MeisterchartsProjects = MeisterchartsProjects(this, GradleProjectPath(":meistercharts"))
+  val meistercharts: MeisterchartsProjects = MeisterchartsProjects(this, MeisterchartsDirectory, meisterchartsPath)
   val rest: Rest = Rest(this)
   val units: Units = Units(this)
   val user: ConfiguredProject = multiplatform("user", ProjectRole.Library, Jvm, Js)
@@ -110,6 +117,7 @@ class OpenProjects(parent: ConfiguredProject, relativePath: GradleProjectPath) :
     val random: ConfiguredProject = multiplatform("random", ProjectRole.Library, Jvm, Js, WasmJs)
     val repeating: ConfiguredProject = multiplatform("repeating", ProjectRole.Library, Jvm, Js, WasmJs)
     val resourceLoading: ConfiguredProject = multiplatform("resource-loading", ProjectRole.Library, Jvm, Js, WasmJs)
+    val scriptMoney: ConfiguredProject = pnpm("script-money", ProjectRole.Library)
     val storage: ConfiguredProject = multiplatform("storage", ProjectRole.Library, Jvm, Js)
     val tags: ConfiguredProject = multiplatform("tags", ProjectRole.Library, Jvm, Js)
     val testData: ConfiguredProject = multiplatform("test-data", ProjectRole.Library, Jvm, Js)

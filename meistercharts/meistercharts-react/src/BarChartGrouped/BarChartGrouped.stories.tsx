@@ -21,18 +21,10 @@ const config = {
   },
 };
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Bar Chart Grouped" } satisfies Meta;
+const meta = { title: "Bar Chart Grouped", component: BarChartGrouped } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => <BarChartGrouped configuration={config} />,
 };

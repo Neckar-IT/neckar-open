@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { SelectFromEnum } from "./SelectFromEnum";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / SelectFromEnum",
+  component: SelectFromEnum,
 } satisfies Meta;
 
 export default meta;
@@ -29,11 +26,7 @@ const ChickenBreed = {
   Orpington: "Orpington",
 } as const;
 
-/**
- * Stories
- */
-
-export const SelectFromEnumStory: StoryObj<typeof meta> = {
+export const SelectFromEnumStory: StoryObj = {
   name: "SelectFromEnum",
   render: () => {
     const [value, setValue] = useState<string | null>(null);

@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./Alert";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Alert",
+  component: Alert,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const AlertStory: StoryObj<typeof meta> = {
+export const AlertStory: StoryObj = {
   name: "Alert",
   render: () => {
     return (
@@ -65,7 +58,7 @@ export const AlertStory: StoryObj<typeof meta> = {
   },
 };
 
-export const AlertWithoutTitleStory: StoryObj<typeof meta> = {
+export const AlertWithoutTitleStory: StoryObj = {
   name: "Alert (description only)",
   render: () => {
     return (

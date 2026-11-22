@@ -1,18 +1,14 @@
 import type { QueryResult } from "@neckar-hub/typescript-react-query";
 import { useNow } from "@neckar-hub/typescript-react-utils/providers";
-import type { PriceTimelineEntriesFilterCriteriaState } from "@neckar-hub/typescript-utils/openapi-types";
+import { type PriceTimelineEntriesFilterCriteriaState, ValueTimelineEntryStatus } from "@neckar-hub/typescript-utils/openapi-types";
 import type { ReactNode } from "react";
 import { ActionButton, type Action } from "../actions";
 import type { ResponsiveColumnDefinition } from "../data-display/responsive-table";
-import {
-  DataSliceTable,
-  type DataSliceTableConfig,
-  DataSliceToolbar,
-  type DataSliceParams,
-  type TableResponse,
-} from "../layout/data-slice-view";
+import { dateTimeRangeFilter, enumFilter, Filters } from "../filters/table-filters";
+import { DataSliceTable, type DataSliceTableConfig, DataSliceToolbar, type TableResponse } from "../layout/data-slice-view";
 import type { TimelineEntryLike, TimelineSummaryLike } from "./timeline.types";
-import type { TimelineDataSliceController } from "./timelineDataSliceController";
+import type { TimelineDataSliceController, TimelineDataSliceParams } from "./timelineDataSliceController";
+import { TimelineEntryBadge } from "./TimelineEntryBadge";
 import { rowActionsColumn, statusColumn, type TimelineSortKey, validFromColumn } from "./timelineEntryTableColumns";
 
 type ValueTimelineTableProps<TEntry extends TimelineEntryLike> = {
@@ -33,14 +29,14 @@ type ValueTimelineTableProps<TEntry extends TimelineEntryLike> = {
    */
   valueColumns: ResponsiveColumnDefinition<TEntry, TimelineSortKey>[];
   addEntryAction: Action;
-  dataSliceController: TimelineDataSliceController<DataSliceParams<TimelineSortKey>>;
+  dataSliceController: TimelineDataSliceController<TimelineDataSliceParams>;
   /** Renders the actions of a future-dated row; see [rowActionsColumn]. */
   rowActions: (entry: TEntry) => ReactNode;
 };
 
 /**
- * Status, `validFrom` and the future-only row-actions column come from this component; the value
- * columns and the actions of a row are passed in by the instantiation.
+ * Status, `validFrom`, the future-only row-actions column and the filters `validFromAfter` and `status` come from this
+ * component; the value columns and the actions of a row are passed in by the instantiation.
  */
 export function ValueTimelineTable<TEntry extends TimelineEntryLike>({
   className,
@@ -56,11 +52,28 @@ export function ValueTimelineTable<TEntry extends TimelineEntryLike>({
 
   const config: DataSliceTableConfig<TEntry, TimelineSortKey, PriceTimelineEntriesFilterCriteriaState> = {
     columns: [statusColumn({ summary, now }), validFromColumn(), ...valueColumns, rowActionsColumn({ summary, now, rowActions })],
-    // Bottom-align the action to the (taller) summary at the start of the toolbar so both share one baseline
-    // and the same gap above the table, instead of the button floating at the top of the toolbar row.
     toolbar: () => (
       <DataSliceToolbar
-        filters={toolbarStart}
+        filters={
+          <>
+            {toolbarStart}
+            <Filters
+              primary={[
+                dateTimeRangeFilter(dataSliceController, { from: "validFromAfter", label: "timeline.fields.validFrom" }),
+                enumFilter(dataSliceController, {
+                  param: "status",
+                  label: "timeline.fields.status",
+                  values: ValueTimelineEntryStatus,
+                  enumName: "ValueTimelineEntryStatus",
+                  // The generated `Get*TimelineFor*Params` type `status` as a string; the options are the enum's values.
+                  renderOption: (status) => <TimelineEntryBadge status={status as ValueTimelineEntryStatus} />,
+                }),
+              ]}
+            />
+          </>
+        }
+        // Bottom-align the action to the (taller) summary at the start of the toolbar so both share one baseline
+        // and the same gap above the table, instead of the button floating at the top of the toolbar row.
         actions={<ActionButton action={addEntryAction} variant="default" className="@3xl:self-end" />}
       />
     ),

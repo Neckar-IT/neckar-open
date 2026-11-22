@@ -30,6 +30,7 @@ package it.neckar.ksp.test
 import assertk.*
 import assertk.assertions.*
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.configureKsp
@@ -50,6 +51,8 @@ import java.io.File
  * )
  * assertThat(symbolProcessorProvider.context.result).isNotEmpty()
  * ```
+ *
+ * A processor that must fail is tested through the compiler messages [compileSourceFilesWithoutLibraries] returns.
  */
 @OptIn(ExperimentalCompilerApi::class)
 object KspTestUtils {
@@ -77,6 +80,33 @@ object KspTestUtils {
      */
     options: Map<String, String> = emptyMap(),
   ) {
+    // The sample sources reference types and annotations of the calling test module; only the inherited classpath
+    // makes them resolvable to the in-process compiler.
+    val compilationResult = compile(sourceFiles, symbolProcessorProvider, options, inheritClassPath = true)
+    assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+  }
+
+  /**
+   * Compiles the given source files against the Kotlin standard library alone, fails the calling test unless the
+   * compilation ends in [KotlinCompilation.ExitCode.COMPILATION_ERROR], and returns the compiler messages.
+   *
+   * Proves how a processor reacts when a library type it looks for does not resolve.
+   */
+  fun compileSourceFilesWithoutLibraries(
+    sourceFiles: List<File>,
+    symbolProcessorProvider: SymbolProcessorProvider,
+  ): String {
+    val compilationResult = compile(sourceFiles, symbolProcessorProvider, options = emptyMap(), inheritClassPath = false)
+    assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
+    return compilationResult.messages
+  }
+
+  private fun compile(
+    sourceFiles: List<File>,
+    symbolProcessorProvider: SymbolProcessorProvider,
+    options: Map<String, String>,
+    inheritClassPath: Boolean,
+  ): JvmCompilationResult {
     require(sourceFiles.isNotEmpty()) { "No source files provided" }
 
     //Copy the contents instead of pointing at the files: SourceFile.fromPath leaves the sources outside the
@@ -101,9 +131,7 @@ object KspTestUtils {
         )
       }
 
-      // The sample sources reference types and annotations of the calling test module; only the inherited classpath
-      // makes them resolvable to the in-process compiler.
-      inheritClassPath = true
+      this.inheritClassPath = inheritClassPath
       messageOutputStream = System.out // see diagnostics in real time
 
       // When the project uses -progressive or pre-release Kotlin features, compiled classes
@@ -113,9 +141,7 @@ object KspTestUtils {
       kotlincArguments += "-Xskip-prerelease-check"
     }
 
-    val compilationResult = kotlinCompilation.compile()
-    assertThat(compilationResult).isNotNull()
-    assertThat(compilationResult.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+    return kotlinCompilation.compile()
   }
 
 }

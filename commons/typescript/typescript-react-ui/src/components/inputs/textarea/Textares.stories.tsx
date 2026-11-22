@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { Textarea } from "./Textarea";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Textares",
+  component: Textarea,
 } satisfies Meta;
 
 export default meta;
@@ -25,10 +22,6 @@ interface Args {
   disabled: boolean;
   isInvalid: boolean;
 }
-
-/**
- * Stories
- */
 
 export const TextareaStory: StoryObj<Args> = {
   name: "Textarea",

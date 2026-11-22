@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SelectContent, SelectGroup, SelectItem, SelectLabel, Select as SelectRoot, SelectTrigger, SelectValue } from "./Select";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Select",
+  component: SelectRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Select: StoryObj<typeof meta> = {
+export const Select: StoryObj = {
   render: () => {
     return (
       <SelectRoot>

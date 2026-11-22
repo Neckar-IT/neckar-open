@@ -2,10 +2,11 @@
  * Imports
  */
 
+import type { ObservabilityConfig } from "@neckar-hub/typescript-utils/observability";
 import { render, screen } from "@test/test-utils";
 import { describe, expect, it } from "vitest";
 import { makeAxiosError } from "../../axiosErrorFixture";
-import { type ObservabilityConfig, ObservabilityProvider } from "../../ObservabilityContext";
+import { ObservabilityProvider } from "../../ObservabilityContext";
 import { TraceLink } from "./TraceLink";
 
 /**

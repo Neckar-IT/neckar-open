@@ -71,10 +71,7 @@ import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
-import kotlin.reflect.KTypeParameter
-import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.allSupertypes
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.starProjectedType
@@ -83,11 +80,11 @@ import it.neckar.rest.openapi.documentation.DocumentationProvider
 import it.neckar.rest.openapi.dsl.OpenApiExample
 import it.neckar.rest.openapi.dsl.OpenApiRoute
 import it.neckar.rest.openapi.schema.SchemaDescriptor
+import it.neckar.rest.openapi.schema.resolveSubclassType
 import it.neckar.rest.openapi.schema.SchemaPropertyConstraints
 import it.neckar.rest.openapi.schema.SchemaTypeProcessingQueue
 import it.neckar.rest.openapi.schema.TypeDiscriminator
 import it.neckar.rest.openapi.schema.isInline
-import it.neckar.rest.openapi.schema.makeNotNullable
 import it.neckar.rest.openapi.documentation.requiredElementNamesForOpenApi
 import it.neckar.rest.openapi.schema.isReferenced
 import it.neckar.rest.openapi.schema.hasOpenApiBaseSchemaAnnotation
@@ -1047,12 +1044,6 @@ internal class OpenApiSchemaGenerator(
     metadataWriter.putDocumentation(documentationProvider.getDocumentationForType(clazz))
     metadataWriter.putGermanTerm(documentationProvider.getGermanTermForClass(clazz))
 
-    val interfaceTypeMapping: Map<KTypeParameter, KType> = clazz.typeParameters
-      .zip(type.arguments)
-      .mapNotNull { (typeParameter, argument) ->
-        argument.type?.let { typeParameter to it }
-      }.toMap()
-
     val sealedSubclasses = clazz.getAllSealedSubclasses()
     require(sealedSubclasses.isNotEmpty()) {
       "<${clazz.qualifiedName}> has no sealed subclass"
@@ -1060,7 +1051,7 @@ internal class OpenApiSchemaGenerator(
 
     //Resolve all subclass types
     val subTypes = sealedSubclasses.map { subClass ->
-      resolveSubclassType(subClass, clazz, interfaceTypeMapping)
+      resolveSubclassType(subClass, type)
     }
 
     //Register all subclasses that are relevant to be generated later one
@@ -1069,17 +1060,16 @@ internal class OpenApiSchemaGenerator(
     }
 
     jsonObjectBuilder.put("oneOf", buildJsonArray {
-      sealedSubclasses
-        .fastForEach { subClass ->
-          val resolvedType = resolveSubclassType(subClass, clazz, interfaceTypeMapping)
-          val schema = SchemaDescriptor.ofMessage(resolvedType)
+      subTypes
+        .fastForEach { subType ->
+          val schema = SchemaDescriptor.ofMessage(subType)
 
           if (schema.isReferenced()) {
             addJsonObject {
               putRefTo(schema, ReferenceType.Discriminated)
             }
           } else {
-            throw UnsupportedOperationException("Subclasses of sealed interfaces must be referenced: $subClass")
+            throw UnsupportedOperationException("Subclasses of sealed interfaces must be referenced: ${subType.asKClass()}")
           }
         }
     })
@@ -1153,81 +1143,6 @@ internal class OpenApiSchemaGenerator(
         }
       }
     }
-  }
-
-  private fun resolveSubclassType(
-    subClass: KClass<*>,
-    sealedInterface: KClass<*>,
-    interfaceMapping: Map<KTypeParameter, KType>,
-  ): KType {
-    // Find the exact supertype entry that links the subclass back to the sealed interface. This is
-    // the only place where Kotlin still keeps the generic relationship.
-    val interfaceSuperType = subClass.supertypes.firstOrNull { it.classifier == sealedInterface }
-      ?: return subClass.starProjectedType
-
-    // We build a fresh mapping for the subclass' type parameters. This mapping ultimately allows us
-    // to call `subClass.createType(...)` with the concrete arguments we derived.
-    val subclassMapping = mutableMapOf<KTypeParameter, KType>()
-
-    /**
-     * Recursively walks from the sealed interface declaration down to the subclass declaration.
-     * Whenever we encounter a type parameter we assign the already resolved type argument so that the
-     * subclass mapping ends up with concrete `KType`s for its own parameters.
-     */
-    fun assignTypes(superType: KType, expectedType: KType) {
-      when (val classifier = superType.classifier) {
-        is KTypeParameter -> {
-          when (classifier) {
-            // The type parameter belongs to the subclass itself. Assign the concrete type so it can
-            // be plugged back into `createType()` later.
-            in subClass.typeParameters -> subclassMapping.putIfAbsent(classifier, expectedType)
-            // Otherwise it belongs to the interface. Recurse with the interface mapping to
-            // eventually reach the subclass parameter.
-            in interfaceMapping -> {
-              interfaceMapping[classifier]?.let { assignTypes(it, expectedType) }
-            }
-          }
-        }
-
-        is KClass<*> -> {
-          val expectedClassifier = expectedType.findKClass() ?: return
-          // Abort if the structure deviates; mismatched classifiers mean we cannot propagate the type.
-          if (classifier != expectedClassifier) {
-            return
-          }
-
-          // Walk every nested type argument to push the expected type all the way down to the
-          // subclass parameter.
-          superType.arguments.zip(expectedType.arguments).forEach { (superArg, expectedArg) ->
-            val superArgType = superArg.type ?: return@forEach
-            val expectedArgType = expectedArg.type ?: return@forEach
-            assignTypes(superArgType, expectedArgType)
-          }
-        }
-
-        else -> Unit
-      }
-    }
-
-    // Bootstrapping step: pair every sealed-interface parameter with the argument we resolved for the
-    // owning type (e.g., AdjustableValue<String>), then propagate that to the subclass declaration.
-    sealedInterface.typeParameters
-      .zip(interfaceSuperType.arguments)
-      .forEach { (interfaceTypeParameter, superTypeArgument) ->
-        val expectedType = interfaceMapping[interfaceTypeParameter] ?: return@forEach
-        val superTypeArgumentType = superTypeArgument.type ?: return@forEach
-        assignTypes(superTypeArgumentType, expectedType)
-      }
-
-    // Finally build the argument list for the subclass KType. If we could not derive a concrete type
-    // we fall back to the constraint (upper bound) or `Any` to keep the generator conservative.
-    val subclassArguments = subClass.typeParameters.map { typeParameter ->
-      val mappedType = subclassMapping[typeParameter]
-      val argumentType = mappedType ?: typeParameter.upperBounds.firstOrNull()?.makeNotNullable() ?: Any::class.createType()
-      KTypeProjection.invariant(argumentType)
-    }
-
-    return subClass.createType(subclassArguments, false)
   }
 
   companion object {

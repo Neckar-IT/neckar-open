@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Solar Panel Icon
+ * Solar panel: a tilted photovoltaic module.
  */
 
 export function SolarPanelIcon(props: React.ComponentProps<"svg"> & CustomIconProps): React.ReactElement {

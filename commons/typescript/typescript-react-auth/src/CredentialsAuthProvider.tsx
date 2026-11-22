@@ -1,7 +1,3 @@
-/**
- * Imports
- */
-
 import { LoadingIndicator } from "@neckar-hub/typescript-react-ui/feedback";
 import { FullScreenCenter } from "@neckar-hub/typescript-react-ui/layout";
 import type { UserDetails } from "@neckar-hub/typescript-utils/openapi-types";
@@ -19,17 +15,9 @@ import { LoginScreen } from "./screens/LoginScreen";
 import { LogoutAndReloadScreen } from "./screens/LogoutAndReloadScreen";
 import { RegistrationScreen } from "./screens/RegistrationScreen";
 
-/**
- * Prop Types
- */
-
 type CredentialsAuthProviderProps = PropsWithChildren<{
   config: CredentialsAuthConfig;
 }>;
-
-/**
- * Credentials Auth Provider
- */
 
 export function CredentialsAuthProvider(props: CredentialsAuthProviderProps): ReactElement {
   return (

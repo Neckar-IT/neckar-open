@@ -17,10 +17,6 @@ interface ErrorMessageProps {
   className?: string | null;
 }
 
-/**
- * Error Message Component
- */
-
 export function ErrorMessage(props: ErrorMessageProps): React.ReactNode {
   const { t } = useEmbeddedTranslation();
   const prefix = props.errorCode || props.exceptionType;

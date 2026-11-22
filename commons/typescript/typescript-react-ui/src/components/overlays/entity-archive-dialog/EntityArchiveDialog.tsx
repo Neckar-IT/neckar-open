@@ -1,6 +1,6 @@
 import { type ParseKeys, useTranslation } from "@neckar-hub/typescript-react-i18n";
 import type { ReactElement, ReactNode } from "react";
-import { type ActiveUsageCounts, toast, warnAboutActiveUsage, withActionFailedToast } from "../../feedback";
+import { type ActiveUsageCounts, toast, warnAboutActiveUsage } from "../../feedback";
 import { TitleWithEntity } from "../../text/title-with-entity";
 import { DestructiveConfirmationDialog } from "../confirmation-dialog";
 
@@ -73,7 +73,7 @@ export function EntityArchiveDialog({
   const { t } = useTranslation();
 
   const handleArchive = async () => {
-    const outcome = await withActionFailedToast(t(confirmLabel), archive());
+    const outcome = await archive();
     onOpenChange(false);
 
     switch (outcome.type) {

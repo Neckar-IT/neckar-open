@@ -7,9 +7,6 @@ export interface BulletChartProps {
   className?: string;
 }
 
-/**
- * Bullet Chart Component
- */
 export function BulletChart({ className, configuration, style }: BulletChartProps) {
   return (
     <ChartWrapper

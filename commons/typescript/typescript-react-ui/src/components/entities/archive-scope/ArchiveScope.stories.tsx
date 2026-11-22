@@ -6,11 +6,12 @@ import { ArchiveScope } from "./ArchiveScope";
 
 const meta = {
   title: "Entities / ArchiveScope",
+  component: ArchiveScope,
 } satisfies Meta;
 
 export default meta;
 
-export const ArchiveScopeStory: StoryObj<typeof meta> = {
+export const ArchiveScopeStory: StoryObj = {
   render: () => {
     const [value, setValue] = useState<ArchiveFilter>(ArchiveFilter.OnlyActive);
 

@@ -5,6 +5,7 @@ import { PriceSummary } from "./PriceSummary";
 
 const meta = {
   title: "Price timeline / PriceSummary",
+  component: PriceSummary,
 } satisfies Meta;
 
 export default meta;
@@ -27,7 +28,7 @@ const cases: Case[] = [
   { label: "summary null", summary: null },
 ];
 
-export const PriceSummaryStory: StoryObj<typeof meta> = {
+export const PriceSummaryStory: StoryObj = {
   name: "PriceSummary",
   render: () => {
     return (

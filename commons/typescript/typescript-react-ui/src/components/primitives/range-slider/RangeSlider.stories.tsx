@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { RangeSlider as RangeSliderComponent } from "./RangeSlider";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / RangeSlider",
+  component: RangeSliderComponent,
   decorators: [
     (Component) => (
       <div className="max-w-screen-sm">
@@ -23,11 +20,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const RangeSlider: StoryObj<typeof meta> = {
+export const RangeSlider: StoryObj = {
   render: () => {
     const [value, setValue] = useState([25, 75]);
 

@@ -8,11 +8,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { type AdjustableValueTextExtended, AdjustableValueTextInput } from "./AdjustableValueTextInput";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Inputs / AdjustableValueTextInput",
+  component: AdjustableValueTextInput,
 } satisfies Meta;
 
 export default meta;
@@ -25,9 +23,6 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Stories
- */
 export const AdjustableValueTextInputStory: StoryObj<Args> = {
   name: "AdjustableValueTextInput",
   args: {

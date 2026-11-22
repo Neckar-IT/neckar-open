@@ -7,6 +7,7 @@ import { ArchivedEntityBanner } from "./ArchivedEntityBanner";
 
 const meta = {
   title: "Entities / ArchivedEntityBanner",
+  component: ArchivedEntityBanner,
 } satisfies Meta;
 
 export default meta;
@@ -29,7 +30,7 @@ const cases: Case[] = [
   { label: "Active — banner returns null", archiveState: ArchiveState.Active },
 ];
 
-export const ArchivedEntityBannerStory: StoryObj<typeof meta> = {
+export const ArchivedEntityBannerStory: StoryObj = {
   name: "ArchivedEntityBanner",
   render: () => {
     return (

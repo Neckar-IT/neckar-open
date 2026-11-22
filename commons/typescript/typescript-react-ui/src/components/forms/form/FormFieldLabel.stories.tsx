@@ -10,10 +10,6 @@ import { z as zod } from "zod";
 import { Form } from ".";
 import { TextInputFormField } from "../text-input-form-field";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / Form",
   args: {
@@ -31,10 +27,6 @@ const meta = {
 } satisfies Meta<{ disabled: boolean; required: boolean }>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const FormFieldLabelStory: StoryObj<{ disabled: boolean; required: boolean }> = {
   name: "FormFieldLabel",

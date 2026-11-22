@@ -6,22 +6,15 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Pagination, type PaginationProps } from "./Pagination";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Navigation / Pagination",
+  component: Pagination,
   args: {
     disabled: false,
   },
 } satisfies Meta<PaginationProps>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<PaginationProps> = {
   render: (args: PaginationProps) => {

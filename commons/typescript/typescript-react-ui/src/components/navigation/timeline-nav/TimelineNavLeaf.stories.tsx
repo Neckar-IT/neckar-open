@@ -6,12 +6,9 @@ import { WithMemoryRouter } from "@neckar-hub/typescript-react-utils/storybook";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimelineNavLeaf, type TimelineNavLeafProps } from "./TimelineNavLeaf";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Navigation / Timeline Nav",
+  component: TimelineNavLeaf,
   decorators: [
     (Story) => {
       return (
@@ -24,10 +21,6 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const TimelineNavLeafStory: StoryObj<TimelineNavLeafProps> = {
   name: "TimelineNavLeaf",

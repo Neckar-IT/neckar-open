@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { ImageUpload, ImageUploadInput, ImageUploadPreview } from "./ImageUpload";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Media / ImageUpload",
+  component: ImageUpload,
   decorators: [
     (Story) => (
       <div className="mx-auto max-w-screen-sm">
@@ -23,11 +20,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const ImageUploadStory: StoryObj<typeof meta> = {
+export const ImageUploadStory: StoryObj = {
   name: "ImageUpload",
   render: () => {
     const [value, setValue] = useState<File | undefined>(undefined);

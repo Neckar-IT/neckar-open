@@ -1,0 +1,4 @@
+{
+  "purpose": "The well-known networks of it.neckar.financial.payment.card.CardNetwork in their order. Read by the Kotlin CardNetworkTest against CardNetwork.knownNetworks and the Vitest of knownCardNetworks in @neckar-hub/typescript-utils/payment-formats.",
+  "known": ["Visa", "Mastercard", "Amex"]
+}

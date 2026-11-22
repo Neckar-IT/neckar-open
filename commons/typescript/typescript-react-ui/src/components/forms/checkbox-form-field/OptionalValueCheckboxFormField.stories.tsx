@@ -11,6 +11,7 @@ import { OptionalValueCheckboxFormField } from "./OptionalValueCheckboxFormField
 
 const meta = {
   title: "Forms / OptionalValueCheckboxFormField",
+  component: OptionalValueCheckboxFormField,
 } satisfies Meta;
 
 export default meta;
@@ -23,13 +24,10 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 /**
- * Stories
+ * The box is the presence of the loan: checked writes the fresh value, unchecked writes `null`.
+ * `loanAmount` has no state a fresh value starts in, so the schema demands it once the box is checked.
  */
-
-// The box is the presence of the loan: checked writes the fresh value, unchecked writes nothing at
-// all. `loanAmount` has no state a fresh value starts in, so the schema demands it once the box is
-// checked.
-export const OptionalValueCheckboxFormFieldStory: StoryObj<typeof meta> = {
+export const OptionalValueCheckboxFormFieldStory: StoryObj = {
   render: () => {
     const form = useForm<FormSchema>({
       resolver: zodResolver(formSchema),

@@ -79,4 +79,10 @@ describe("UserNameEmail", () => {
     expect(screen.getByText("Ada Lovelace")).toBeVisible();
     expect(screen.queryByText("ada@neckar.it")).not.toBeInTheDocument();
   });
+
+  it("shows the login name for an account without first and last name", () => {
+    render(<UserNameEmail user={{ ...user, firstName: "", lastName: "", loginName: "ada" }} />);
+
+    expect(screen.getByText("ada")).toBeVisible();
+  });
 });

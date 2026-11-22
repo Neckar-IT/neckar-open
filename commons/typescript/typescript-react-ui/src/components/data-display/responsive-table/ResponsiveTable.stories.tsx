@@ -4,11 +4,9 @@ import { CheckCircle2Icon } from "lucide-react";
 import { TruncateTextContent } from "../../text/text-overflow";
 import { type ResponsiveTableConfig, type ResponsiveColumnDefinition, ResponsiveTable } from "./ResponsiveTable";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Data display / Responsive Table",
+  component: ResponsiveTable,
   decorators: [
     (Story) => (
       <WithMemoryRouter>
@@ -96,11 +94,7 @@ const invoiceNoColumn: ResponsiveColumnDefinition<Invoice, "invoice" | "totalAmo
   ),
 };
 
-/**
- * Stories
- */
-
-export const DefaultStory: StoryObj<typeof meta> = {
+export const DefaultStory: StoryObj = {
   name: "Default",
   render: () => {
     const config: ResponsiveTableConfig<Invoice, "invoice" | "totalAmount"> = {
@@ -139,7 +133,7 @@ export const DefaultStory: StoryObj<typeof meta> = {
   },
 };
 
-export const WithMobileHeaderStory: StoryObj<typeof meta> = {
+export const WithMobileHeaderStory: StoryObj = {
   name: "With Custom Mobile Headers",
   render: () => {
     const config: ResponsiveTableConfig<Invoice, "invoice" | "totalAmount"> = {
@@ -266,7 +260,7 @@ const birthYearColumn: ResponsiveColumnDefinition<Author> = {
   ),
 };
 
-export const LongContentStory: StoryObj<typeof meta> = {
+export const LongContentStory: StoryObj = {
   name: "Long Content",
   render: () => {
     const config: ResponsiveTableConfig<Author, "name" | "birthYear"> = {
@@ -313,7 +307,7 @@ const places: Place[] = [
   { id: "PLC002", name: "Beispielhof", address: "Beispielweg 4, 54321 Beispielstadt" },
 ];
 
-export const TwoColumnFullWidthStory: StoryObj<typeof meta> = {
+export const TwoColumnFullWidthStory: StoryObj = {
   name: "Two-Column Full Width",
   render: () => {
     const config: ResponsiveTableConfig<Place> = {

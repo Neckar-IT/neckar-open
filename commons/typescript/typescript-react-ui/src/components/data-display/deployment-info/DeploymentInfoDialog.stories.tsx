@@ -9,19 +9,14 @@ import type { DeploymentInfo } from "./deploymentInfo";
 import { DeploymentInfoDialog } from "./DeploymentInfoDialog";
 import { FullyInjectedDeploymentInfo, NothingInjectedDeploymentInfo, PartiallyInjectedDeploymentInfo } from "./deploymentInfoExamples";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Data display / DeploymentInfoDialog",
+  component: DeploymentInfoDialog,
 } satisfies Meta;
 
 export default meta;
 
 /**
- * Stories
- *
  * Every story passes its values, so the screenshots stay fixed instead of following the commit the
  * story browser was built from.
  */
@@ -38,17 +33,17 @@ function OpenableDeploymentInfoDialog({ deploymentInfo }: { deploymentInfo: Depl
   );
 }
 
-export const FullyInjectedStory: StoryObj<typeof meta> = {
+export const FullyInjectedStory: StoryObj = {
   name: "DeploymentInfoDialog (everything injected)",
   render: () => <OpenableDeploymentInfoDialog deploymentInfo={FullyInjectedDeploymentInfo} />,
 };
 
-export const NothingInjectedStory: StoryObj<typeof meta> = {
+export const NothingInjectedStory: StoryObj = {
   name: "DeploymentInfoDialog (nothing injected)",
   render: () => <OpenableDeploymentInfoDialog deploymentInfo={NothingInjectedDeploymentInfo} />,
 };
 
-export const PartiallyInjectedStory: StoryObj<typeof meta> = {
+export const PartiallyInjectedStory: StoryObj = {
   name: "DeploymentInfoDialog (partially injected)",
   render: () => <OpenableDeploymentInfoDialog deploymentInfo={PartiallyInjectedDeploymentInfo} />,
 };

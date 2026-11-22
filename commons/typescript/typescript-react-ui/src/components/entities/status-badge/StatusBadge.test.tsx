@@ -1,6 +1,8 @@
 import { render, screen } from "@test/test-utils";
+import userEvent from "@testing-library/user-event";
 import { ArchiveIcon } from "lucide-react";
 import { describe, expect, it } from "vitest";
+import { TooltipProvider } from "../../primitives/tooltip";
 import { StatusBadge, type StatusBadgeTone } from "./StatusBadge";
 
 const toneClasses: Record<StatusBadgeTone, string> = {
@@ -44,5 +46,43 @@ describe("StatusBadge", () => {
 
     expect(screen.getByTestId("badge")).toHaveClass("text-draft");
     expect(screen.getByTestId("badge")).not.toHaveClass("text-muted-foreground");
+  });
+
+  it("shows the hint as tooltip on keyboard focus", async () => {
+    render(
+      <TooltipProvider>
+        <StatusBadge tone="warning" icon={<ArchiveIcon />} label="Hanging" hint="The run has no finished event." data-testid="badge" />
+      </TooltipProvider>,
+    );
+
+    await userEvent.tab();
+
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("The run has no finished event.");
+    expect(screen.getByTestId("badge")).not.toHaveAttribute("title");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-slot", "badge");
+  });
+
+  it("links the address in a new tab and shows the label as tooltip without hint", async () => {
+    render(
+      <TooltipProvider>
+        <StatusBadge tone="danger" icon={<ArchiveIcon />} label="Failed" href="https://git.example/job/1" />
+      </TooltipProvider>,
+    );
+
+    const link = screen.getByRole("link", { name: "Failed" });
+    expect(link).toHaveAttribute("href", "https://git.example/job/1");
+    expect(link).toHaveAttribute("target", "_blank");
+    await userEvent.tab();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Failed");
+  });
+
+  it("links nothing without href", () => {
+    render(
+      <TooltipProvider>
+        <StatusBadge tone="muted" icon={<ArchiveIcon />} label="Unrecorded" hint="Explained" />
+      </TooltipProvider>,
+    );
+
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 });

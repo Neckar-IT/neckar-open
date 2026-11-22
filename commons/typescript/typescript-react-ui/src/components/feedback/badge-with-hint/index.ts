@@ -1,1 +1,0 @@
-export { BadgeWithHint } from "./BadgeWithHint";

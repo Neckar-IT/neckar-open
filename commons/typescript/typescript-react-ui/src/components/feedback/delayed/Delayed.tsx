@@ -1,9 +1,4 @@
 /**
- * Component that renders it's children after a delay. This is useful for preventing flickering of loading indicators
- * for example.
- */
-
-/**
  * Imports
  */
 
@@ -16,15 +11,13 @@ import { useEffect, useState } from "react";
  */
 
 type Props = PropsWithChildren<{
+  /** The delay in milliseconds before the children are shown. */
   delay?: number | undefined;
 }>;
 
 /**
- * Component
- *
- * @prop delay - The delay in milliseconds before the loading indicator is shown. Default is 300ms.
+ * Renders its children after a delay, so a loading indicator of a fast request does not flicker.
  */
-
 export function Delayed({ delay = 300, children }: Props): ReactNode {
   // A screenshot of a story that waits on this timer shows the children or does not, depending on
   // which of the two won the race — so in test mode there is no waiting.

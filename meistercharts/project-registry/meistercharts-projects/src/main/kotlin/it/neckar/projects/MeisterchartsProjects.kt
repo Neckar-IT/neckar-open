@@ -8,7 +8,11 @@ import it.neckar.projects.KotlinTarget.WasmJs
  * The projects under `internal/open/meistercharts`. The monorepo registers them below `:internal:open:meistercharts`, the export of
  * `internal/open/meistercharts` below `:`.
  */
-class MeisterchartsProjects(parent: ConfiguredProject, relativePath: GradleProjectPath) : ConfiguredProject(parent, relativePath, ProjectType.ProjectParent, ProjectRole.Container) {
+class MeisterchartsProjects(
+  parent: ConfiguredProject,
+  relativePath: GradleProjectPath,
+  path: GradleProjectPath = parent.path.resolve(relativePath),
+) : ConfiguredProject(parent, relativePath, ProjectType.ProjectParent, ProjectRole.Container, path = path) {
   companion object {
     /** This file, relative to `internal/open/meistercharts`. */
     const val RegistryFile: String = "project-registry/meistercharts-projects/src/main/kotlin/it/neckar/projects/MeisterchartsProjects.kt"

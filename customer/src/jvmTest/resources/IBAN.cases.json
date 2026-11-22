@@ -1,0 +1,23 @@
+{
+  "purpose": "Conformance corpus for it.neckar.customer.company.IBAN. Read by the Kotlin IBANTest and the Vitest of validateIbanShape in @neckar-hub/typescript-utils/payment-formats, so a divergence of the two implementations fails both builds.",
+  "frontendDetectable": ["InvalidLength"],
+  "cases": [
+    { "input": "DE89370400440532013000", "canonical": "DE89 3704 0044 0532 0130 00" },
+    { "input": "DE89 3704 0044 0532 0130 00", "canonical": "DE89 3704 0044 0532 0130 00" },
+    { "input": "de89370400440532013000", "canonical": "DE89 3704 0044 0532 0130 00" },
+    { "input": "  DE89370400440532013000  ", "canonical": "DE89 3704 0044 0532 0130 00" },
+    { "input": " DE89 3704-0044.0532 0130 00 ", "canonical": "DE89 3704 0044 0532 0130 00" },
+    { "input": "NO9386011117947", "canonical": "NO93 8601 1117 947" },
+    { "input": "MT84MALT011000012345MTLCAST001S", "canonical": "MT84 MALT 0110 0001 2345 MTLC AST0 01S" },
+    { "input": "MT84MALT011000012345MTLCAST001SABC", "canonical": "MT84 MALT 0110 0001 2345 MTLC AST0 01SA BC" },
+    { "input": "NO938601111794Ä", "canonical": "NO93 8601 1117 94Ä" },
+    { "input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\ud840\udc00", "canonical": "AAAA AAAA AAAA AAAA AAAA AAAA AAAA AAAA AA" },
+
+    { "input": "", "violation": "InvalidLength" },
+    { "input": "   ", "violation": "InvalidLength" },
+    { "input": "DE8937040044", "violation": "InvalidLength" },
+    { "input": "NO938601111794", "violation": "InvalidLength" },
+    { "input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "violation": "InvalidLength" },
+    { "input": "DE89370400440532013000123456789012345", "violation": "InvalidLength" }
+  ]
+}

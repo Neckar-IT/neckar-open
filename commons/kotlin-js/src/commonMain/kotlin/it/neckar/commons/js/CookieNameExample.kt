@@ -37,6 +37,3 @@ object CookieNameExample {
   val consent: CookieName = CookieName("cookie-consent")
   val theme: CookieName = CookieName("theme")
 }
-
-val CookieName.Companion.Example: CookieNameExample
-  get() = CookieNameExample

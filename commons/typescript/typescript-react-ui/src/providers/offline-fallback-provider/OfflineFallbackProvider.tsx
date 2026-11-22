@@ -1,11 +1,4 @@
 /**
- * Check if the browser has a network connection (window.navigator.onLine) and show a fallback in case there is none.
- *
- * Be aware: window.navigator.online only checks for a network connection, not if this network is connected to the
- * internet.
- */
-
-/**
  * Imports
  */
 
@@ -30,9 +23,11 @@ export type OfflineFallbackProviderProps = PropsWithChildren<{
 }>;
 
 /**
- * Offline Fallback Provider Component
+ * Check if the browser has a network connection (window.navigator.onLine) and show a fallback in case there is none.
+ *
+ * Be aware: window.navigator.onLine only checks for a network connection, not if this network is connected to the
+ * internet.
  */
-
 export function OfflineFallbackProvider(props: OfflineFallbackProviderProps): ReactElement {
   const [isOnline, setIsOnline] = useState<boolean>(props.mockOnline ?? window.navigator.onLine);
 

@@ -3,11 +3,12 @@ import { FormattedDate as FormattedDateComponent } from "./FormattedDate";
 
 const meta = {
   title: "Data display / FormattedDate",
+  component: FormattedDateComponent,
 } satisfies Meta;
 
 export default meta;
 
-export const FormattedDate: StoryObj<typeof meta> = {
+export const FormattedDate: StoryObj = {
   render: () => (
     <div className="space-y-2">
       <div>

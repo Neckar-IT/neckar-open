@@ -7,12 +7,9 @@ import { useState } from "react";
 import { Input } from "../../primitives/input";
 import { HighlightText } from "./HighlightText";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Text / HighlightText",
+  component: HighlightText,
 } satisfies Meta;
 
 export default meta;
@@ -24,10 +21,6 @@ export default meta;
 interface Args {
   text: string;
 }
-
-/**
- * Stories
- */
 
 export const HighlightTextStory: StoryObj<Args> = {
   name: "Highlight Text",

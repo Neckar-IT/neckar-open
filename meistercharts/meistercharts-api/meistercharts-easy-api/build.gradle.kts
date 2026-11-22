@@ -7,6 +7,8 @@ import it.neckar.gradle.ansiConsole
 import it.neckar.gradle.executableJsApplication
 import it.neckar.gradle.ksp.generating.ts.generateTypeScriptDefinitions
 import it.neckar.gradle.npmbundle.CopyBundleContentTask
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.process.ExecOperations
 
@@ -17,7 +19,6 @@ plugins {
   npmBundle
 }
 
-val neckarOpenVersion: String by project
 val meisterchartsVersion: String by project
 val npmTag: String = if (meisterchartsVersion.contains("-SNAPSHOT")) "snapshot" else "latest"
 
@@ -38,12 +39,12 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api("it.neckar.open.meistercharts:meistercharts-history-core")
-        api("it.neckar.open.meistercharts:meistercharts-canvas")
+        api(project(Projects.open.meistercharts.meisterchartsHistory.meisterchartsHistoryCore))
+        api(project(Projects.open.meistercharts.meisterchartsCanvas))
 
-        api("it.neckar.open:unit:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-js:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-collections:$neckarOpenVersion")
+        api(project(Projects.open.units.unit))
+        api(project(Projects.open.commons.kotlinJs))
+        api(project(Projects.open.commons.kotlinCollections))
       }
     }
 
@@ -54,7 +55,7 @@ kotlin {
 
     jsMain {
       dependencies {
-        implementation("it.neckar.open:version-info:$neckarOpenVersion")
+        implementation(project(Projects.open.versionInfo))
       }
     }
 

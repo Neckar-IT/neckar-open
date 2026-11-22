@@ -3,11 +3,12 @@
  */
 
 import { appImageInfo } from "@neckar-hub/typescript-utils/deploy-metadata";
+import type { ObservabilityConfig } from "@neckar-hub/typescript-utils/observability";
 import type { PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { type ErrorHandler, GlobalErrorFallback } from "./GlobalErrorFallback";
 import { GlobalErrorListener } from "./GlobalErrorListener";
-import { type ObservabilityConfig, ObservabilityProvider } from "./ObservabilityContext";
+import { ObservabilityProvider } from "./ObservabilityContext";
 import { SupportContactProvider } from "./SupportContactContext";
 import { type VersionInfoData, VersionInfoProvider } from "./VersionInfoContext";
 

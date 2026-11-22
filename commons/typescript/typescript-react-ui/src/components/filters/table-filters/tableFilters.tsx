@@ -11,7 +11,7 @@ import { toLocalDate } from "@neckar-hub/typescript-utils/date";
 import { ArchiveFilter, type ConfirmationStatus } from "@neckar-hub/typescript-utils/openapi-types";
 import { LinkIcon } from "lucide-react";
 import { type ComponentType, type ReactElement, type ReactNode } from "react";
-import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
+import { embeddedTranslationNamespace, useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import { FilterByConfirmationStatus } from "../../draft-confirmed/FilterByConfirmationStatus";
 import { ArchiveScope } from "../../entities/archive-scope";
 import { FilterByDateRange, type OpenDateRange } from "../../inputs/date-range";
@@ -204,11 +204,19 @@ type EnumControlProps = {
   | { mode: "multiple"; value: readonly string[] | undefined; onChange: (value: string[] | undefined) => void }
 );
 
+/**
+ * Each key in the app first, then in this library's namespace, for an enum this library translates itself; the
+ * qualified key of either namespace wins over a flat key of the app.
+ */
+function withEmbeddedFallback(keys: string[]): string[] {
+  return keys.flatMap((key) => [key, `${embeddedTranslationNamespace}:${key}`]);
+}
+
 function EnumControl(props: EnumControlProps): ReactElement {
   const { t } = useTranslation();
   const options = props.values.map((enumValue) => ({
     value: enumValue,
-    label: t(enumTranslationKeys(enumValue, props.enumName), { defaultValue: enumValue }),
+    label: t(withEmbeddedFallback(enumTranslationKeys(enumValue, props.enumName)), { defaultValue: enumValue }),
     popoverLabel: props.renderOption?.(enumValue),
   }));
   return props.mode === "single" ? (

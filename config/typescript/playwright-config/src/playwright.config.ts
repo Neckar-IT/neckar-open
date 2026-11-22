@@ -71,7 +71,7 @@ export function storybookWebServer(options: { basePort: number }): WebServerConf
   return {
     // `--exact-port` fails instead of moving to the next free port, which `url` would never reach;
     // `--ci` skips every interactive prompt.
-    command: `pnpm run storybook --port ${port} --host 127.0.0.1 --exact-port --ci`,
+    command: `pnpm run storybook --port ${port} --exact-port --ci`,
     url: `http://127.0.0.1:${port}/index.json`,
     // Locally a Storybook is often already open on this port; in CI a listening server can only be
     // a leftover from an earlier job, serving the stories of another commit.

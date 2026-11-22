@@ -6,6 +6,7 @@ import { recordUnknownOutcome, useSubmittingShell } from "./unknownOutcomeStore"
 
 const meta = {
   title: "Feedback / Unanswered Mutation Alert",
+  component: UnknownOutcomeAlert,
 } satisfies Meta;
 
 export default meta;
@@ -31,7 +32,7 @@ function SubmittingShell(): React.ReactElement {
 /**
  * Alert A after a save the service accepted and did not answer within the gateway timeout.
  */
-export const UnansweredSave: StoryObj<typeof meta> = {
+export const UnansweredSave: StoryObj = {
   render: () => (
     <QueryClientProvider client={createQueryClient()}>
       <SubmittingShell />

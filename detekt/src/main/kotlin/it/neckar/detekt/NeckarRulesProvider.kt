@@ -51,6 +51,7 @@ class NeckarRulesProvider : RuleSetProvider {
       ::ForbiddenPackageDependency,
       ::ForbiddenPrintCall,
       ::GitLabAccessThroughClient,
+      ::GitLabApiValueDefault,
       ::GitLabApiViaFactory,
       ::HotFunctionMustNotAllocateCapturingLambda,
       ::HotFunctionMustNotBoxValueClass,

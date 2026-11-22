@@ -6,6 +6,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const meta = {
   title: "Actions / ThemeSwitcher",
+  component: ThemeSwitcher,
 } satisfies Meta;
 
 export default meta;
@@ -18,7 +19,7 @@ const themes: ThemeDefinition[] = [
   { id: "fjord", label: "Fjord", colorScheme: "light" },
 ];
 
-export const ThemeSwitcherStory: StoryObj<typeof meta> = {
+export const ThemeSwitcherStory: StoryObj = {
   name: "ThemeSwitcher",
   render: () => {
     return (

@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { DurationInputFormField } from "./DurationInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / DurationInputFormField",
+  component: DurationInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -42,10 +39,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const DurationInputFormFieldStory: StoryObj<Args> = {
   name: "DurationInputFormField",

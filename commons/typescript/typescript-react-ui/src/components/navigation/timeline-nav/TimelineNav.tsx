@@ -15,9 +15,7 @@ export interface TimelineNavProps {
 }
 
 /**
- * Timeline Navigation
- *
- * This component ca display a series of steps in a timeline and allows navigation between the steps.
+ * This component can display a series of steps in a timeline and allows navigation between the steps.
  */
 
 export function TimelineNav(props: TimelineNavProps): React.ReactElement {

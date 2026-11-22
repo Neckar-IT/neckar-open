@@ -14,21 +14,14 @@ import {
   BreadcrumbSeparator,
 } from "./Breadcrumb";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Breadcrumb",
+  component: Breadcrumb,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const BreadcrumbStory: StoryObj<typeof meta> = {
+export const BreadcrumbStory: StoryObj = {
   name: "Breadcrumb",
   render: () => {
     return (
@@ -65,7 +58,7 @@ export const BreadcrumbStory: StoryObj<typeof meta> = {
   },
 };
 
-export const MonospaceItemStory: StoryObj<typeof meta> = {
+export const MonospaceItemStory: StoryObj = {
   render: () => {
     return (
       <Breadcrumb>

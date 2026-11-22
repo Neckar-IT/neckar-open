@@ -15,10 +15,6 @@ interface TimelineNavStatusIconProps {
   status: TimelineNavStatus;
 }
 
-/**
- * Component
- */
-
 export function TimelineNavStatusIcon(props: TimelineNavStatusIconProps): React.ReactElement {
   switch (props.status) {
     case "not-started":

@@ -3,6 +3,14 @@ import type { Plugin } from "vite";
 
 const WORKSPACE_SCOPE = "@neckar-hub/";
 
+export interface CommonsSourceExportsOptions {
+  /**
+   * Redirects in a production build too. A Storybook build sets it, because react-docgen-typescript reads the
+   * props table of a component only from its TypeScript source.
+   */
+  alsoInBuild?: boolean;
+}
+
 /**
  * Vite plugin that, in dev mode, redirects imports of `@neckar-hub/*`
  * commons packages from their compiled `dist/*.js` output to the matching
@@ -18,25 +26,25 @@ const WORKSPACE_SCOPE = "@neckar-hub/";
  *
  * See issue #1454.
  */
-export function commonsSourceExports(): Plugin {
-  let devMode = false;
+export function commonsSourceExports(options: CommonsSourceExportsOptions = {}): Plugin {
+  let redirect = false;
 
   return {
     name: "neckar-commons-source-exports",
     enforce: "pre",
 
     config(_config, env) {
-      devMode = env.mode === "development";
+      redirect = env.mode === "development" || options.alsoInBuild === true;
     },
 
-    async resolveId(id, importer, options) {
-      if (devMode === false) return;
+    async resolveId(id, importer, resolveOptions) {
+      if (redirect === false) return;
       if (id.startsWith(WORKSPACE_SCOPE) === false) return;
 
       // Delegate to Vite's default resolver so pnpm workspace links, the
       // standard "import" condition, and subpath exports all still apply.
       // skipSelf prevents an infinite loop back into this hook.
-      const resolved = await this.resolve(id, importer, { ...options, skipSelf: true });
+      const resolved = await this.resolve(id, importer, { ...resolveOptions, skipSelf: true });
       if (resolved === null || resolved === undefined) return;
       if (resolved.id.includes("/dist/") === false) return;
 

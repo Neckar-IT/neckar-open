@@ -31,7 +31,7 @@ import it.neckar.open.kotlin.serializers.NativeInstant
 
 /**
  * Shared field contract for the "attempted to delete a past or current entry" failure
- * on price-timeline delete mutations. Returned with HTTP `409 Conflict`.
+ * on price-timeline delete mutations. Returned with HTTP 200 as `bad/NotFutureDated`.
  *
  * Each parent's `Delete…Response.NotFutureDated` sealed-leaf implements this interface
  * directly (flat fields, no wrapper).

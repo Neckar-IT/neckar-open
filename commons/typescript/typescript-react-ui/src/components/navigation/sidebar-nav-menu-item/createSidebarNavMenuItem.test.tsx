@@ -1,6 +1,6 @@
 import { createLink, createUrlGenerator, MemoryRouter, type NoParams } from "@neckar-hub/typescript-react-router";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { SidebarMenu, SidebarProvider } from "../../primitives/sidebar";
 import { createSidebarNavMenuItem } from "./createSidebarNavMenuItem";
 
@@ -9,13 +9,6 @@ type Routes = { "/projects": NoParams; "/reports": NoParams };
 const SidebarNavMenuItem = createSidebarNavMenuItem<Routes>({ Link: createLink<Routes>(), generateUrl: createUrlGenerator<Routes>() });
 
 function renderSidebar(pathname: string, projectsOverride?: boolean): void {
-  // jsdom lacks the matchMedia that SidebarProvider reads to tell a mobile viewport.
-  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: false,
-    media: query,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  }));
   render(
     <MemoryRouter initialEntries={[pathname]}>
       <SidebarProvider>

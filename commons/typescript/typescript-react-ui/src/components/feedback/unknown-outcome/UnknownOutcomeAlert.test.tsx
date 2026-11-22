@@ -1,5 +1,7 @@
 import { createQueryClient, QueryClientProvider } from "@neckar-hub/typescript-react-query";
+import { NowProvider, nowMockedValue } from "@neckar-hub/typescript-react-utils/providers";
 import { render, screen } from "@test/test-utils";
+import { render as renderWithoutProviders } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AxiosError, AxiosHeaders } from "axios";
 import { FormProvider, useForm } from "react-hook-form";
@@ -53,6 +55,7 @@ function renderForm(save: () => Promise<unknown>) {
 
 afterEach(() => {
   clearUnknownOutcome();
+  vi.restoreAllMocks();
 });
 
 describe("UnknownOutcomeAlert", () => {
@@ -73,6 +76,21 @@ describe("UnknownOutcomeAlert", () => {
     expect(save).toHaveBeenCalledOnce();
   });
 
+  it("shows the time of `NowProvider` as the time of the reload", async () => {
+    const user = userEvent.setup();
+    render(
+      <NowProvider value={nowMockedValue}>
+        <QueryClientProvider client={createQueryClient()}>
+          <PublisherForm save={() => Promise.reject(errorWithStatus(504))} />
+        </QueryClientProvider>
+      </NowProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Speichern" }));
+
+    expect(await screen.findByText(`State as of ${nowMockedValue.toLocaleTimeString()}`, { exact: false })).toBeInTheDocument();
+  });
+
   it("keeps the entered values after reloading the state and sends again on request", async () => {
     const user = userEvent.setup();
     const save = vi.fn(() => Promise.reject(errorWithStatus(504)));
@@ -87,6 +105,18 @@ describe("UnknownOutcomeAlert", () => {
     await user.click(screen.getByRole("button", { name: "Send again" }));
 
     expect(save).toHaveBeenCalledTimes(2);
+  });
+
+  it("fails `FormSubmitActionButton` on its first render without `NowProvider`", () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    expect(() =>
+      renderWithoutProviders(
+        <QueryClientProvider client={createQueryClient()}>
+          <PublisherForm save={() => Promise.resolve()} />
+        </QueryClientProvider>,
+      ),
+    ).toThrow("useGetNow must be used within a NowProvider");
   });
 
   it("stays away for a save failing with 500", async () => {

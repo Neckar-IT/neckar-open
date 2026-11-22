@@ -39,14 +39,12 @@ import kotlin.jvm.JvmInline
 import kotlin.uuid.Uuid
 
 /**
- * Base interface for catalog item definitions - without price information
+ * Base interface for catalog item definitions - without price information.
+ *
+ * Leaves the type of `id` to the implementer: an entity declares its own `<Entity>.Id`,
+ * an interface several entities share, such as [PricedCatalogItem], narrows it to [CatalogItem.Id].
  */
 interface CatalogItem : HasValueClassUuid, HasDomainIdentifier {
-  /**
-   * The id of the catalog item
-   */
-  override val id: Id
-
   /**
    * The type key of the catalog item
    */

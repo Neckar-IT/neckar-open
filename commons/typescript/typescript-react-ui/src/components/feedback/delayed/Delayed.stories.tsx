@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Delayed as DelayedComponent } from "./Delayed";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / Delayed",
+  component: DelayedComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Delayed: StoryObj<typeof meta> = {
+export const Delayed: StoryObj = {
   render: () => {
     return (
       <>

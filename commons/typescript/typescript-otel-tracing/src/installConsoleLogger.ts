@@ -35,7 +35,7 @@ let installed = false;
  *   keep their message and stack; objects are JSON-stringified with a cyclic
  *   reference fallback to `[unserializable]`.
  *
- * Call this once in main.tsx after {@link initializeOtel}.
+ * `bootstrapObservability` calls it once, after {@link initializeOtel}.
  */
 export function installConsoleLogger(): void {
   if (installed) {

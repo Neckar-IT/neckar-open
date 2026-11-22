@@ -9,6 +9,7 @@ import { CheckboxFormField } from "./CheckboxFormField";
 
 const meta = {
   title: "Forms / CheckboxFormField",
+  component: CheckboxFormField,
 } satisfies Meta;
 
 export default meta;
@@ -24,10 +25,6 @@ const formSchema = z.object({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const CheckboxFormFieldStory: StoryObj<Args> = {
   name: "CheckboxFormField",

@@ -96,10 +96,6 @@ interface FormFieldContextValue<
 
 const FormFieldContext = createContext<FormFieldContextValue | undefined>(undefined);
 
-/**
- * Form Field
- */
-
 export const FormField = <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>(
   props: ControllerProps<TFieldValues, TName>,
 ) => {
@@ -152,10 +148,6 @@ export function useFormFieldName(): FieldPath<FieldValues> {
   return fieldContext.name;
 }
 
-/**
- * Form Label
- */
-
 export function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>): React.ReactElement {
   const { formItemId } = useFormField();
 
@@ -182,19 +174,11 @@ export function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>
   );
 }
 
-/**
- * Form Description
- */
-
 export function FormDescription({ className, ...props }: React.ComponentProps<"p">): React.ReactElement {
   const { formDescriptionId } = useFormField();
 
   return <p className={cn("text-muted-foreground text-sm", className)} id={formDescriptionId} {...props} />;
 }
-
-/**
- * Form Message
- */
 
 export function FormMessage({ className, children, ...props }: React.ComponentProps<"p">): React.ReactElement | null {
   const { error, formMessageId } = useFormField();

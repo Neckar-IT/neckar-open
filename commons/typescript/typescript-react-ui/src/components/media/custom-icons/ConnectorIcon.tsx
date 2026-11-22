@@ -5,7 +5,7 @@
 import { type CustomIconProps } from "./CustomIconProps";
 
 /**
- * Connector icon
+ * Connector: a line between two points.
  */
 
 export function ConnectorIcon(props: React.ComponentProps<"svg"> & CustomIconProps) {

@@ -20,19 +20,11 @@ function generateData() {
   return { timestamp, decimalValues: [value1, value2] };
 }
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Time Line Chart" } satisfies Meta;
+const meta = { title: "Time Line Chart", component: TimeLineChart } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => {
     const controller = useTimeLineChartController();
 
@@ -153,7 +145,7 @@ export const I18n: StoryObj<I18nStoryProps> = {
   },
 };
 
-export const OwnData: StoryObj<typeof meta> = {
+export const OwnData: StoryObj = {
   render: () => {
     const controller = useTimeLineChartController();
 
@@ -191,7 +183,7 @@ const timeLineChartConfiguration = {
   ],
 };
 
-export const ChangingState: StoryObj<typeof meta> = {
+export const ChangingState: StoryObj = {
   render: () => {
     const controller = useTimeLineChartController();
 

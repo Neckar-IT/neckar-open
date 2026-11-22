@@ -36,13 +36,13 @@ createRoot(document.getElementById('root')!).render(
 
 ### Support Contact and Trace Links
 
-Two optional props of `GlobalErrorHandler` complete the error pages. A product that sets them builds them in its `src/config/env.ts`, because the trace link depends on its environment.
+Two optional props of `GlobalErrorHandler` complete the error pages.
 
 - `contactEmail` addresses the mail the "Contact Support" button opens. The mail carries the error information the copy button next to it copies, truncated to the length mail clients accept. Without `contactEmail` it goes to `info@neckar.it`.
-- `observability` turns trace IDs into Grafana-Tempo links, see `ObservabilityConfig`.
+- `observability` turns trace IDs into Grafana-Tempo links: pass `grafanaTraceObservabilityConfig()` from `@neckar-hub/typescript-otel-tracing`.
 
 ```jsx
-<GlobalErrorHandler contactEmail={contactEmail} observability={observabilityConfig}>
+<GlobalErrorHandler contactEmail={contactEmail} observability={grafanaTraceObservabilityConfig()}>
 ```
 
 ### Custom Errors and Fallback Pages

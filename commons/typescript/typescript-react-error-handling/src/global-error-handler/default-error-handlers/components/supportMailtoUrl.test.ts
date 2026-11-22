@@ -2,9 +2,10 @@
  * Imports
  */
 
+import { TraceIdPlaceholder } from "@neckar-hub/typescript-utils/observability";
 import { describe, expect, it } from "vitest";
 import { makeAxiosError } from "../../axiosErrorFixture";
-import { buildTraceLinkUrl, TraceIdPlaceholder } from "../../ObservabilityContext";
+import { buildTraceLinkUrl } from "../../ObservabilityContext";
 import type { VersionInfoData } from "../../VersionInfoContext";
 import { buildErrorInfoText } from "./errorInfoText";
 import { buildSupportMailtoUrl, MaxMailtoUrlLength } from "./supportMailtoUrl";

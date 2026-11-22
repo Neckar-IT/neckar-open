@@ -8,21 +8,14 @@ import { Input } from "../input";
 import { Label } from "../label";
 import { PopoverContent, Popover as PopoverRoot, PopoverTrigger } from "./Popover";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Popover",
+  component: PopoverRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Popover: StoryObj<typeof meta> = {
+export const Popover: StoryObj = {
   render: () => {
     return (
       <PopoverRoot>

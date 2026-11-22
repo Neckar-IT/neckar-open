@@ -17,7 +17,7 @@ interface ArticleConditionsSummaryProps {
  * instantiation of {@link TimelineSummaryStacked}.
  *
  * `full` puts the current conditions on their own row, undated, and — if present — the upcoming
- * conditions on a second, muted row led by "from <date>". A conditions record is several values
+ * conditions on a second, muted row led by `from <date>`. A conditions record is several values
  * wide, so the two entries need separate rows to stay readable. `compact` shows only the current
  * conditions. Missing data anywhere in the chain renders as `NoValue`.
  */

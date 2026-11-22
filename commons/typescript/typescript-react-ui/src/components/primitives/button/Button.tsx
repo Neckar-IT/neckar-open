@@ -1,7 +1,3 @@
-/**
- * Clickable button with multiple style variants, sizes, and an optional built-in loading spinner.
- */
-
 import { Button as ShadcnButton, buttonVariants as shadcnButtonVariants } from "@neckar-hub/typescript-react-ui-primitives/ui/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
@@ -54,6 +50,9 @@ export interface ButtonProps extends Omit<React.ComponentProps<typeof ShadcnButt
   customIconSize?: boolean;
 }
 
+/**
+ * Clickable button with multiple style variants, sizes, and an optional built-in loading spinner.
+ */
 // Adds the loading spinner, `type="button"` against accidental form submits, and truncated string children.
 // `Slot.Slottable` marks the content as the child `asChild` merges into; without it the spinner makes `Slot.Root` throw.
 // While loading, the content sits in an invisible `contents` wrapper: `visibility` also hides text nodes, `contents` keeps the layout.

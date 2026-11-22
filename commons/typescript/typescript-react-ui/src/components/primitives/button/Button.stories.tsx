@@ -6,21 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MailIcon } from "lucide-react";
 import { Button } from "./Button";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Button",
+  component: Button,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const ButtonStory: StoryObj<typeof meta> = {
+export const ButtonStory: StoryObj = {
   name: "Button",
   render: () => (
     <div className="grid grid-cols-4 gap-16">

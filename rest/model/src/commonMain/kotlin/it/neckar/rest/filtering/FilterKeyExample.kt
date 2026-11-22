@@ -40,6 +40,3 @@ object FilterKeyExample {
   val yearTo: FilterKey = FilterKey("yearTo")
   val rating: FilterKey = FilterKey("rating")
 }
-
-val FilterKey.Companion.Example: FilterKeyExample
-  get() = FilterKeyExample

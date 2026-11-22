@@ -115,7 +115,7 @@ object RuntimeContextDetector {
   /**
    * Resolves the execution environment profile from system properties or environment variables.
    */
-  private fun resolveProfile(source: Source): ExecutionEnvironment? {
+  internal fun resolveProfile(source: Source): ExecutionEnvironment? {
     val raw = resolveStringFromSystemOrEnv(
       source = source,
       systemPropertiesKey = RuntimeContextSys.ExecutionEnvironmentKey,
@@ -282,22 +282,18 @@ const val DebugWaitHelpEnableMessage: String = "Add Environment variable or syst
  * Fallback runtime context for local development.
  */
 actual fun getInitialValue(): RuntimeContext<ServiceHost.Default> {
-  val guessInCIEnvironment = guessInCIEnvironment()
-  val debugging = guessDebugging()
-  val inUnitTest = guessInUnitTestEnvironment()
-
-  val executionEnvironment: ExecutionEnvironment = if (guessInCIEnvironment) {
-    ExecutionEnvironment.CI
-  } else {
-    ExecutionEnvironment.LocalDev
-  }
-
   return RuntimeContext(
-    executionEnvironment = executionEnvironment,
+    executionEnvironment = initialExecutionEnvironment(guessInCIEnvironment(), RuntimeContextDetector.Source.default()),
     stage = DeploymentStage.Development,
     host = ServiceHost.Default,
-    inUnitTest = inUnitTest,
-    debugMode = debugging,
+    inUnitTest = guessInUnitTestEnvironment(),
+    debugMode = guessDebugging(),
     initialValue = true,
   )
+}
+
+/** A service that never initializes the context still honors a declared execution environment: its container has no Dev-IP to bind. */
+internal fun initialExecutionEnvironment(inCI: Boolean, source: RuntimeContextDetector.Source): ExecutionEnvironment {
+  if (inCI) return ExecutionEnvironment.CI
+  return RuntimeContextDetector.resolveProfile(source) ?: ExecutionEnvironment.LocalDev
 }

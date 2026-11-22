@@ -36,6 +36,3 @@ object CardNumberExample {
   val visa: CardNumber = CardNumber("4111 1111 1111 1111")
   val mastercard: CardNumber = CardNumber("5500 0000 0000 0004")
 }
-
-val CardNumber.Companion.Example: CardNumberExample
-  get() = CardNumberExample

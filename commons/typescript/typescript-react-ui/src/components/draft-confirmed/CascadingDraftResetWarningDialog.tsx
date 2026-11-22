@@ -1,6 +1,7 @@
 import { useTranslation } from "@neckar-hub/typescript-react-i18n";
 import { useEmbeddedTranslation } from "../../localization/useEmbeddedTranslation";
 import { CancelButton } from "../actions/cancel-button";
+import { LockableButton } from "../actions/LockableButton";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -9,7 +10,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../primitives/alert-dialog";
-import { Button } from "../primitives/button";
 
 export interface UsedByCount {
   type: string;
@@ -25,6 +25,7 @@ interface CascadingDraftResetWarningDialogProps {
 /**
  * Warning dialog shown when editing a confirmed entity.
  * Warns the user that the confirmation status of both the entity and its dependents will be reset.
+ * A lock from `ActionLockProvider` disables "save anyway" and is its tooltip.
  *
  * For the entities to be listed with their correct (translated) names, you need to provide the entity type in your language files:
  * ```
@@ -65,9 +66,9 @@ export function CascadingDraftResetWarningDialog({
 
         <AlertDialogFooter>
           <CancelButton onClick={() => onOpenChange(false)} />
-          <Button variant="destructive" onClick={onSubmit}>
+          <LockableButton variant="destructive" onClick={onSubmit}>
             {tEmbedded("confirmation.cascadingReset.saveAnyway")}
-          </Button>
+          </LockableButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

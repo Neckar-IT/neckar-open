@@ -14,6 +14,7 @@ const queryClient = createQueryClient();
 
 const meta = {
   title: "Query Handling / QueriesData",
+  component: QueriesData,
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
@@ -31,11 +32,7 @@ export default meta;
 
 type MockResponse = { type: "good"; data: string } | { type: "bad/NotFound" };
 
-/**
- * Stories
- */
-
-export const GoodStory: StoryObj<typeof meta> = {
+export const GoodStory: StoryObj = {
   name: "good",
   render: () => {
     const queryResult = useQueryForStaticData({
@@ -52,7 +49,7 @@ export const GoodStory: StoryObj<typeof meta> = {
   },
 };
 
-export const BadNotFoundStory: StoryObj<typeof meta> = {
+export const BadNotFoundStory: StoryObj = {
   name: "bad/NotFound",
   render: () => {
     const queryResult = useQueryForStaticData({

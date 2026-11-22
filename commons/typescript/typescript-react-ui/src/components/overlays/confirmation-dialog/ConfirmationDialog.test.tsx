@@ -2,11 +2,20 @@
  * Imports
  */
 
-import { render, screen } from "@test/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@test/test-utils";
+import userEvent from "@testing-library/user-event";
+import type { ReactElement } from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionLockProvider } from "../../actions/ActionLockProvider";
+import { toast } from "../../feedback";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import { DestructiveConfirmationDialog } from "./DestructiveConfirmationDialog";
+
+const toastErrorMock = vi.fn();
+beforeEach(() => {
+  toastErrorMock.mockReset();
+  vi.spyOn(toast, "error").mockImplementation(toastErrorMock);
+});
 
 /**
  * Tests
@@ -108,5 +117,22 @@ describe("DestructiveConfirmationDialog", () => {
 
     expect(screen.getByText("Alle Verknüpfungen gehen verloren.")).toBeInTheDocument();
     expect(screen.queryByText("This action cannot be undone.")).not.toBeInTheDocument();
+  });
+
+  it("shows the failure toast named after the confirm label when onConfirm rejects", async () => {
+    render(
+      <DestructiveConfirmationDialog
+        title="Ausgabe löschen?"
+        textKeys={{ confirm: "Ausgabe löschen" }}
+        onConfirm={() => Promise.reject(new Error("delete failed"))}
+        onOpenChange={vi.fn()}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Ausgabe löschen" }));
+
+    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledOnce());
+    render(toastErrorMock.mock.calls[0]?.[0] as ReactElement);
+    expect(screen.getByText("Ausgabe löschen failed.")).toBeInTheDocument();
   });
 });

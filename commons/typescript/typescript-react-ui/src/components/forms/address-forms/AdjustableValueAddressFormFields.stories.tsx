@@ -12,11 +12,9 @@ import { Form } from "../form";
 import { addressConfirmedSchema } from "./AddressForms";
 import { AdjustableValueAddressFormFields, adjustableValueAddressSchema } from "./AdjustableValueAddressFormFields";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Forms / Address Forms",
+  component: AdjustableValueAddressFormFields,
 } satisfies Meta;
 
 export default meta;
@@ -56,21 +54,17 @@ function FormValues(): React.ReactElement {
   return <CodeBlock>{`jobSiteLocation: ${JSON.stringify(values, null, 2)}`}</CodeBlock>;
 }
 
-/**
- * Stories
- */
-
-export const AdjustableValueAddressAutoStory: StoryObj<typeof meta> = {
+export const AdjustableValueAddressAutoStory: StoryObj = {
   name: "AdjustableValueAddressFormFields (Auto)",
   render: () => <AdjustableValueAddressForm jobSiteLocation={{ type: "Auto", value: calculatedAddress }} />,
 };
 
-export const AdjustableValueAddressAdjustedStory: StoryObj<typeof meta> = {
+export const AdjustableValueAddressAdjustedStory: StoryObj = {
   name: "AdjustableValueAddressFormFields (Adjusted)",
   render: () => <AdjustableValueAddressForm jobSiteLocation={{ type: "Adjusted", calculated: calculatedAddress, value: typedAddress }} />,
 };
 
-export const AdjustableValueAddressManualStory: StoryObj<typeof meta> = {
+export const AdjustableValueAddressManualStory: StoryObj = {
   name: "AdjustableValueAddressFormFields (Manual)",
   render: () => <AdjustableValueAddressForm jobSiteLocation={{ type: "Manual", value: typedAddress }} />,
 };

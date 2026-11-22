@@ -1,7 +1,3 @@
-/**
- * Imports
- */
-
 import { cn } from "cn";
 import React from "react";
 import { Button } from "../../primitives/button";
@@ -14,17 +10,9 @@ export function Toolbar({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("flex max-w-min items-center gap-2", className)} {...props} />;
 }
 
-/**
- * Toolbar Group
- */
-
 export function ToolbarGroup({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("flex max-w-min divide-x overflow-hidden rounded-md border bg-white shadow-md", className)} {...props} />;
 }
-
-/**
- * Toolbar Button
- */
 
 interface ToolbarButtonProps extends React.ComponentProps<"button"> {
   /** Accessible name and tooltip. Required because a toolbar button carries an icon and no visible text. */

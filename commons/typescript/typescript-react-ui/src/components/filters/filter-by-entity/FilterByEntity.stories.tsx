@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { FilterByEntity as FilterByEntityComponent } from "./FilterByEntity";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Filters / FilterByEntity",
+  component: FilterByEntityComponent,
 } satisfies Meta;
 
 export default meta;
@@ -53,7 +50,7 @@ function Case({ title, initial }: { title: string; initial: React.ReactNode | un
   );
 }
 
-export const FilterByEntity: StoryObj<typeof meta> = {
+export const FilterByEntity: StoryObj = {
   render: () => (
     <div className="flex flex-col gap-8">
       <Case title="no selection" initial={undefined} />

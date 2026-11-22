@@ -3,11 +3,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { FileInput } from "./FileInput";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Inputs / FileInput",
+  component: FileInput,
 } satisfies Meta;
 
 export default meta;
@@ -19,9 +17,6 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Stories
- */
 export const FileInputStory: StoryObj<Args> = {
   name: "File Input",
   args: {

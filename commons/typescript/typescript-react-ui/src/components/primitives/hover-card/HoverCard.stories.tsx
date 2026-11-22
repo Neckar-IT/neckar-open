@@ -9,21 +9,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { Button } from "../button";
 import { HoverCardContent, HoverCard as HoverCardRoot, HoverCardTrigger } from "./HoverCard";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / HoverCard",
+  component: HoverCardRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const HoverCard: StoryObj<typeof meta> = {
+export const HoverCard: StoryObj = {
   render: () => {
     return (
       <HoverCardRoot>

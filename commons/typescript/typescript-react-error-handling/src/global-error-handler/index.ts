@@ -7,6 +7,6 @@ export { ServiceUnavailablePage } from "./default-error-handlers/serviceUnavaila
 export { extractTraceId } from "./extractTraceId";
 export type { ErrorHandler } from "./GlobalErrorFallback";
 export { GlobalErrorHandler, type ErrorCallback } from "./GlobalErrorHandler";
-export { type ObservabilityConfig, TraceIdPlaceholder, useObservability } from "./ObservabilityContext";
+export { useObservability } from "./ObservabilityContext";
 export { RouterErrorElement } from "./RouterErrorElement";
 export { useVersionInfo, type VersionInfoData } from "./VersionInfoContext";

@@ -1,3 +1,4 @@
+import { localDevServerHost } from "@neckar-hub/vite-config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -9,8 +10,7 @@ const devPort = process.env.VITE_PORT ? Number(process.env.VITE_PORT) : undefine
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Listen on all interfaces so Docker (via host.docker.internal) can reach the dev server
-    host: "0.0.0.0",
+    host: localDevServerHost(),
     port: devPort,
     strictPort: true,
   },

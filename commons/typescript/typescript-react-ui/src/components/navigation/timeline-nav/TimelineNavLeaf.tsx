@@ -47,10 +47,6 @@ const timelineNavLeafVariants = cva(
   },
 );
 
-/**
- * Process Navigation Leaf Component
- */
-
 export function TimelineNavLeaf(props: TimelineNavLeafProps): React.ReactElement {
   const { pathname } = useLocation();
   const active = props.href === pathname;

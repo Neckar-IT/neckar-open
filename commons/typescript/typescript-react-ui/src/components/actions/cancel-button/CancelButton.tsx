@@ -4,9 +4,7 @@ import { Button, type ButtonProps } from "../../primitives/button";
 export interface CancelButtonProps extends Omit<ButtonProps, "type"> {}
 
 /**
- * Basic Cancel Button
- *
- * This button can be used to closed dialogs or cancel other actions.
+ * This button can be used to close dialogs or cancel other actions.
  * To cancel a form submission, please use the FormCancelButton component instead.
  *
  * The button **never steals focus** from the active element (`preventDefault` on mousedown):

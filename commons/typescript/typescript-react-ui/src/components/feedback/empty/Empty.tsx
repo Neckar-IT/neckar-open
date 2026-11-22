@@ -1,8 +1,4 @@
 /**
- * Custom Icon to symbolize an empty list. Inspired by AntDesign (https://ant.design/components/empty)
- */
-
-/**
  * Imports
  */
 
@@ -17,9 +13,8 @@ interface Props {
 }
 
 /**
- * Empty Icon
+ * Custom Icon to symbolize an empty list. Inspired by AntDesign (https://ant.design/components/empty)
  */
-
 export function Empty({ className }: Props) {
   return (
     <svg className={cn("h-auto w-20", className)} data-testid="empty-icon" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg">

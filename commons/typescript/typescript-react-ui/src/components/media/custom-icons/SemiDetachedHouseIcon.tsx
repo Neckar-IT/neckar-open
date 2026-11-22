@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Semi Detached House Icon
+ * Semi-detached house: two houses sharing one wall.
  */
 
 export function SemiDetachedHouseIcon(props: React.ComponentProps<"svg"> & CustomIconProps): React.ReactElement {

@@ -7,21 +7,14 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { PhoneNumberInput, type PhoneNumberInputProps } from "./PhoneNumberInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / PhoneNumberInput",
+  component: PhoneNumberInput,
 } satisfies Meta<PhoneNumberInputProps>;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const PhoneNumberInputStory: StoryObj<typeof meta> = {
+export const PhoneNumberInputStory: StoryObj = {
   name: "Phone Number Input",
   render: () => {
     const [value, setValue] = useState<string | null>(null);

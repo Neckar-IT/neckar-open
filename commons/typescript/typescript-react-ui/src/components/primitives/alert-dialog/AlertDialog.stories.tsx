@@ -17,21 +17,14 @@ import {
   AlertDialogTrigger,
 } from "./AlertDialog";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / AlertDialog",
+  component: AlertDialogRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const AlertDialog: StoryObj<typeof meta> = {
+export const AlertDialog: StoryObj = {
   render: () => {
     const [isOpen, setIsOpen] = useState(true);
 

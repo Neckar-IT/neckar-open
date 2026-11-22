@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { NumberInputFormField } from "./NumberInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / NumberInputFormField",
+  component: NumberInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -45,10 +42,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const NumberInputFormFieldStory: StoryObj<Args> = {
   name: "NumberInputFormField",

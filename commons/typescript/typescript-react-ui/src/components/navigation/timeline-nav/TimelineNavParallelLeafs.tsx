@@ -19,10 +19,6 @@ export interface TimelineNavParallelLeafsProps extends Omit<TimelineNavParallelL
   nextLeaf: "none" | "regular";
 }
 
-/**
- * Parallel Leafs Component
- */
-
 export function TimelineNavParallelLeafs(props: TimelineNavParallelLeafsProps): React.ReactElement {
   const collapsedSide = useCollapsedSide(props.leafsOnTheLeft, props.leafsOnTheRight);
   const { leafsOnTheLeft, leafsOnTheRight } = padToEqualLength(props.leafsOnTheLeft, props.leafsOnTheRight);

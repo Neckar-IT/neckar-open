@@ -1,13 +1,13 @@
 import it.neckar.gradle.addAnnotationDependencies
 import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 
 plugins {
   kotlinxSerialization
   kspSerialization
 }
-
-val neckarOpenVersion: String by project
 
 description = "Meistercharts - History API — REST query model and storage access for time-series history data."
 
@@ -19,8 +19,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api("it.neckar.open.meistercharts:meistercharts-history-core")
-        api("it.neckar.open:unit:$neckarOpenVersion")
+        api(project(Projects.open.meistercharts.meisterchartsHistory.meisterchartsHistoryCore))
+        api(project(Projects.open.units.unit))
 
         api(libs.kotlinx.serialization.json)
       }
@@ -45,15 +45,15 @@ kotlin {
       dependencies {
         api(libs.threeten.extra)
         api(libs.kotlinx.coroutines.core)
-        implementation("it.neckar.open:io:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.io))
         implementation(libs.commons.compress)
       }
     }
 
     jvmTest {
       dependencies {
-        implementation("it.neckar.open:test-utils:$neckarOpenVersion")
-        implementation("it.neckar.open:kotlinx-serialization-test-utils:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.testUtils))
+        implementation(project(Projects.open.commons.kotlinxSerializationTestUtils))
 
         implementation(libs.kotlinx.serialization.json)
       }

@@ -12,9 +12,6 @@ export interface HistogramConfigurationProps {
   className?: string;
 }
 
-/**
- * Histogram Component
- */
 export function Histogram({ className, configuration, style }: HistogramConfigurationProps) {
   return (
     <LegacyChartWrapper

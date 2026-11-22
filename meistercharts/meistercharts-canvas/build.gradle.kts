@@ -1,5 +1,7 @@
 import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.projects.Projects
+import it.neckar.projects.project
 
 description = """Meistercharts - Canvas"""
 
@@ -11,8 +13,6 @@ plugins {
   generateTsDeclaration
 }
 
-val neckarOpenVersion: String by project
-
 kotlin {
   addKotlinDependencies(project)
   addKotlinTestDependencies(project)
@@ -21,20 +21,20 @@ kotlin {
     commonMain {
       dependencies {
 
-        api("it.neckar.open:annotations:$neckarOpenVersion")
-        api("it.neckar.open:unit:$neckarOpenVersion")
-        api("it.neckar.open:unit-conversion:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-async:$neckarOpenVersion")
-        api("it.neckar.open:logging:$neckarOpenVersion")
-        api("it.neckar.open:kotlin-js:$neckarOpenVersion")
+        api(project(Projects.open.annotations))
+        api(project(Projects.open.units.unit))
+        api(project(Projects.open.units.unitConversion))
+        api(project(Projects.open.commons.kotlinAsync))
+        api(project(Projects.open.commons.logging))
+        api(project(Projects.open.commons.kotlinJs))
 
-        api("it.neckar.open.meistercharts:meistercharts-core")
+        api(project(Projects.open.meistercharts.meisterchartsCore))
 
         //TODO remove deps - or make optional
-        api("it.neckar.open.meistercharts:meistercharts-history-core")
-        api("it.neckar.open.meistercharts:meistercharts-history-api")
-        api("it.neckar.open:kotlin-events:$neckarOpenVersion")
-        api("it.neckar.open.meistercharts:meistercharts-version-info")
+        api(project(Projects.open.meistercharts.meisterchartsHistory.meisterchartsHistoryCore))
+        api(project(Projects.open.meistercharts.meisterchartsHistory.meisterchartsHistoryApi))
+        api(project(Projects.open.commons.kotlinEvents))
+        api(project(Projects.open.meistercharts.meisterchartsVersionInfo))
       }
     }
 
@@ -67,8 +67,8 @@ kotlin {
 
     jvmTest {
       dependencies {
-        implementation("it.neckar.open:test-utils:$neckarOpenVersion")
-        implementation("it.neckar.open:kotlinx-serialization-test-utils:$neckarOpenVersion")
+        implementation(project(Projects.open.commons.testUtils))
+        implementation(project(Projects.open.commons.kotlinxSerializationTestUtils))
 
         implementation(libs.controlsfx)
       }

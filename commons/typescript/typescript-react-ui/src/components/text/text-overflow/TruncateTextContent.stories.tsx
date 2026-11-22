@@ -1,14 +1,3 @@
-/**
- * Demonstrates the TruncateTextContent pattern.
- *
- * Text components mark themselves with data-text-content.
- * Wrapping a section in <TruncateTextContent> activates truncation
- * with ellipsis for all marked descendants. Badges (rendered as <div>)
- * are not affected — only <span> children are truncated.
- *
- * For full-length text (detail pages), omit <TruncateTextContent>.
- */
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { EllipsisIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { EntityDetailsList } from "../../data-display/entity-details-list";
@@ -20,8 +9,19 @@ import { HighlightSource, HighlightText } from "../highlight-text";
 import { DoNotTruncateTextContent } from "./TextOverflow";
 import { TruncateTextContent } from "./TextOverflow";
 
+/**
+ * Demonstrates the TruncateTextContent pattern.
+ *
+ * Text components mark themselves with `data-text-content`.
+ * Wrapping a section in `<TruncateTextContent>` activates truncation
+ * with ellipsis for all marked descendants. Badges (rendered as `<div>`)
+ * are not affected — only `<span>` children are truncated.
+ *
+ * For full-length text (detail pages), omit `<TruncateTextContent>`.
+ */
 const meta = {
   title: "Text / TruncateTextContent",
+  component: TruncateTextContent,
   // The entire app is wrapped in TruncateTextContent, so we simulate this here with a decorator.
   decorators: [
     (Story) => (
@@ -170,7 +170,7 @@ function MockPageActions(): React.ReactElement {
 /**
  * By default truncation is active for all `data-text-content` elements
  */
-export const Default: StoryObj<typeof meta> = {
+export const Default: StoryObj = {
   render: () => (
     <div className="rounded-md border">
       <table className="w-full border-collapse text-sm">
@@ -210,7 +210,7 @@ export const Default: StoryObj<typeof meta> = {
 /**
  * Details page with details list where truncation is deactivated
  */
-export const DetailPage: StoryObj<typeof meta> = {
+export const DetailPage: StoryObj = {
   render: () => {
     const book = books[0];
     return (
@@ -284,7 +284,7 @@ export const DetailPage: StoryObj<typeof meta> = {
  * Select form fields — simulates BookSelectFormField, AuthorSelectFormField, PublisherSelectFormField.
  * The selected value is displayed in a button that can overflow.
  */
-export const SelectFormFields: StoryObj<typeof meta> = {
+export const SelectFormFields: StoryObj = {
   render: () => {
     const longBook = books[0];
     const shortBook = books[1];
@@ -344,7 +344,7 @@ export const SelectFormFields: StoryObj<typeof meta> = {
  * `overflow-clip-margin` so italic text renders fully while ellipsis still triggers
  * on real overflow.
  */
-export const ItalicOverhang: StoryObj<typeof meta> = {
+export const ItalicOverhang: StoryObj = {
   parameters: { name: "ItalicOverhang — Regression Guard" },
   render: () => {
     const fitsExactly = "Unbenanntes Buch";
@@ -420,7 +420,7 @@ export const ItalicOverhang: StoryObj<typeof meta> = {
  * The title column is truncated, but the author column uses PreserveTextContent
  * to show the full name with natural wrapping.
  */
-export const PreserveTextContentDemo: StoryObj<typeof meta> = {
+export const PreserveTextContentDemo: StoryObj = {
   parameters: { name: "PreserveTextContent — Spalten-Opt-Out" },
   render: () => (
     <div className="rounded-md border">
@@ -565,7 +565,7 @@ function SubLabel({ children }: React.PropsWithChildren): React.ReactElement {
  * unconstrained widths is visible side-by-side. The story is the executable
  * reference for `internal/patterns/docs/typescript/truncate-text-content.md`.
  */
-export const AllScenarios: StoryObj<typeof meta> = {
+export const AllScenarios: StoryObj = {
   parameters: { name: "AllScenarios — Truncation contract overview" },
   render: () => (
     <div className="space-y-6">
@@ -943,7 +943,7 @@ const orderWithParagraphs = { notes: "Geschenkverpackung\nbitte bis Freitag\n\nL
 /**
  * A multiline text shows its breaks and search hits in a details list and stays on one line in a truncation zone.
  */
-export const MultilineText: StoryObj<typeof meta> = {
+export const MultilineText: StoryObj = {
   render: () => (
     <HighlightSource tokens="Freitag">
       <div className="flex flex-col gap-4">

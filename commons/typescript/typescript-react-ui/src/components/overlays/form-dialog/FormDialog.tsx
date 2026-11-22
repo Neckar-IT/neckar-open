@@ -23,7 +23,8 @@ interface FormDialogProps<T extends ZodObject> extends Omit<SaveDialogProps, "on
 }
 
 /**
- * Dialog that wraps a form with a cancel and submit button
+ * Dialog that wraps a form with a cancel and submit button.
+ * Shows `UnknownOutcomeAlert` when the outcome of the submit is unknown.
  */
 
 export function FormDialog<T extends ZodObject>(props: FormDialogProps<T>): React.ReactElement {

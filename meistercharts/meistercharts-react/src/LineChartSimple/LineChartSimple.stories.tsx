@@ -23,18 +23,10 @@ const config = {
   },
 };
 
-/**
- * Meta Information
- */
-
-const meta = { title: "Line Chart Simple" } satisfies Meta;
+const meta = { title: "Line Chart Simple", component: LineChartSimple } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Minimal: StoryObj<typeof meta> = {
+export const Minimal: StoryObj = {
   render: () => <LineChartSimple configuration={config} />,
 };

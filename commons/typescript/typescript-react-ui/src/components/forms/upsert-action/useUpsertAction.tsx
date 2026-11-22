@@ -58,6 +58,7 @@ export type UseUpsertActionOptions<TValues extends FieldValues, TRequest, TRespo
    */
   confirmBeforeSave?: (values: TValues) => Promise<boolean>;
   disabled?: boolean;
+  disabledReason?: React.ReactNode;
 } & ServerErrorMapping<TResponse>;
 
 /**
@@ -67,7 +68,7 @@ export type UseUpsertActionOptions<TValues extends FieldValues, TRequest, TRespo
 export function useUpsertAction<TValues extends FieldValues, TRequest, TResponse extends UpsertResponse>(
   options: UseUpsertActionOptions<TValues, TRequest, TResponse>,
 ): Action {
-  const { mode, form, currentVersion, mutation, toRequest, onSaved, confirmBeforeSave, disabled } = options;
+  const { mode, form, currentVersion, mutation, toRequest, onSaved, confirmBeforeSave, disabled, disabledReason } = options;
   // The option types tie each text to the answers of TResponse; read here, they are plain optionals.
   const messages: { saved: string; alreadyCreated?: string; notFound?: string } = options.messages;
   // Without another bad answer the mapping takes `never`, which is OtherBadResponse<TResponse> resolved.
@@ -138,6 +139,7 @@ export function useUpsertAction<TValues extends FieldValues, TRequest, TResponse
     icon: <SaveIcon />,
     label: saveLabel,
     disabled,
+    disabledReason,
     onTrigger: () => {
       void form.handleSubmit(save, onInvalidSubmit)();
     },

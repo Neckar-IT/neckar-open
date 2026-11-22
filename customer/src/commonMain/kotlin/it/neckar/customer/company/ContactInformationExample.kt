@@ -44,6 +44,3 @@ object ContactInformationExample {
   /** A phone number without an extension block. */
   val withoutExtensionBlock: ContactInformation = ContactInformation(EmailAddress("kontakt@beispiel-technik.example"), PhoneNumber("+49 211 5550300"), PhoneNumber("+49 211 5550301"), Url.https("www.beispiel-technik.example"))
 }
-
-val ContactInformation.Companion.Example: ContactInformationExample
-  get() = ContactInformationExample

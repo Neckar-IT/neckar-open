@@ -98,4 +98,20 @@ class InflectorTest {
     assertThat(inflector.singularize("cars")).isEqualTo("car")
     assertThat(inflector.singularize("batches")).isEqualTo("batch")
   }
+
+  @Test
+  fun `a plural ending in ves keeps the singular the spec generator derives`() {
+    val inflector = Inflector()
+    assertThat(inflector.singularize("drives")).isEqualTo("drive")
+    assertThat(inflector.singularize("knives")).isEqualTo("knife")
+    assertThat(inflector.singularize("wives")).isEqualTo("wife")
+    assertThat(inflector.singularize("kitchenKnives")).isEqualTo("kitchenKnife")
+    assertThat(inflector.singularize("shelves")).isEqualTo("shelf")
+    assertThat(inflector.singularize("wolves")).isEqualTo("wolf")
+    assertThat(inflector.singularize("halves")).isEqualTo("half")
+    assertThat(inflector.singularize("valves")).isEqualTo("valve")
+    assertThat(inflector.singularize("curves")).isEqualTo("curve")
+    assertThat(inflector.singularize("archives")).isEqualTo("archive")
+    assertThat(inflector.singularize("moves")).isEqualTo("move")
+  }
 }

@@ -29,7 +29,7 @@ pluginManagement {
     id("org.gradle.toolchains.foojay-resolver-convention") version foojayResolverVersion
   }
 
-  // it.neckar.open.meistercharts.settings and the registry `Projects`, which names `Projects.meistercharts.meisterchartsCore` as `:meistercharts-core`.
+  // it.neckar.open.meistercharts.settings and the registry `Projects`, which names `Projects.open.meistercharts.meisterchartsCore` as `:meistercharts-core`.
   includeBuild("project-registry")
 }
 

@@ -4,11 +4,12 @@ import { FilterByBooleanInput } from "./FilterByBooleanInput";
 
 const meta = {
   title: "Filters / Filter By Boolean Input",
+  component: FilterByBooleanInput,
 } satisfies Meta;
 
 export default meta;
 
-export const FilterByBooleanInputStory: StoryObj<typeof meta> = {
+export const FilterByBooleanInputStory: StoryObj = {
   name: "Filter By Boolean Input",
   render: () => {
     const [value, setValue] = useState<boolean>(false);

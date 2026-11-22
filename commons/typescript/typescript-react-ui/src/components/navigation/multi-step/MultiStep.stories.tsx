@@ -14,10 +14,6 @@ import { TextInputFormField } from "../../forms/text-input-form-field";
 import { MultiStep } from "./MultiStep";
 import { useOnNext, useOnPrevious } from "./MultiStepControl";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Navigation / MultiStep",
   decorators: [
@@ -116,10 +112,6 @@ function StepFour() {
     </div>
   );
 }
-
-/**
- * Stories
- */
 
 export const MultiStepStory: StoryObj<typeof meta> = {
   name: "MultiStep",

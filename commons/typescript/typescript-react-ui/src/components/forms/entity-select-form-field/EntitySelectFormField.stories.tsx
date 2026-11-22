@@ -13,12 +13,9 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTi
 import { Form } from "../form";
 import { EntitySelectFormField } from "./EntitySelectFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / EntitySelectFormField",
+  component: EntitySelectFormField,
 } satisfies Meta;
 
 export default meta;
@@ -105,11 +102,7 @@ function BreedSelectDialog({ onOpenChange, selectedBreed, onSelectBreed }: Breed
   );
 }
 
-/**
- * Stories
- */
-
-export const EntitySelectFormFieldStory: StoryObj<typeof meta> = {
+export const EntitySelectFormFieldStory: StoryObj = {
   name: "EntitySelectFormField",
   render: () => {
     const form = useForm<FormValues>({
@@ -149,7 +142,7 @@ export const EntitySelectFormFieldStory: StoryObj<typeof meta> = {
   },
 };
 
-export const EntitySelectFormFieldStoryWithInitialSelection: StoryObj<typeof meta> = {
+export const EntitySelectFormFieldStoryWithInitialSelection: StoryObj = {
   name: "EntitySelectFormField (with initial selection)",
   render: () => {
     const form = useForm<FormValues>({

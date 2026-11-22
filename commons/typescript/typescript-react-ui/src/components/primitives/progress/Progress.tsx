@@ -1,9 +1,3 @@
-/**
- * Horizontal progress bar. A number from 0 to 100 fills the shadcn progress from left to right; `"indeterminate"`
- * shows two bars sweeping across the track in the style of Material UI, at the size and in the colors of the shadcn
- * progress. An optional label stands above the bar on the left, the percentage on the right (determinate only).
- */
-
 import { Progress as ShadcnProgress } from "@neckar-hub/typescript-react-ui-primitives/ui/progress";
 import { cn } from "cn";
 import type { ComponentProps } from "react";
@@ -15,6 +9,11 @@ export interface ProgressProps extends Omit<ComponentProps<typeof ShadcnProgress
   label?: string | undefined;
 }
 
+/**
+ * Horizontal progress bar. A number from 0 to 100 fills the shadcn progress from left to right; `"indeterminate"`
+ * shows two bars sweeping across the track in the style of Material UI, at the size and in the colors of the shadcn
+ * progress. An optional label stands above the bar on the left, the percentage on the right (determinate only).
+ */
 export function Progress({ value, label, className, "aria-label": ariaLabel, ...props }: ProgressProps): React.ReactElement {
   const accessibleName = ariaLabel ?? label;
   const percent = value === "indeterminate" ? null : Math.round(value);

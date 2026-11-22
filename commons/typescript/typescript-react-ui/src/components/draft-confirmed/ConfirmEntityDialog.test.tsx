@@ -2,11 +2,12 @@
  * Imports
  */
 
-import { elementAt, render, screen, waitFor } from "@test/test-utils";
+import { act, elementAt, render, screen, tooltipTriggerOf, waitFor } from "@test/test-utils";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import de from "../../localization/de.json";
 import en from "../../localization/en.json";
+import { ActionLockProvider } from "../actions/ActionLockProvider";
 import { ConfirmEntityDialog, type ConfirmEntityResponse } from "./ConfirmEntityDialog";
 
 const toastErrorMock = vi.fn();
@@ -75,5 +76,20 @@ describe("ConfirmEntityDialog", () => {
 
     await waitFor(() => expect(toastErrorMock).toHaveBeenCalledOnce());
     expect([de.confirmation.versionConflict, en.confirmation.versionConflict]).toContain(toastErrorMock.mock.calls[0]?.[0]);
+  });
+
+  it("disables the confirm button inside an ActionLockProvider and names the reason", async () => {
+    render(
+      <ActionLockProvider reason="Gerade laufen Wartungsarbeiten.">
+        <ConfirmEntityDialog onOpenChange={onOpenChange} onConfirm={vi.fn()} isPending={false} messages={messages} />
+      </ActionLockProvider>,
+    );
+    const confirmButton = elementAt(screen.getAllByRole("button"), -1);
+
+    // Focus skips the hover delay, which the modal dialog in jsdom can stretch past the timeout of findByRole.
+    act(() => tooltipTriggerOf(confirmButton).focus());
+
+    expect(confirmButton).toBeDisabled();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Gerade laufen Wartungsarbeiten.");
   });
 });

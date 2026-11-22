@@ -48,3 +48,6 @@ data class UsedBy<out T>(
     fun <T> empty(): UsedBy<T> = UsedBy(emptyList())
   }
 }
+
+/** The [UsedByCount.activeCount] of [type]; a type without an entry in [UsedBy.counts] counts 0. */
+fun <T> UsedBy<T>.activeCountOf(type: T): Int = counts.firstOrNull { it.type == type }?.activeCount ?: 0

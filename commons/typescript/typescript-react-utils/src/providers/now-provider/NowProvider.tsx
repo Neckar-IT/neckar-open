@@ -15,6 +15,12 @@ import type { PropsWithChildren } from "react";
 import { createContext, useCallback, useContext } from "react";
 
 /**
+ * The fixed "now" of Storybook stories and tests: `<NowProvider value={nowMockedValue}>`.
+ * App code reads the time through `useNow()` or `useGetNow()`.
+ */
+export const nowMockedValue: Date = new Date("2024-02-01T11:22:33.000Z");
+
+/**
  * Context
  */
 
@@ -29,24 +35,37 @@ type ProviderProps = PropsWithChildren<{
 }>;
 
 export function NowProvider({ children, value }: ProviderProps) {
-  // If `value` is provided, "now" is fixed to that date (test/story usage).
-  // Otherwise return the current time on each call.
-  const getNow = useCallback(() => value ?? new Date(), [value]);
+  // The time, not the Date instance, keeps `getNow` stable when a caller passes a new Date per render;
+  // each call returns a copy, so no caller can change the shared `nowMockedValue`.
+  const fixedTime = value?.getTime();
+  const getNow = useCallback(() => (fixedTime === undefined ? new Date() : new Date(fixedTime)), [fixedTime]);
 
   return <NowContext.Provider value={getNow}>{children}</NowContext.Provider>;
 }
 
 /**
- * Hook
+ * Hooks
  */
 
-export function useNow() {
+/** The current date at render time. */
+export function useNow(): Date {
+  return useNowContext("useNow")();
+}
+
+/**
+ * The function returning the current date, for a callback that needs the time when it runs.
+ * Stays the same between renders while the time of `NowProvider`'s `value` stays the same.
+ */
+export function useGetNow(): () => Date {
+  return useNowContext("useGetNow");
+}
+
+function useNowContext(hookName: string): () => Date {
   const getNow = useContext(NowContext);
 
   if (!getNow) {
-    throw new Error("useNow must be used within a NowProvider");
+    throw new Error(`${hookName} must be used within a NowProvider`);
   }
 
-  const now = getNow();
-  return now;
+  return getNow;
 }

@@ -11,7 +11,8 @@ interface ActionLockProviderProps {
 }
 
 /**
- * Locks every `ActionButton`, `FormSubmitActionButton`, `ActionsDropdownItem` and `ConfirmationDialog` below, e.g. while the
+ * Locks every `ActionButton`, `FormSubmitActionButton`, `ActionsDropdownItem`, `ConfirmationDialog`, `FormSubmitButton`,
+ * `ConfirmButton`, `SaveDialog`, `CascadingDraftResetWarningDialog` and generated lifecycle dropdown below, e.g. while the
  * device is offline. The lock of an outer provider stays in force below an inner one.
  */
 export function ActionLockProvider({ reason, children }: ActionLockProviderProps): React.ReactElement {

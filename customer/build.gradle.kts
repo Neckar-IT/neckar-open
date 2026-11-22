@@ -1,6 +1,7 @@
-import it.neckar.projects.project
-
 import it.neckar.projects.Projects
+import it.neckar.projects.project
+import it.neckar.projects.sharing.OpenSharedFiles
+import it.neckar.projects.sharing.publishFiles
 
 import it.neckar.gradle.addKotlinTestDependencies
 
@@ -66,3 +67,5 @@ kotlin {
     }
   }
 }
+
+publishFiles(OpenSharedFiles.PaymentFormatCases, file("src/jvmTest/resources/IBAN.cases.json"), file("src/jvmTest/resources/BIC.cases.json"))

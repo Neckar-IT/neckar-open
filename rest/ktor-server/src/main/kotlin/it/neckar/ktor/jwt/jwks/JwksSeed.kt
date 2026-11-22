@@ -65,4 +65,20 @@ class ClasspathJwksSeed(
   }
 
   override fun toString(): String = "ClasspathJwksSeed($resourcePath)"
+
+  companion object {
+    /**
+     * The Keycloak whose keys `tools/jwks-seed/mirror.sh` writes into the seed files. The slash ends the host, so a longer host
+     * name never matches.
+     */
+    private const val MirroredKeycloakUrlPrefix: String = "https://auth.neckar.it/"
+
+    /**
+     * The seed of [realmName] for a service that verifies tokens of [issuer], or `null` when [issuer] belongs to another
+     * Keycloak: two Keycloaks sign a realm of one name with different keys.
+     */
+    fun forIssuer(issuer: String, realmName: String): ClasspathJwksSeed? {
+      return if (issuer.startsWith(MirroredKeycloakUrlPrefix)) ClasspathJwksSeed(realmName) else null
+    }
+  }
 }

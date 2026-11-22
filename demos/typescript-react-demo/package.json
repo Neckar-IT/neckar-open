@@ -27,6 +27,7 @@
     "@neckar-hub/oxlint-config": "workspace:*",
     "@neckar-hub/tailwind-config": "workspace:*",
     "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

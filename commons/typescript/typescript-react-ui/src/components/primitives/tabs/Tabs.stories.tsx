@@ -9,21 +9,14 @@ import { Input } from "../input";
 import { Label } from "../label";
 import { TabsContent, TabsList, Tabs as TabsRoot, TabsTrigger } from "./Tabs";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Tabs",
+  component: TabsRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Tabs: StoryObj<typeof meta> = {
+export const Tabs: StoryObj = {
   render: () => {
     return (
       <TabsRoot className="w-[400px]" defaultValue="account">

@@ -7,18 +7,12 @@ import { CodeBlock } from "../../data-display/code-block";
 import { Form, FormSubmitButton } from "../../forms/form";
 import { EuroInput, EuroInputFormField, EuroOutput } from "./euros";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Quantities / Money",
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
 export const EurosStory: StoryObj<typeof meta> = {
   render: () => {
     const [value, setValue] = useState<number | undefined>(1234);

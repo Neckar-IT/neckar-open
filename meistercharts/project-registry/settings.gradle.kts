@@ -44,13 +44,16 @@ rootProject.name = "meistercharts-project-registry"
 if (buildplatformVersion == null) {
   // The registry types that `meistercharts-projects` instantiates, from the sources of the monorepo.
   includeBuild("../../../buildplatform")
+  // `open-projects`, which `registry` depends on, from the sources of the monorepo.
+  includeBuild("../../project-registry") { name = "open-project-registry" }
 } else {
-  // The build scripts name the artifacts of the build platform without a version, as inside the monorepo. A constraint on
-  // `api` gives them the version of the release the export names, also in the build that puts `registry` on its classpath.
+  // The build scripts name the artifacts of the build platform and `open-projects` without a version, as inside the monorepo. A constraint
+  // on `api` gives them the version of the release the export names, also in the build that puts `registry` on its classpath. The build
+  // platform releases `open-projects`; its dependency `meistercharts-projects` resolves to the project of this build.
   gradle.beforeProject {
     plugins.withId("java-library") {
-      listOf("conventions", "projects").forEach { artifact ->
-        dependencies.constraints.add("api", "it.neckar.buildplatform:$artifact:$buildplatformVersion")
+      listOf("it.neckar.buildplatform:conventions", "it.neckar.buildplatform:projects", "it.neckar.open.project-registry:open-projects").forEach { module ->
+        dependencies.constraints.add("api", "$module:$buildplatformVersion")
       }
     }
   }

@@ -10,12 +10,9 @@ import exampleImage from "../../../assets/example-image.jpg";
 import { Button } from "../../primitives/button";
 import { Image } from "./Image";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Media / Image",
+  component: Image,
   beforeEach: ({ msw }) => {
     msw.use(
       http.get("/slow-image", async () => {
@@ -32,11 +29,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const ImageStory: StoryObj<typeof meta> = {
+export const ImageStory: StoryObj = {
   name: "Image",
   render: () => {
     const [key, setKey] = useState(0);

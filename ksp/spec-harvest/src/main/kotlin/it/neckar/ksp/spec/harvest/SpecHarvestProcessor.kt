@@ -27,6 +27,7 @@
  */
 package it.neckar.ksp.spec.harvest
 
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
@@ -95,6 +96,15 @@ class SpecHarvestProcessor(
   override fun process(resolver: Resolver): List<KSAnnotated> {
     logger.logging("Processing symbols in [SpecHarvestProcessor] (pass $passCount)")
     passCount++
+
+    // An unresolved annotation class makes getSymbolsWithAnnotation return nothing, and the empty output would reach the build cache.
+    if (resolver.getClassDeclarationByName(SerializableAnnotationFqName) == null) {
+      logger.error(
+        "$SerializableAnnotationFqName does not resolve on the classpath of this compilation, so no @Serializable class can be harvested. " +
+          "Add kotlinx-serialization-core to the module, or check the KSP version against concurrent runs that lose library symbols.",
+      )
+      return emptyList()
+    }
 
     val serializableClassDeclarations = resolver
       .getSymbolsWithAnnotation(SerializableAnnotationFqName)

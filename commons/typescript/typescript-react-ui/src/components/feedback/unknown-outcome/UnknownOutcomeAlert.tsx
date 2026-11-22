@@ -1,4 +1,5 @@
 import { refetchQueriesExceptPrevented, useQueryClient } from "@neckar-hub/typescript-react-query";
+import { useGetNow } from "@neckar-hub/typescript-react-utils/providers";
 import { useCallback, useEffect, useState } from "react";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import {
@@ -24,11 +25,12 @@ export interface UnknownOutcomeAlertProps {
 }
 
 /**
- * The outcome of the mutation is unknown: the gateway timed out (504) or the connection broke before the answer.
- * Reloads the server state once when it appears; the entered values stay in the form.
+ * The outcome of the mutation is unknown (504 or broken connection): reloads the server state once, keeps the entered values.
+ * Reads `NowProvider` on its first render, so a missing provider fails at once instead of when the outcome becomes unknown.
  */
 export function UnknownOutcomeAlert(props: UnknownOutcomeAlertProps): React.ReactElement | null {
   const { shellId } = props;
+  const getNow = useGetNow();
   const mutation = useUnknownOutcome(shellId);
 
   // A shell that leaves the page takes its pending decision along.
@@ -40,6 +42,7 @@ export function UnknownOutcomeAlert(props: UnknownOutcomeAlertProps): React.Reac
   return (
     <UnknownOutcomeDialog
       action={mutation.action}
+      getNow={getNow}
       onSendAgain={props.onSendAgain}
       sendAgainDisabled={props.sendAgainDisabled ?? false}
       onCloseForm={props.onCloseForm}
@@ -49,21 +52,23 @@ export function UnknownOutcomeAlert(props: UnknownOutcomeAlertProps): React.Reac
 
 function UnknownOutcomeDialog(props: {
   action: string | undefined;
+  getNow: () => Date;
   onSendAgain: () => void;
   sendAgainDisabled: boolean;
   onCloseForm: () => void;
 }): React.ReactElement {
   const { t } = useEmbeddedTranslation();
   const reloadServerState = useReloadServerState();
+  const { getNow } = props;
   const [reloadedAt, setReloadedAt] = useState<Date | undefined>(undefined);
 
   const reload = useCallback(() => {
     // A failed refetch keeps the text before the reload: the dialog names no server state it did not read.
     reloadServerState().then(
-      () => setReloadedAt(new Date()),
+      () => setReloadedAt(getNow()),
       () => undefined,
     );
-  }, [reloadServerState]);
+  }, [reloadServerState, getNow]);
 
   useEffect(() => {
     reload();

@@ -7,12 +7,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useMemo, useState } from "react";
 import { Combobox, type ComboboxProps } from "./Combobox";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Combobox",
+  component: Combobox,
   decorators: [
     (Story) => (
       <div className="mx-auto max-w-screen-sm">
@@ -141,10 +138,6 @@ const persons: Person[] = [
     },
   },
 ];
-
-/**
- * Stories
- */
 
 export const FlatComboboxStory: StoryObj<ComboboxProps<Person>> = {
   name: "Flat",

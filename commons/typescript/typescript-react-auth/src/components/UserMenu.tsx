@@ -54,7 +54,7 @@ interface UserProps {
  */
 export function UserAvatar({ user, className }: UserProps): React.ReactElement {
   const { t } = useEmbeddedTranslation();
-  const fullName = formatUserName(user);
+  const fullName = formatUserName(user, user.loginName);
   const initials = `${user.firstName.charAt(0).toUpperCase()}${user.lastName.charAt(0).toUpperCase()}`;
 
   return (
@@ -69,7 +69,7 @@ export function UserAvatar({ user, className }: UserProps): React.ReactElement {
  * The user's name above their email address; the email is omitted when the account carries none.
  */
 export function UserNameEmail({ user, className }: UserProps): React.ReactElement {
-  const fullName = formatUserName(user);
+  const fullName = formatUserName(user, user.loginName);
 
   return (
     <div className={cn("grid text-left text-sm leading-tight", className)}>

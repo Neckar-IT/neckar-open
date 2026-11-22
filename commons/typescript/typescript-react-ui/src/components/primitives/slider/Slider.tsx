@@ -1,7 +1,3 @@
-/**
- * Single-thumb slider for selecting one numeric value along a track.
- */
-
 import { Slider as ShadcnSlider } from "@neckar-hub/typescript-react-ui-primitives/ui/slider";
 import { isDefined } from "@neckar-hub/typescript-utils/lang";
 
@@ -25,6 +21,9 @@ function singleValueOf(values: number[]): number {
   return singleValue;
 }
 
+/**
+ * Single-thumb slider for selecting one numeric value along a track.
+ */
 // Single number instead of the primitive's `number[]`; the one-element array also keeps the primitive from drawing a second
 // thumb, which it does at `min` and `max` without a value.
 export function Slider({ defaultValue, value, onValueChange, onValueCommit, min = 0, ...props }: SliderProps): React.ReactElement {

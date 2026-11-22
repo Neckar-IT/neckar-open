@@ -46,11 +46,17 @@ enum class PriceTimelineEntriesFilterCriteria(
    * e.g. `?validFromAfter=2025-01-01T00:00:00Z` to get upcoming entries.
    */
   ValidFromAfter(TypedFilterKey.FilterType.Instant),
+
+  /**
+   * Keeps only the entries of one [ValueTimelineEntryStatus], e.g. `?status=Future`.
+   */
+  Status,
   ;
 
   @Serializable
   data class State(
     val validFromAfter: String? = null,
+    val status: ValueTimelineEntryStatus? = null,
     val scopeFilters: Set<PriceTimelineEntriesFilterCriteria> = emptySet(),
   ) {
     companion object {
@@ -60,6 +66,7 @@ enum class PriceTimelineEntriesFilterCriteria(
       ): State {
         return State(
           validFromAfter = filterDescriptors[ValidFromAfter]?.constraint,
+          status = filterDescriptors[Status]?.timelineEntryStatusValue(),
           scopeFilters = scopeFiltersOf(entries, scopeFilterKeys),
         )
       }

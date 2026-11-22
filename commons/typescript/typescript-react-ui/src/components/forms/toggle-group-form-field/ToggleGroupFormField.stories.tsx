@@ -20,12 +20,9 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / ToggleGroupFormField",
+  component: ToggleGroupFormField,
 } satisfies Meta;
 
 export default meta;
@@ -39,10 +36,6 @@ const formSchema = z.object({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const ToggleGroupFormFieldStory: StoryObj<Args> = {
   name: "ToggleGroupFormField",

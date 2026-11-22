@@ -5,7 +5,8 @@
   "description": "Shareable Playwright Configuration",
   "type": "module",
   "exports": {
-    ".": "./src/playwright.config.ts"
+    ".": "./src/playwright.config.ts",
+    "./keycloak-sign-in": "./src/keycloak-sign-in.ts"
   },
   "scripts": {
     "lint": "oxlint .",

@@ -1,6 +1,8 @@
 import it.neckar.projects.project
 
 import it.neckar.projects.Projects
+import it.neckar.projects.sharing.OpenSharedFiles
+import it.neckar.projects.sharing.publishFiles
 
 import it.neckar.gradle.addKotlinTestDependencies
 
@@ -58,3 +60,5 @@ kotlin {
     }
   }
 }
+
+publishFiles(OpenSharedFiles.SlugCases, file("src/jvmTest/resources/Slug.cases.json"))

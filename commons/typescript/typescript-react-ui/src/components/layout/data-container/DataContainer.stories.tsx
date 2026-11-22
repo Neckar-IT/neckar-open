@@ -6,12 +6,9 @@ import { Button } from "../../primitives/button";
 import { Input } from "../../primitives/input";
 import { DataContainer, type DataContainerProps } from "./DataContainer";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Layout / Data Container",
+  component: DataContainer,
   args: {
     isFetching: false,
     topLeftComponents: <Input placeholder="Search" />,
@@ -35,10 +32,6 @@ const meta = {
 } satisfies Meta<DataContainerProps>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<DataContainerProps> = {
   render: (args: DataContainerProps) => {

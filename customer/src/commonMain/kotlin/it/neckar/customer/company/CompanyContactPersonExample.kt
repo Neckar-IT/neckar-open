@@ -119,6 +119,3 @@ object CompanyContactPersonExample {
     companyContactPersonFertigo,
   )
 }
-
-val CompanyContactPerson.Companion.Example: CompanyContactPersonExample
-  get() = CompanyContactPersonExample

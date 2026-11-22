@@ -20,12 +20,9 @@ interface Args {
   disabled: boolean;
 }
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / RadioGroupFormField",
+  component: RadioGroupFormField,
 } satisfies Meta;
 
 export default meta;
@@ -39,10 +36,6 @@ const formSchema = z.object({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const RadioGroupFormFieldStory: StoryObj<Args> = {
   name: "RadioGroupFormField",

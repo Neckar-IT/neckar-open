@@ -7,7 +7,6 @@ import it.neckar.gradle.configureNodeJsRootExtension
 import it.neckar.gradle.configureRegisteredKotlinModules
 import it.neckar.gradle.limitParallelNodeTasksAndKotlinJsLinks
 import it.neckar.gradle.mavenGroupOf
-import it.neckar.gradle.substituteNeckarCoordinatesWithSourceProjects
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
@@ -15,9 +14,7 @@ import org.gradle.api.initialization.Settings
 /**
  * Applied in `internal/open/meistercharts/settings.gradle.kts`, which the export of `internal/open/meistercharts` alone reads. Sets for
  * every project what the monorepo sets for the projects under `internal/open/meistercharts`:
- * - [NeckarBasePlugin], the group `it.neckar.open.meistercharts` and the version `neckarOpenVersion` of `gradle.properties`
- * - the sources of this build for the coordinates of the group [MeisterchartsGroup]; every other coordinate, `it.neckar.open` included,
- *   resolves from the repositories
+ * - [NeckarBasePlugin], the group `it.neckar.open.meistercharts…` and the version `neckarOpenVersion` of `gradle.properties`
  * - the Node.js of the Kotlin/JS targets and the limits of the node tasks and Kotlin/JS links
  * - the conventions of each Kotlin module the settings include
  */
@@ -26,8 +23,8 @@ class MeisterchartsSettingsPlugin : Plugin<Settings> {
     val neckarOpenVersion: String = settings.providers.gradleProperty(NeckarOpenVersionProperty).get()
     settings.gradle.allprojects {
       pluginManager.apply(NeckarBasePlugin::class.java)
+      useMonorepoGroup()
       version = neckarOpenVersion
-      useMeisterchartsCoordinates()
     }
 
     settings.gradle.rootProject {
@@ -38,7 +35,7 @@ class MeisterchartsSettingsPlugin : Plugin<Settings> {
       // the root project before its subprojects, so their build scripts still see the Kotlin extensions.
       afterEvaluate {
         // Read once the include lines of the settings ran: the registry also lists the modules the export leaves out, such as meistercharts-fx.
-        val includedKotlinModules: List<ConfiguredProject> = Projects.meistercharts.selfAndDescendants
+        val includedKotlinModules: List<ConfiguredProject> = Projects.open.meistercharts.selfAndDescendants
           .filter { it.type in KotlinModuleTypes }
           .filter { settings.findProject(it.path.path) != null }
 
@@ -47,7 +44,7 @@ class MeisterchartsSettingsPlugin : Plugin<Settings> {
           projects = includedKotlinModules,
           kspProcessorPathPrefix = NoKspProcessorPath,
           allowedKspDependencyPaths = emptySet(),
-          registrationOf = { configuredProject -> ProjectRegistration(file = MeisterchartsProjects.RegistryFile, accessor = projectsAccessor(GradleProjectPath(":meistercharts").resolve(configuredProject.path))) },
+          registrationOf = { configuredProject -> ProjectRegistration(file = MeisterchartsProjects.RegistryFile, accessor = projectsAccessor(GradleProjectPath(":open:meistercharts").resolve(configuredProject.path))) },
         )
       }
     }
@@ -57,18 +54,14 @@ class MeisterchartsSettingsPlugin : Plugin<Settings> {
     /** The directory segments of `internal/open/meistercharts` that [mavenGroupOf] keeps. */
     private val GroupRootSegments: List<String> = listOf("open", "meistercharts")
 
-    /** `it.neckar.open.meistercharts`, the group of every project of this build. */
-    private val MeisterchartsGroup: String = mavenGroupOf(GroupRootSegments, GradleProjectPath.Root.path)
-
     /** The build holds no KSP processor: the processors resolve from Maven Central as `it.neckar.open` coordinates. */
     private const val NoKspProcessorPath: String = ":ksp"
 
     private val KotlinModuleTypes: Set<ProjectType> = setOf(ProjectType.KotlinMultiplatform, ProjectType.KotlinJvm)
 
-    /** The group of the monorepo, and the sources of this build for the coordinates of [MeisterchartsGroup] alone. */
-    internal fun Project.useMeisterchartsCoordinates() {
+    /** The group the monorepo gives the project: `it.neckar.open.meistercharts` for `:meistercharts-history:meistercharts-history-core`. */
+    internal fun Project.useMonorepoGroup() {
       group = mavenGroupOf(GroupRootSegments, path)
-      substituteNeckarCoordinatesWithSourceProjects { requestedGroup -> requestedGroup == MeisterchartsGroup }
     }
   }
 }

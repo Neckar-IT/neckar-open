@@ -2,9 +2,9 @@
  * Imports
  */
 
+import type { ObservabilityConfig } from "@neckar-hub/typescript-utils/observability";
 import { describe, expect, it } from "vitest";
 import { makeAxiosError } from "../../axiosErrorFixture";
-import type { ObservabilityConfig } from "../../ObservabilityContext";
 import type { VersionInfoData } from "../../VersionInfoContext";
 import { buildErrorInfoText } from "./errorInfoText";
 

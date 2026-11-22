@@ -8,20 +8,14 @@ import { DefaultComponentStore } from "./ComponentStore";
 import { LifeCycleWrapper } from "./LifeCycleWrapper";
 import { TestWrappedComponent } from "./TestWrappedComponent";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Layout / LifeCycleWrapper",
+  component: LifeCycleWrapper,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-export const LifeCycleWrapperStory: StoryObj<typeof meta> = {
+export const LifeCycleWrapperStory: StoryObj = {
   name: "LifeCycleWrapper",
   render: () => {
     const componentStoreRef = useRef(new DefaultComponentStore());

@@ -21,9 +21,17 @@
       "import": "./dist/src/components/draft-confirmed/index.js",
       "types": "./dist/src/components/draft-confirmed/index.d.ts"
     },
+    "./draft-confirmed-test-support": {
+      "import": "./dist/src/components/draft-confirmed/draftConfirmedTestSupport.js",
+      "types": "./dist/src/components/draft-confirmed/draftConfirmedTestSupport.d.ts"
+    },
     "./optimistic-locking": {
       "import": "./dist/src/components/optimistic-locking/index.js",
       "types": "./dist/src/components/optimistic-locking/index.d.ts"
+    },
+    "./optimistic-locking-test-support": {
+      "import": "./dist/src/components/optimistic-locking/optimisticLockingTestSupport.js",
+      "types": "./dist/src/components/optimistic-locking/optimisticLockingTestSupport.d.ts"
     },
     "./entities": {
       "import": "./dist/src/components/entities/index.js",
@@ -65,6 +73,10 @@
       "import": "./dist/src/components/data-display/index.js",
       "types": "./dist/src/components/data-display/index.d.ts"
     },
+    "./data-display-test-support": {
+      "import": "./dist/src/components/data-display/dataDisplayTestSupport.js",
+      "types": "./dist/src/components/data-display/dataDisplayTestSupport.d.ts"
+    },
     "./feedback": {
       "import": "./dist/src/components/feedback/index.js",
       "types": "./dist/src/components/feedback/index.d.ts"
@@ -72,6 +84,10 @@
     "./navigation": {
       "import": "./dist/src/components/navigation/index.js",
       "types": "./dist/src/components/navigation/index.d.ts"
+    },
+    "./navigation-test-support": {
+      "import": "./dist/src/components/navigation/navigationTestSupport.js",
+      "types": "./dist/src/components/navigation/navigationTestSupport.d.ts"
     },
     "./layout": {
       "import": "./dist/src/components/layout/index.js",
@@ -122,7 +138,7 @@
     "test:watch": "vitest watch",
     "integration-test": "playwright install chromium && playwright test",
     "catalog:generate": "node scripts/generate-catalog.ts",
-    "storybook": "storybook dev --no-open",
+    "storybook": "storybook dev --no-open --host 127.0.0.1",
     "storybook:build": "storybook build --output-dir build/storybook",
     "format": "oxfmt --check",
     "format:fix": "oxfmt --write",
@@ -159,6 +175,7 @@
     "@neckar-hub/typescript-config": "workspace:*",
     "@neckar-hub/vite-config": "workspace:*",
     "@playwright/test": "catalog:",
+    "@storybook/addon-docs": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/dom": "catalog:",

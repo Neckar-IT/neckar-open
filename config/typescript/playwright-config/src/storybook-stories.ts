@@ -16,7 +16,12 @@ interface StorybookIndexEntry {
  * Every story of the Storybook at `url`, read synchronously: Playwright declares the tests of a file before the first one runs.
  */
 export function storybookStories(url: string): StorybookStory[] {
-  const entries = fetch(`${url}/index.json`).json().entries as Record<string, StorybookIndexEntry>;
+  return storiesOfIndex(fetch(`${url}/index.json`).json());
+}
+
+/** The stories of a parsed Storybook `index.json`, without its docs pages. */
+export function storiesOfIndex(index: unknown): StorybookStory[] {
+  const entries = (index as { entries: Record<string, StorybookIndexEntry> }).entries;
 
   return Object.values(entries)
     .filter((entry) => entry.type === "story")

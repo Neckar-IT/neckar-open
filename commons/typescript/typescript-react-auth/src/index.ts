@@ -12,6 +12,7 @@ export type { MeSessionConfig } from "./MeSessionConfig";
 export { ProxyAuthProvider } from "./ProxyAuthProvider";
 export { useProxyLogout } from "./hooks/useProxyLogout";
 export { keycloakOtlpHeaders } from "./keycloak/keycloakOtlpHeaders";
+export { keycloakServerUrl } from "./keycloak/keycloakServerUrl";
 export { registerKeycloakAxiosInterceptor } from "./keycloak/registerKeycloakAxiosInterceptor";
 export { captureInvitationTokenFromUrl } from "./invitation/captureInvitationTokenFromUrl";
 export { registerInvitationTokenAxiosInterceptor } from "./invitation/registerInvitationTokenAxiosInterceptor";

@@ -7,12 +7,9 @@ import { useState } from "react";
 import { CodeBlock } from "../../data-display/code-block";
 import { SelectIdFromList } from "./SelectIdFromList";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / SelectIdFromList",
+  component: SelectIdFromList,
 } satisfies Meta;
 
 export default meta;
@@ -39,10 +36,6 @@ interface Args {
   disabled: boolean;
   isInvalid: boolean;
 }
-
-/**
- * Stories
- */
 
 export const SelectIdFromListStory: StoryObj<Args> = {
   name: "SelectIdFromList",

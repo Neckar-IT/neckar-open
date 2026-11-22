@@ -12,11 +12,14 @@ import { mergeConfig } from "vite";
 const config: StorybookConfig = {
   framework: "@storybook/react-vite",
   stories: ["../src/**/*.stories.tsx"],
-  // Hands every story the `msw` worker its `beforeEach` registers request handlers with.
-  addons: ["msw-storybook-addon"],
+  // `msw-storybook-addon` hands every story the `msw` worker its `beforeEach` registers request handlers with.
+  addons: ["msw-storybook-addon", "@storybook/addon-docs"],
   core: { disableTelemetry: true },
-  // No story names a `component`, so the argTypes react-docgen reads from it have no reader.
-  typescript: { reactDocgen: false },
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    // The dev server also loads the commons sources, which lie outside this package's TypeScript project.
+    reactDocgenTypescriptOptions: { include: ["src/**/*.tsx"] },
+  },
   managerHead: storybookManagerHead,
   previewHead: storybookPreviewHead,
   viteFinal: (viteConfig) =>

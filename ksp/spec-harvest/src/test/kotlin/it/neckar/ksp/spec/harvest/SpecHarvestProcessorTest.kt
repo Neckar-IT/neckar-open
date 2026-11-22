@@ -145,6 +145,16 @@ class SpecHarvestProcessorTest {
   }
 
   @Test
+  fun `fails when the Serializable annotation does not resolve`() {
+    val messages = KspTestUtils.compileSourceFilesWithoutLibraries(
+      sourceFiles = listOf(File("src/test/kotlin/it/neckar/ksp/spec/harvest/sample/PlainSamples.kt")),
+      symbolProcessorProvider = SpecHarvestProcessorProvider(),
+    )
+
+    assertThat(messages).contains("kotlinx.serialization.Serializable does not resolve on the classpath of this compilation")
+  }
+
+  @Test
   fun `harvests JSON-Schema constraint annotation arguments off a value class`(@TempDir tempDir: Path) {
     val processorProvider = SpecHarvestProcessorProvider()
 

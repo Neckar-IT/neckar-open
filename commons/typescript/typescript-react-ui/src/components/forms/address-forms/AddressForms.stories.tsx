@@ -3,9 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { delay } from "es-toolkit";
 import { AddressConfirmedForm, AddressDraftForm } from "./AddressForms";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Forms / Address Forms",
 } satisfies Meta;
@@ -24,9 +21,6 @@ const address: Address = {
   country: null,
 };
 
-/**
- * Address Draft Form Story
- */
 export const AddressDraftFormStory: StoryObj<typeof meta> = {
   name: "Address Draft Form",
   render: () => {
@@ -41,9 +35,6 @@ export const AddressDraftFormStory: StoryObj<typeof meta> = {
   },
 };
 
-/**
- * Address Confirmed Form Story
- */
 export const AddressConfirmedFormStory: StoryObj<typeof meta> = {
   name: "Address Confirmed Form",
   render: () => {

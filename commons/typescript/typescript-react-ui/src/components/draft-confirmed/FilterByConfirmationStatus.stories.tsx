@@ -6,11 +6,12 @@ import { FilterByConfirmationStatus } from "./FilterByConfirmationStatus";
 
 const meta = {
   title: "Draft confirmed / FilterByConfirmationStatus",
+  component: FilterByConfirmationStatus,
 } satisfies Meta;
 
 export default meta;
 
-export const FilterByConfirmationStatusStory: StoryObj<typeof meta> = {
+export const FilterByConfirmationStatusStory: StoryObj = {
   render: () => {
     const [filter, setFilter] = useState<ConfirmationStatus | undefined>(undefined);
 

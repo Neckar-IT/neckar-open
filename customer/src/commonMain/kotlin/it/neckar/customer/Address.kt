@@ -44,7 +44,7 @@ import kotlinx.serialization.Serializable
  * Neither state rejects *blank* strings: [Confirmed] only rules out `null`. The rendering members
  * below therefore have to cope with empty parts in both states.
  */
-@CrossLayer("Identical wire shape across Domain, Entity, DataView.")
+@CrossLayer("Postal address without identity: Mongo entities embed it and REST requests and views carry it, so per-layer copies would repeat all five fields and the Draft/Confirmed split in each layer")
 @Serializable
 sealed interface Address : Confirmable {
   val street: String?
@@ -81,7 +81,6 @@ sealed interface Address : Confirmable {
    */
   fun singleLine(): String
 
-  @CrossLayer("Identical wire shape across Domain, Entity, DataView.")
   @Serializable
   @SerialName("Draft")
   data class Draft(
@@ -118,7 +117,6 @@ sealed interface Address : Confirmable {
     }
   }
 
-  @CrossLayer("Identical wire shape across Domain, Entity, DataView.")
   @Serializable
   @SerialName("Confirmed")
   data class Confirmed(

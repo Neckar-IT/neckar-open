@@ -45,6 +45,4 @@ data class ContactInformation(
    * The web address
    */
   val url: Url? = null,
-) {
-  companion object
-}
+)

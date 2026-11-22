@@ -5,12 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./Accordion";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Accordion",
+  component: Accordion,
   decorators: [
     (Story) => (
       <div className="mx-auto max-w-md">
@@ -22,11 +19,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const AccordionStory: StoryObj<typeof meta> = {
+export const AccordionStory: StoryObj = {
   name: "Accordion",
   render: () => {
     return (

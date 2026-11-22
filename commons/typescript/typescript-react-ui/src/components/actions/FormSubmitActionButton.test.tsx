@@ -42,6 +42,15 @@ describe("FormSubmitActionButton", () => {
     expect(action.onTrigger).not.toHaveBeenCalled();
   });
 
+  it("ignores Enter while the action is disabled", async () => {
+    const action = actionOf({ disabled: true });
+    render(<FormWithSubmit action={action} />);
+
+    await userEvent.setup().type(screen.getByRole("textbox", { name: "Name" }), "{Enter}");
+
+    expect(action.onTrigger).not.toHaveBeenCalled();
+  });
+
   it("ignores Enter inside an ActionLockProvider", async () => {
     const action = actionOf();
     render(

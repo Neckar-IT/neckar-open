@@ -5,21 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Breadcrumbs } from "./Breadcrumbs";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Navigation / Breadcrumbs",
+  component: Breadcrumbs,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Default: StoryObj<typeof meta> = {
+export const Default: StoryObj = {
   render: () => {
     return (
       <Breadcrumbs>
@@ -37,7 +30,7 @@ export const Default: StoryObj<typeof meta> = {
 /**
  * A renderer item longer than the item's maximum width ends with an ellipsis; the separator keeps its size.
  */
-export const LongItem: StoryObj<typeof meta> = {
+export const LongItem: StoryObj = {
   render: () => {
     return (
       <Breadcrumbs>

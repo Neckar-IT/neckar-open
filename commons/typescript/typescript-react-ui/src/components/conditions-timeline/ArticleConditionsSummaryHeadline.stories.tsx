@@ -6,6 +6,7 @@ import { currentConditionsEntry, futureConditionsEntry } from "./conditionsFixtu
 
 const meta = {
   title: "Conditions timeline / ArticleConditionsSummaryHeadline",
+  component: ArticleConditionsSummaryHeadline,
 } satisfies Meta;
 
 export default meta;
@@ -25,7 +26,7 @@ const cases: Case[] = [
   { label: "summary null", summary: null },
 ];
 
-export const ArticleConditionsSummaryHeadlineStory: StoryObj<typeof meta> = {
+export const ArticleConditionsSummaryHeadlineStory: StoryObj = {
   name: "ArticleConditionsSummaryHeadline",
   render: () => {
     return (

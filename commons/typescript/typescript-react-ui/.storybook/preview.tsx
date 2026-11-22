@@ -1,5 +1,6 @@
 import { I18nProvider } from "@neckar-hub/typescript-react-i18n";
 import { JotaiProvider, jotaiStore } from "@neckar-hub/typescript-react-utils/jotai";
+import { NowProvider, nowMockedValue } from "@neckar-hub/typescript-react-utils/providers";
 import {
   storybookColorMode,
   storybookColorModeGlobalTypes,
@@ -24,7 +25,7 @@ const themes: ThemeDefinition[] = [
 ];
 
 /**
- * Wraps every story: the global providers, the color mode of the toolbar global `theme` and the
+ * Wraps every story: the global providers with a fixed `now`, the color mode of the toolbar global `theme` and the
  * ready flag the screenshot suite waits for.
  */
 function StoryFrame({ colorMode, children }: { colorMode: ColorMode; children: React.ReactNode }): React.ReactElement {
@@ -33,10 +34,12 @@ function StoryFrame({ colorMode, children }: { colorMode: ColorMode; children: R
   return (
     <JotaiProvider store={jotaiStore}>
       <I18nProvider>
-        <ThemeProvider themes={themes}>
-          <ColorModeOfToolbar colorMode={colorMode} />
-          <ThemedStoryFrame>{children}</ThemedStoryFrame>
-        </ThemeProvider>
+        <NowProvider value={nowMockedValue}>
+          <ThemeProvider themes={themes}>
+            <ColorModeOfToolbar colorMode={colorMode} />
+            <ThemedStoryFrame>{children}</ThemedStoryFrame>
+          </ThemeProvider>
+        </NowProvider>
       </I18nProvider>
     </JotaiProvider>
   );
@@ -71,6 +74,8 @@ function ThemedStoryFrame({ children }: { children: React.ReactNode }): React.Re
 }
 
 const preview: Preview = {
+  // A docs page per story file next to its stories, with the props table of its `component`.
+  tags: ["autodocs"],
   decorators: [
     (Story, context) => (
       <StoryFrame colorMode={storybookColorMode(context.globals)}>

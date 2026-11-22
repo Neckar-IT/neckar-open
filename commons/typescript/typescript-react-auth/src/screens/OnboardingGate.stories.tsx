@@ -6,19 +6,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { storePendingInvitationToken } from "../../src/invitation/pendingInvitationToken";
 import { OnboardingGate, type OnboardingRegistrationProps } from "../../src/screens/OnboardingGate";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Onboarding Gate",
+  component: OnboardingGate,
 } satisfies Meta;
 
 export default meta;
 
 /**
- * Stories
- *
  * The gate reads the parked invitation token from `sessionStorage`, so each story sets the storage
  * up before rendering rather than taking a prop for it — that is the very state the component has
  * to resolve, and faking it through a prop would test something the app never runs. The registration
@@ -42,7 +37,7 @@ function productRegistrationPage({ joinsInvitingTenant }: OnboardingRegistration
 }
 
 /** Self-signup is allowed and no invitation is parked: the product's registration form. */
-export const SelfSignupStory: StoryObj<typeof meta> = {
+export const SelfSignupStory: StoryObj = {
   render: () => {
     withoutParkedInvitation();
 
@@ -60,7 +55,7 @@ export const SelfSignupStory: StoryObj<typeof meta> = {
 };
 
 /** An invitation is parked: the product's join confirmation, even though self-signup is rejected. */
-export const JoinInvitingTenantStory: StoryObj<typeof meta> = {
+export const JoinInvitingTenantStory: StoryObj = {
   render: () => {
     withParkedInvitation();
 
@@ -78,7 +73,7 @@ export const JoinInvitingTenantStory: StoryObj<typeof meta> = {
 };
 
 /** Neither an invitation nor self-signup: the access-denied screen. */
-export const RejectedStory: StoryObj<typeof meta> = {
+export const RejectedStory: StoryObj = {
   render: () => {
     withoutParkedInvitation();
 

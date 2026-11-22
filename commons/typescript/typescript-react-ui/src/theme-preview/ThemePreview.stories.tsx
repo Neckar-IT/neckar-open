@@ -1,8 +1,4 @@
 /**
- * Collection of Components to test out the current Theme
- */
-
-/**
  * Imports
  */
 
@@ -20,6 +16,9 @@ import { CardsShare } from "./CardsShare";
 import { CardsStats } from "./CardsStats";
 import { CardsTeamMembers } from "./CardsTeamMembers";
 
+/**
+ * Collection of Components to test out the current Theme
+ */
 const meta = {
   title: "Theme",
   tags: ["no-screenshot"],

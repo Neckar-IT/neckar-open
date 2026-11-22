@@ -80,6 +80,14 @@ class MockResizeObserver {
 }
 window.ResizeObserver = MockResizeObserver;
 
+/**
+ * JSDOM does not implement matchMedia: ThemeProvider reads and subscribes to it, SidebarProvider only subscribes and reads
+ * `window.innerWidth`. Every query answers `false`, light mode for ThemeProvider. The cast covers the deprecated
+ * `addListener` and `removeListener`, which neither provider calls.
+ */
+window.matchMedia = (query: string): MediaQueryList =>
+  Object.assign(new EventTarget(), { matches: false, media: query, onchange: null }) as MediaQueryList;
+
 // A worker that does not isolate test files keeps the modules a file mocked in the module cache for the next file.
 afterAll(() => {
   vi.resetModules();

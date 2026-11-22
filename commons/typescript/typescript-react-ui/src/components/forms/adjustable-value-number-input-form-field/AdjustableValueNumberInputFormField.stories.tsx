@@ -11,12 +11,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AdjustableValueNumberInputFormField, adjustableValueNumberSchema } from "./AdjustableValueNumberInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / AdjustableValueNumberInputFormField",
+  component: AdjustableValueNumberInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -41,10 +38,6 @@ type FormValues = z.infer<typeof formSchema>;
 interface Args {
   hint: string;
 }
-
-/**
- * Stories
- */
 
 export const AdjustableValueNumberFormFieldStory: StoryObj<Args> = {
   name: "AdjustableValueNumberFormField",

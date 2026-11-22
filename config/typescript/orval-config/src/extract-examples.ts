@@ -2,15 +2,15 @@
  * Imports
  */
 
-import type { ClientMockGeneratorBuilder, GeneratorOptions, GeneratorVerbOptions, OutputMode } from "@orval/core";
-import { camelCase, pascalCase } from "es-toolkit/string";
 import * as fs from "fs";
 import path from "path";
+import type { ClientMockGeneratorBuilder, GeneratorOptions, GeneratorVerbOptions, OutputMode } from "@orval/core";
+import { camelCase, pascalCase } from "es-toolkit/string";
 
 /**
  * Extract Examples from the OpenAPI document.
  *
- * This will generate a file with a typescript object generated from the examples as defined in the OpenAPI JSON.
+ * Writes a file per example value that has none yet (see `writeRouteExampleFile`).
  * It requires an additional type information (`x-type-ref`) to be defined alongside the example data.
  */
 
@@ -28,13 +28,13 @@ export function extractExamples(verbOptions: GeneratorVerbOptions, generatorOpti
 
   const examples = verbOptions.response.types.success[0]?.examples;
 
-  if (!examples || examples.length === 0 || Array.isArray(examples)) {
+  if (!examples || Array.isArray(examples)) {
     return defaultReturn;
   }
 
   for (const exampleName in examples) {
     const example = examples[exampleName] as unknown as Example;
-    writeExampleFile(example, generatorOptions.output, generatorOptions.context.output.mode);
+    writeRouteExampleFile(example, generatorOptions.output, generatorOptions.context.output.mode, verbOptions.operationName, exampleName);
   }
 
   return defaultReturn;
@@ -55,7 +55,12 @@ export function extractSchemaExamples(specPath: string, orvalOutput: string, orv
 
   for (const [schemaName, schema] of Object.entries(spec.components?.schemas ?? {})) {
     for (const [exampleId, example] of Object.entries(schema["x-examples"] ?? {})) {
-      writeExampleFile({ "x-type-ref": `#/components/schemas/${schemaName}`, value: example.value }, orvalOutput, orvalMode, camelCase(exampleId));
+      writeSchemaExampleFile(
+        { "x-type-ref": `#/components/schemas/${schemaName}`, value: example.value },
+        orvalOutput,
+        orvalMode,
+        camelCase(exampleId),
+      );
     }
   }
 }
@@ -93,18 +98,95 @@ interface Example {
   value: TSObject;
 }
 
+// Every route example file of this process by path, with the Orval output and operation that wrote it.
+const writtenRouteExampleFiles = new Map<string, string>();
+
+// Examples directory, type and value of every route example of this process: a value that has a file gets no second one.
+// Orval projects sharing an examples directory import the type from different schema files, so the import is no part of it.
+const writtenRouteExampleValues = new Set<string>();
+
 /**
- * Writes `<fileBaseName>.example.ts`; the name of the type is the base name unless [fileBaseName] is given.
- *
- * With [fileBaseName] the constant is annotated with the type, so the compiler checks the example. Without it
- * the value is asserted: Orval generates `property?: string` for optional nullable properties, but the JSON
- * examples of a route contain explicit null values, which only an assertion accepts.
+ * Writes the first example of a type to `<type>.example.ts`; a later one with another value gets its own file (README.md).
+ * The value is asserted instead of typed: route JSON holds explicit nulls where Orval generates optional properties.
  */
-export function writeExampleFile(example: Example, orvalOutput: string, orvalMode: OutputMode, fileBaseName?: string): void {
+export function writeRouteExampleFile(
+  example: Example,
+  orvalOutput: string,
+  orvalMode: OutputMode,
+  operationName: string,
+  exampleId: string,
+): void {
+  const file = exampleFileFor(example, orvalOutput, orvalMode);
+  if (!file) {
+    return;
+  }
+  const routeExampleValue = `${examplesDirectory(orvalOutput)} ${file.interfaceName} = ${file.literal}`;
+  if (writtenRouteExampleValues.has(routeExampleValue)) {
+    return;
+  }
+  const owner = `${orvalOutput} ${operationName}`;
+  const write = (constantName: string): void => {
+    const filePath = exampleFilePath(orvalOutput, constantName);
+    writtenRouteExampleFiles.set(filePath, owner);
+    writtenRouteExampleValues.add(routeExampleValue);
+    createFileWithDirs(filePath, file.render(constantName, `${file.literal} as unknown as ${file.interfaceName}`));
+  };
+
+  const plainName = camelCase(file.interfaceName);
+  const plainOwner = writtenRouteExampleFiles.get(exampleFilePath(orvalOutput, plainName));
+  if (plainOwner === undefined) {
+    write(plainName);
+    return;
+  }
+
+  const operationScopedName = `${plainName}For${pascalCase(operationName)}`;
+  if (!writtenRouteExampleFiles.has(exampleFilePath(orvalOutput, operationScopedName)) && plainOwner !== owner) {
+    write(operationScopedName);
+    return;
+  }
+
+  const exampleScopedName = `${operationScopedName}${pascalCase(exampleId)}`;
+  if (writtenRouteExampleFiles.has(exampleFilePath(orvalOutput, exampleScopedName))) {
+    throw new Error(`Two examples named ${exampleScopedName} have different values`);
+  }
+  write(exampleScopedName);
+}
+
+// Type and value of every schema example file of this process, keyed by its path.
+const writtenSchemaExampleFiles = new Map<string, string>();
+
+/**
+ * Writes `<fileBaseName>.example.ts` with a constant typed as the schema, so the compiler checks the example.
+ */
+export function writeSchemaExampleFile(example: Example, orvalOutput: string, orvalMode: OutputMode, fileBaseName: string): void {
+  const file = exampleFileFor(example, orvalOutput, orvalMode);
+  if (!file) {
+    return;
+  }
+  const filePath = exampleFilePath(orvalOutput, fileBaseName);
+  const identity = `${file.interfaceName} = ${file.literal}`;
+  const written = writtenSchemaExampleFiles.get(filePath);
+  if (written === identity) {
+    return;
+  }
+  if (written !== undefined) {
+    throw new Error(`Two examples named ${fileBaseName} have different values`);
+  }
+  writtenSchemaExampleFiles.set(filePath, identity);
+  createFileWithDirs(filePath, file.render(`${fileBaseName}: ${file.interfaceName}`, file.literal));
+}
+
+interface ExampleFile {
+  interfaceName: string;
+  literal: string;
+  render: (declaration: string, initializer: string) => string;
+}
+
+function exampleFileFor(example: Example, orvalOutput: string, orvalMode: OutputMode): ExampleFile | undefined {
   const typeRef = example["x-type-ref"];
   if (!typeRef) {
     console.warn(`No "x-type-ref" found for example: ${JSON.stringify(example)}`);
-    return;
+    return undefined;
   }
 
   const lastTypeRefPart = typeRef.split("/").at(-1);
@@ -113,8 +195,6 @@ export function writeExampleFile(example: Example, orvalOutput: string, orvalMod
   }
   const interfaceName = pascalCase(lastTypeRefPart);
 
-  const value = example.value;
-
   const schemasFileName = path.basename(orvalOutput);
   if (!schemasFileName) {
     throw new Error(`Cannot derive the schemas file name from the Orval output path: ${orvalOutput}`);
@@ -122,20 +202,16 @@ export function writeExampleFile(example: Example, orvalOutput: string, orvalMod
   const schemasFileRelativePath =
     orvalMode === "split" ? `../${schemasFileName.replace(".ts", ".schemas")}` : `../${schemasFileName.replace(".ts", "")}`;
 
-  const outputFilePath = path.join(examplesDirectory(orvalOutput), `${fileBaseName ?? camelCase(interfaceName)}.example.ts`);
+  return {
+    interfaceName,
+    literal: toTSObjectLiteral(example.value),
+    render: (declaration, initializer) =>
+      `import { type ${interfaceName} } from "${schemasFileRelativePath}";\n\nexport const ${declaration} = ${initializer};\n`,
+  };
+}
 
-  let content = "";
-  content += `import { type ${interfaceName} } from "${schemasFileRelativePath}";\n`;
-  content += "\n";
-  const constantName = fileBaseName ?? camelCase(interfaceName);
-  if (fileBaseName) {
-    content += `export const ${constantName}: ${interfaceName} = ${toTSObjectLiteral(value)};\n`;
-  } else {
-    content += `export const ${constantName} = ${toTSObjectLiteral(value)} as unknown as ${interfaceName};\n`;
-  }
-
-  // create example file
-  createFileWithDirs(outputFilePath, content);
+function exampleFilePath(orvalOutput: string, baseName: string): string {
+  return path.join(examplesDirectory(orvalOutput), `${baseName}.example.ts`);
 }
 
 /**

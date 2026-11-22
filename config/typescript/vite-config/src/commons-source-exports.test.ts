@@ -2,14 +2,14 @@ import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { commonsSourceExports } from "./commons-source-exports.js";
+import { type CommonsSourceExportsOptions, commonsSourceExports } from "./commons-source-exports.js";
 
 /**
  * The two hooks under test, as the plain functions the plugin literal declares them to be. Vite
  * types both as an `ObjectHook`, which a call site would first have to narrow — the tests call the
  * functions directly instead.
  */
-type ConfigHook = (config: Record<string, never>, env: { command: "serve"; mode: string }) => void;
+type ConfigHook = (config: Record<string, never>, env: { command: "serve" | "build"; mode: string }) => void;
 type ResolveIdHook = (
   this: { resolve: () => Promise<{ id: string }> },
   id: string,
@@ -37,13 +37,16 @@ function commonsPackage(...sourceFileNames: string[]): { compiledFile: string; s
 }
 
 /**
- * Drives the plugin directly: `config` puts it into development mode, and `resolveId` runs against
+ * Drives the plugin directly: `config` puts it into the given mode, and `resolveId` runs against
  * a stub context whose own resolver answers with the compiled file Vite's default resolution would
  * have picked.
  */
-function pluginInDevelopmentMode(): (compiledFile: string, id?: string) => Promise<string | undefined> {
-  const plugin = commonsSourceExports();
-  (plugin.config as unknown as ConfigHook)({}, { command: "serve", mode: "development" });
+function pluginIn(
+  mode: "development" | "production",
+  options: CommonsSourceExportsOptions = {},
+): (compiledFile: string, id?: string) => Promise<string | undefined> {
+  const plugin = commonsSourceExports(options);
+  (plugin.config as unknown as ConfigHook)({}, { command: mode === "development" ? "serve" : "build", mode });
 
   let resolvesTo = "";
   const context = { resolve: () => Promise.resolve({ id: resolvesTo }) };
@@ -57,24 +60,38 @@ function pluginInDevelopmentMode(): (compiledFile: string, id?: string) => Promi
 describe("commonsSourceExports", () => {
   it("redirects a compiled import to its TypeScript source", async () => {
     const { compiledFile, sourceDirectory } = commonsPackage("index.ts");
-    const resolve = pluginInDevelopmentMode();
+    const resolve = pluginIn("development");
 
     expect(await resolve(compiledFile)).toBe(join(sourceDirectory, "index.ts"));
   });
 
   it("falls back to the .tsx source when the .ts variant is absent", async () => {
     const { compiledFile, sourceDirectory } = commonsPackage("index.tsx");
-    const resolve = pluginInDevelopmentMode();
+    const resolve = pluginIn("development");
 
     expect(await resolve(compiledFile)).toBe(join(sourceDirectory, "index.tsx"));
   });
 
   it("keeps the compiled output when the package ships no source beside it", async () => {
     const { compiledFile } = commonsPackage();
-    const resolve = pluginInDevelopmentMode();
+    const resolve = pluginIn("development");
 
     // Undefined hands the import back to Vite's own resolution, which serves dist/. The layout that
     // makes this branch unreachable for a well-formed package is guarded repo-wide, not here.
     expect(await resolve(compiledFile)).toBeUndefined();
+  });
+
+  it("keeps the compiled output in a production build", async () => {
+    const { compiledFile } = commonsPackage("index.ts");
+    const resolve = pluginIn("production");
+
+    expect(await resolve(compiledFile)).toBeUndefined();
+  });
+
+  it("redirects in a production build with alsoInBuild", async () => {
+    const { compiledFile, sourceDirectory } = commonsPackage("index.ts");
+    const resolve = pluginIn("production", { alsoInBuild: true });
+
+    expect(await resolve(compiledFile)).toBe(join(sourceDirectory, "index.ts"));
   });
 });

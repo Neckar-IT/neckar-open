@@ -133,10 +133,10 @@ class TaxIdTest {
 
   @Test
   fun `examples carry their canonical value`() {
-    assertThat(TaxId.Example.germany.value).isEqualTo("DE192736450")
-    assertThat(TaxId.Example.austria.value).isEqualTo("ATU12345678")
-    assertThat(TaxId.Example.france.value).isEqualTo("FR40303265045")
-    assertThat(TaxId.Example.italy.value).isEqualTo("IT07643520567")
-    assertThat(TaxId.Example.netherlands.value).isEqualTo("NL123456789B01")
+    assertThat(TaxIdExample.germany.value).isEqualTo("DE192736450")
+    assertThat(TaxIdExample.austria.value).isEqualTo("ATU12345678")
+    assertThat(TaxIdExample.france.value).isEqualTo("FR40303265045")
+    assertThat(TaxIdExample.italy.value).isEqualTo("IT07643520567")
+    assertThat(TaxIdExample.netherlands.value).isEqualTo("NL123456789B01")
   }
 }

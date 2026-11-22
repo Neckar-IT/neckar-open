@@ -48,7 +48,7 @@ const val jwksStateDirectoryEnvironmentVariable: String = "JWKS_STATE_DIR"
 
 /**
  * The [JwksKeyManager] for this realm: fetching from its JWKS endpoint, seeded from the file built
- * into the image, persisting to [jwksStateDirectoryEnvironmentVariable] where that is set. A token naming the client or one of
+ * into the image when [ClasspathJwksSeed.forIssuer] names one, persisting to [jwksStateDirectoryEnvironmentVariable] where that is set. A token naming the client or one of
  * [additionalAudiences] with an unknown `kid` triggers a refresh.
  */
 fun KeycloakConfiguration.jwksKeyManager(
@@ -59,6 +59,7 @@ fun KeycloakConfiguration.jwksKeyManager(
   source = HttpJwksSource(jwksUrl),
   prefilter = JwksRefreshPrefilter(issuer = issuer, audiences = additionalAudiences + clientId),
   persistence = persistence,
+  seed = ClasspathJwksSeed.forIssuer(issuer, realmName),
 )
 
 /**

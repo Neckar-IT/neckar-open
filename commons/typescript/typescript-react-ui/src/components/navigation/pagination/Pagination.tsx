@@ -1,21 +1,9 @@
-/**
- * Custom Pagination Component, inspired by shadcn's Task Table Pagination (https://ui.shadcn.com/examples/tasks)
- */
-
-/**
- * Imports
- */
-
 import type { TextKey } from "@neckar-hub/typescript-react-i18n";
 import { cn } from "cn";
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from "lucide-react";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import { Button } from "../../primitives/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../primitives/select";
-
-/**
- * Type Declarations
- */
 
 export type OnPaginationChange = (pageIndex: number, pageSize: number) => void;
 
@@ -39,16 +27,11 @@ export type PaginationProps = {
   textKeys?: Partial<PaginationTextKeys>;
 };
 
-/**
- * Configuration
- */
-
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 /**
- * Component
+ * Custom Pagination Component, inspired by shadcn's Task Table Pagination (https://ui.shadcn.com/examples/tasks)
  */
-
 export function Pagination({
   pageIndex,
   pageSize,

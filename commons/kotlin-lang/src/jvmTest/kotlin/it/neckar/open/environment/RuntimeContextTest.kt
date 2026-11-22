@@ -36,6 +36,7 @@ import it.neckar.runtime.context.Hostname
 import it.neckar.runtime.context.RuntimeContext
 import it.neckar.runtime.context.RuntimeContextDetector
 import it.neckar.runtime.context.ServiceHost
+import it.neckar.runtime.context.initialExecutionEnvironment
 import it.neckar.runtime.context.initializeFromEnvironment
 import it.neckar.runtime.context.RuntimeContextEnv
 import it.neckar.runtime.context.RuntimeContextSys
@@ -74,6 +75,16 @@ class RuntimeContextTest {
     assertThat(runtimeContext.inUnitTest).isTrue()
     assertThat(runtimeContext.stage).isEqualTo(DeploymentStage.Production)
     assertThat(runtimeContext.executionEnvironment).isEqualTo(ExecutionEnvironment.Docker)
+  }
+
+  @Test
+  fun `the initial value takes a declared execution environment`() {
+    val declared = RuntimeContextDetector.Source(emptyMap(), mapOf(RuntimeContextEnv.ExecutionEnvironmentKey to ExecutionEnvironment.Docker.name))
+    val undeclared = RuntimeContextDetector.Source(emptyMap(), emptyMap())
+
+    assertThat(initialExecutionEnvironment(inCI = false, declared)).isEqualTo(ExecutionEnvironment.Docker)
+    assertThat(initialExecutionEnvironment(inCI = false, undeclared)).isEqualTo(ExecutionEnvironment.LocalDev)
+    assertThat(initialExecutionEnvironment(inCI = true, declared)).isEqualTo(ExecutionEnvironment.CI)
   }
 
   @Test

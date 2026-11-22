@@ -1,1 +1,1 @@
-export { NowProvider, useNow } from "./NowProvider";
+export { NowProvider, nowMockedValue, useGetNow, useNow } from "./NowProvider";

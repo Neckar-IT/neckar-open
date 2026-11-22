@@ -3,11 +3,9 @@ import { ArchiveIcon } from "lucide-react";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import { StatusBadge, type StatusBadgeVariant } from "../status-badge/StatusBadge";
 
-export type ArchivedBadgeVariants = StatusBadgeVariant;
-
 interface ArchivedBadgeProps {
   archiveState: ArchiveState;
-  variant?: ArchivedBadgeVariants;
+  variant?: StatusBadgeVariant;
   className?: string;
 }
 

@@ -5,6 +5,7 @@ import { PriceSurcharge } from "./PriceSurcharge";
 
 const meta = {
   title: "Conditions timeline / PriceSurcharge",
+  component: PriceSurcharge,
 } satisfies Meta;
 
 export default meta;
@@ -24,7 +25,7 @@ const cases: Case[] = [
   { label: "price undefined — still loading", price: undefined },
 ];
 
-export const PriceSurchargeStory: StoryObj<typeof meta> = {
+export const PriceSurchargeStory: StoryObj = {
   name: "PriceSurcharge",
   render: () => {
     return (

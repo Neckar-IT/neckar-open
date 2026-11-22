@@ -12,9 +12,6 @@ export interface BarChartStackedProps {
   className?: string;
 }
 
-/**
- * Bar Chart Stacked Component
- */
 export function BarChartStacked({ className, configuration, style }: BarChartStackedProps) {
   return (
     <LegacyChartWrapper

@@ -8,12 +8,9 @@ import { useState } from "react";
 import { ConfirmationStatusBadge } from "../../draft-confirmed/ConfirmationStatusBadge";
 import { FilterByItems as FilterByItemsComponent } from "./FilterByItems";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Filters / FilterByItems",
+  component: FilterByItemsComponent,
 } satisfies Meta;
 
 export default meta;
@@ -30,11 +27,7 @@ const options = [
   { value: "strawberry", label: "Strawberry" },
 ];
 
-/**
- * Stories
- */
-
-export const FilterByItems: StoryObj<typeof meta> = {
+export const FilterByItems: StoryObj = {
   render: () => {
     const [singleValue, setSingleValue] = useState<string | undefined>(undefined);
     const [multipleValue, setMultipleValue] = useState<readonly string[] | undefined>(undefined);
@@ -80,7 +73,7 @@ export const FilterByItems: StoryObj<typeof meta> = {
  * The `Panel` form with a custom component per option, in two columns: short options share a row, the option with the long label
  * stands alone in its row. The color mode of the Storybook toolbar shows Light and Dark.
  */
-export const FilterByItemsRenderOption: StoryObj<typeof meta> = {
+export const FilterByItemsRenderOption: StoryObj = {
   render: () => {
     const [singleValue, setSingleValue] = useState<string | undefined>(ConfirmationStatus.Draft);
     const [multipleValue, setMultipleValue] = useState<readonly string[] | undefined>([

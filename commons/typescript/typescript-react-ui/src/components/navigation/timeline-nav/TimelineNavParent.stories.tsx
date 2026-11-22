@@ -6,12 +6,9 @@ import { WithMemoryRouter } from "@neckar-hub/typescript-react-utils/storybook";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TimelineNavParent, type TimelineNavParentProps } from "./TimelineNavParent";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Navigation / Timeline Nav",
+  component: TimelineNavParent,
   decorators: [
     (Story) => (
       <WithMemoryRouter path="/:leafId" url="/step-2">
@@ -22,10 +19,6 @@ const meta = {
 } satisfies Meta<TimelineNavParentProps>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const TimelineNavParentStory: StoryObj<TimelineNavParentProps> = {
   name: "TimelineNavParent",

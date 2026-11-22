@@ -12,9 +12,6 @@ export interface CompassProps {
   className?: string;
 }
 
-/**
- * Compass Component
- */
 export function Compass({ className, configuration, style }: CompassProps) {
   return (
     <LegacyChartWrapper

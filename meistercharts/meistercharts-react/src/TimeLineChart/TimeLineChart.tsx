@@ -20,7 +20,7 @@ export interface TimeLineChartConfiguration {
   historySettings?: meistercharts.HistorySettings;
 }
 
-interface Props {
+export interface TimeLineChartProps {
   /**
    * The controller of the chart.
    * Create a controller with the `useTimeLineChartController` hook.
@@ -55,11 +55,8 @@ type TimeLineChartControllerWithSetChart = TimeLineChartController & {
   setChart: (chart: meistercharts.TimeLineChart) => void;
 };
 
-/**
- * TimeLineChart Component
- */
 export const TimeLineChart = memo(
-  ({ className, configuration, controller, style, i18nConfiguration, theme }: Props) => {
+  ({ className, configuration, controller, style, i18nConfiguration, theme }: TimeLineChartProps) => {
     const chartRef = useRef<meistercharts.TimeLineChart | null>(null);
     const chartContainerRef = useRef<HTMLDivElement | null>(null);
 

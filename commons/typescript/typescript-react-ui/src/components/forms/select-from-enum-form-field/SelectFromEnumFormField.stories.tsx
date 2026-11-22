@@ -13,12 +13,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { SelectFromEnumFormField } from "./SelectFromEnumFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / SelectFromEnumFormField",
+  component: SelectFromEnumFormField,
 } satisfies Meta;
 
 export default meta;
@@ -45,11 +42,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-/**
- * Stories
- */
-
-export const SelectFroEnumFormFieldStory: StoryObj<typeof meta> = {
+export const SelectFroEnumFormFieldStory: StoryObj = {
   name: "SelectFromEnumFormField",
   render: () => {
     const form = useForm<FormValues>({

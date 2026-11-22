@@ -5,6 +5,7 @@ import { TimeInput, type TimeInputProps } from "./Input";
 
 const meta = {
   title: "Inputs / Time Input",
+  component: TimeInput,
   args: {
     disabled: false,
     isInvalid: false,

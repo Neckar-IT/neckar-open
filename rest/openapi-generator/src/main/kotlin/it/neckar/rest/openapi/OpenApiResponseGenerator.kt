@@ -31,6 +31,7 @@ package it.neckar.rest.openapi
 
 import it.neckar.open.collections.fastForEach
 import it.neckar.open.collections.fastForEachIndexed
+import it.neckar.open.kotlin.lang.asKClass
 import it.neckar.open.kotlin.lang.requireNotNull
 import it.neckar.open.kotlin.serializers.AnySerializableRawSerializer
 import it.neckar.open.kotlin.serializers.findSerialName
@@ -47,6 +48,10 @@ import it.neckar.rest.openapi.dsl.OpenApiResponse
 import it.neckar.rest.openapi.schema.SchemaDescriptor
 import it.neckar.rest.openapi.schema.SchemaPropertyConstraints
 import it.neckar.rest.openapi.schema.isComponent
+import it.neckar.rest.openapi.schema.resolveSubclassType
+import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.full.isSubtypeOf
 
 /**
  * Helper class for request/response generation in OpenAPI.
@@ -124,12 +129,9 @@ internal class OpenApiResponseGenerator(
               putNotNull("description", example.description)
               metadataWriter.putKotlinSourceRefIfNotNull(example.originalType)
 
-              // The example's own class names the concrete variant and is therefore the better
-              // reference — but it is erased. A class with type parameters has no resolvable schema
-              // and no resolvable serializer, so those examples fall back to the type the DSL
-              // captured at the call site, which may be the declared body type rather than the
-              // variant.
-              val exampleType = example.exampleType.takeIf { example.example::class.typeParameters.isNotEmpty() }
+              // The class of a generic variant is erased; its type arguments come from the type the DSL captured.
+              val exampleClass = example.example::class
+              val exampleType = example.exampleType?.takeIf { exampleClass.typeParameters.isNotEmpty() }?.let { resolveVariantType(exampleClass, it) }
 
               val exampleSchema = when (exampleType) {
                 null -> example.originalType?.let { SchemaDescriptor.of(it) }
@@ -144,7 +146,7 @@ internal class OpenApiResponseGenerator(
                 else -> AnySerializableRawSerializer.encodeToJsonElement(example.example, exampleType, includeOptionals = true)
               }
 
-              val serialName = example.example::class.findSerialName()
+              val serialName = exampleClass.findSerialName()
               if (serialName != null) {
                 val jsonObject = exampleJsonElement as JsonObject
                 val map = jsonObject.toMutableMap()
@@ -158,6 +160,21 @@ internal class OpenApiResponseGenerator(
         })
       }
     }
+  }
+
+  /**
+   * The type of the erased [exampleClass] with the type arguments of the captured [exampleType], or [exampleType] when it names the class itself.
+   */
+  private fun resolveVariantType(exampleClass: KClass<*>, exampleType: KType): KType {
+    if (exampleType.asKClass() == exampleClass) {
+      return exampleType
+    }
+
+    val variantType = resolveSubclassType(exampleClass, exampleType)
+    check(variantType.isSubtypeOf(exampleType)) {
+      "Cannot resolve the type arguments of example class <${exampleClass.qualifiedName}> from <$exampleType>, resolved <$variantType>"
+    }
+    return variantType
   }
 
   /**

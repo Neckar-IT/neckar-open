@@ -1,0 +1,43 @@
+{
+  "name": "@neckar-hub/script-money",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Cent arithmetic with the semantics of Money for pricing scripts, appended to each script",
+  "author": {
+    "name": "Neckar IT GmbH",
+    "email": "info@neckar.IT"
+  },
+  "type": "module",
+  "exports": {
+    "./globals": {
+      "types": "./dist/src/script-money-globals.d.ts"
+    },
+    "./vitest-setup": {
+      "import": "./dist/src/vitestSetup.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:deps && pnpm run build:noDeps",
+    "build:noDeps": "pnpm run typecheck && pnpm run lint:check && pnpm run bundle && pnpm run test:unit",
+    "build:deps": "pnpm --recursive --filter \"${npm_package_name}^...\" run --if-present build:noDeps",
+    "bundle": "rm -rf dist && tsc --project tsconfig.bundle.json && node generate-globals.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm run lint:check",
+    "lint:check": "\"$(git rev-parse --show-toplevel)/tools/oxlint/oxlint.sh\" --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:fix": "\"$(git rev-parse --show-toplevel)/tools/oxlint/oxlint.sh\" --fix --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "lint:report": "\"$(git rev-parse --show-toplevel)/tools/oxlint/oxlint.sh\" -f gitlab --type-aware --type-check --report-unused-disable-directives-severity=error --disable-nested-config .",
+    "test": "pnpm run typecheck && pnpm run test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "format": "oxfmt --check",
+    "format:fix": "oxfmt --write"
+  },
+  "devDependencies": {
+    "@neckar-hub/oxfmt-config": "workspace:*",
+    "@neckar-hub/oxlint-config": "workspace:*",
+    "@neckar-hub/typescript-config": "workspace:*",
+    "@neckar-hub/vite-config": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

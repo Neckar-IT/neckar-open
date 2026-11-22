@@ -22,12 +22,9 @@ const formSchema = zod.object({
 
 type FormSchema = zod.infer<typeof formSchema>;
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Time Input / Form Field",
+  component: TimeInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -41,10 +38,6 @@ interface Args {
   label: string;
   disabled: boolean;
 }
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<Args> = {
   args: {

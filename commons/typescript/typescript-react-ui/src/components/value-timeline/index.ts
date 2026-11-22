@@ -1,9 +1,9 @@
-export { classifyTimelineEntry, type TimelineEntryStatus } from "./classifyTimelineEntry";
+export { classifyTimelineEntry } from "./classifyTimelineEntry";
 export type { TimelineEntryLike, TimelineSummaryLike } from "./timeline.types";
 export { type TimelineDataSliceController, useTimelineDataSliceControllerFromUrl } from "./timelineDataSliceController";
 export { rowActionsColumn, statusColumn, type TimelineSortKey, validFromColumn } from "./timelineEntryTableColumns";
 export { timelineEntryTimingDefaultValues, timelineEntryTimingSchema, type TimelineEntryTimingSchema } from "./timelineEntryTimingSchema";
-export { TimelineEntryStatusBadge } from "./TimelineEntryStatusBadge";
+export { TimelineEntryBadge } from "./TimelineEntryBadge";
 export { TimelineEntryTimingFormFields } from "./TimelineEntryTimingFormFields";
 export { TimelineEntryValidFrom } from "./TimelineEntryValidFrom";
 export { TimelineSummaryInline } from "./TimelineSummaryInline";

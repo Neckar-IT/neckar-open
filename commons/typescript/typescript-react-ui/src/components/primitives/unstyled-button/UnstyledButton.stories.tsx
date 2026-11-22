@@ -7,21 +7,14 @@ import { MenuIcon, XIcon } from "lucide-react";
 import { fn } from "storybook/test";
 import { UnstyledButton } from "./UnstyledButton";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / UnstyledButton",
+  component: UnstyledButton,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const UnstyledButtonStory: StoryObj<typeof meta> = {
+export const UnstyledButtonStory: StoryObj = {
   name: "UnstyledButton",
   render: () => (
     <div className="grid grid-cols-2 gap-16">

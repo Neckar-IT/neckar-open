@@ -6,19 +6,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "../../primitives/button";
 import { toast } from "./toast";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / ToastProvider",
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Toast: StoryObj<typeof meta> = {
   render: () => {

@@ -8,6 +8,7 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { extname, join, resolve, sep } from "node:path";
 import { type ConsoleMessage, expect, type Page } from "@playwright/test";
+import { storiesOfIndex } from "./storybook-stories";
 
 /**
  * Configuration
@@ -111,8 +112,8 @@ async function serveUnderStaticSitePolicy(directory: string): Promise<StaticSite
 }
 
 /**
- * Opens the Storybook build in `directory` under `staticSitePolicy()` and returns the page errors and policy violations
- * until the first story rendered and the network was idle; throws with them when none renders within 15 s or on an error display.
+ * Opens the first story of `index.json` of the Storybook build in `directory` under `staticSitePolicy()` and returns the page
+ * errors and policy violations until the story rendered and the network was idle; throws with them when none renders within 15 s or on an error display.
  */
 export async function openStorybookBuildUnderStaticSitePolicy(page: Page, directory: string): Promise<string[]> {
   const server = await serveUnderStaticSitePolicy(directory);
@@ -135,8 +136,14 @@ export async function openStorybookBuildUnderStaticSitePolicy(page: Page, direct
   const showsError = async (): Promise<boolean> => (await preview.locator("body.sb-show-errordisplay, body.sb-show-nopreview").count()) > 0;
   const noStoryMessage = (): string => `Storybook rendered no story from ${directory}; the browser reported: ${JSON.stringify(problems)}`;
 
+  // The start page opens the first index entry, with autodocs a docs page that renders outside `#storybook-root`.
+  const firstStory = storiesOfIndex(JSON.parse(readFileSync(join(directory, "index.json"), "utf8")))[0];
+
   try {
-    await page.goto(server.url);
+    if (firstStory === undefined) {
+      throw new Error(`${directory}/index.json lists no story`);
+    }
+    await page.goto(`${server.url}/?path=/story/${firstStory.id}`);
     await expect(renderedStory).toBeAttached({ timeout: 15_000 }).catch((error: unknown) => {
       throw new Error(noStoryMessage(), { cause: error });
     });

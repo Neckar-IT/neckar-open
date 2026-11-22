@@ -1,0 +1,15 @@
+{
+  "purpose": "Conformance corpus for it.neckar.financial.payment.sepa.MandateReference. Read by the Kotlin MandateReferenceTest and the Vitest of validateMandateReferenceShape in @neckar-hub/typescript-utils/payment-formats, so a divergence of the two implementations fails both builds.",
+  "frontendDetectable": ["TooLong", "InvalidCharacters"],
+  "cases": [
+    { "input": "MANDATE-2026/0001", "canonical": "MANDATE-2026/0001" },
+    { "input": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "canonical": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" },
+    { "input": "Ref (1) +?:.,'", "canonical": "Ref (1) +?:.,'" },
+    { "input": "a b", "canonical": "a b" },
+
+    { "input": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "violation": "TooLong" },
+    { "input": "MANDATE_2026", "violation": "InvalidCharacters" },
+    { "input": "Mandat-Ä", "violation": "InvalidCharacters" },
+    { "input": "   ", "violation": "Blank" }
+  ]
+}

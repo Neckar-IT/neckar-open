@@ -7,6 +7,7 @@ import type { PropsWithChildren, ReactElement } from "react";
 import { useCallback, useEffect } from "react";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import { useActionLock } from "../../actions/ActionLockProvider";
+import { LockableButton } from "../../actions/LockableButton";
 import { Button } from "../../primitives/button";
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../primitives/dialog";
 
@@ -58,8 +59,9 @@ export function SaveDialog(props: SaveDialogProps): ReactElement | null {
   const { title, description, cancel = "simpleDialog.cancel", submit = "simpleDialog.submit" } = props.textKeys;
 
   const open = props.open ?? true;
-  // An offline device or an unavailable service locks the submission, as it locks every action.
   const isLocked = useActionLock() !== undefined;
+  // Enter submits only when a click on the submit button would.
+  const submitBlocked = (props.disabledSubmission ?? false) || isLocked || (props.isPending ?? false);
 
   // Radix points aria-describedby at the DialogDescription it renders; without a description that
   // reference dangles, and only an explicit undefined removes it.
@@ -85,6 +87,7 @@ export function SaveDialog(props: SaveDialogProps): ReactElement | null {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         event.preventDefault(); // prevent any form submission if needed
+        if (submitBlocked) return;
         handleSubmit();
       }
     };
@@ -93,7 +96,7 @@ export function SaveDialog(props: SaveDialogProps): ReactElement | null {
     return () => {
       window.document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, handleSubmit]);
+  }, [open, handleSubmit, submitBlocked]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -109,9 +112,9 @@ export function SaveDialog(props: SaveDialogProps): ReactElement | null {
           <Button disabled={props.isPending} variant="outline" onClick={handleCancel}>
             {t(cancel)}
           </Button>
-          <Button disabled={(props.disabledSubmission ?? false) || isLocked} loading={props.isPending} onClick={handleSubmit}>
+          <LockableButton disabled={props.disabledSubmission} loading={props.isPending} onClick={handleSubmit}>
             {t(submit)}
-          </Button>
+          </LockableButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

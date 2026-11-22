@@ -31,6 +31,7 @@ import { DataSliceView } from "./DataSliceView";
  */
 const meta = {
   title: "Layout / DataSliceView / Overflow",
+  component: DataSliceView,
   decorators: [
     (Story) => (
       <WithMemoryRouter>
@@ -152,7 +153,7 @@ const pagesColumn: ResponsiveColumnDefinition<Book> = {
  * Page shell that mirrors the real app: a fixed-width sidebar next to the main column.
  * The main column is the failure surface — `flex-1` without `min-w-0` is the bug trigger.
  */
-export const PageShellStory: StoryObj<typeof meta> = {
+export const PageShellStory: StoryObj = {
   name: "Page Shell (sidebar + main)",
   render: () => {
     const config: ResponsiveTableConfig<Book> = {

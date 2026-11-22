@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { SwitchFormField } from "./SwitchFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / SwitchFormField",
+  component: SwitchFormField,
 } satisfies Meta;
 
 export default meta;
@@ -41,10 +38,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const SwitchFormFieldStory: StoryObj<Args> = {
   name: "SwitchFormField",

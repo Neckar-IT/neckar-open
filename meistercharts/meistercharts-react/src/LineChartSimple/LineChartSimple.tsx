@@ -12,9 +12,6 @@ export interface LineChartSimpleProps {
   className?: string;
 }
 
-/**
- * Line Chart Simple Component
- */
 export function LineChartSimple({ className, configuration, style }: LineChartSimpleProps) {
   return (
     <LegacyChartWrapper

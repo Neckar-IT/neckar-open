@@ -27,27 +27,43 @@
  */
 package it.neckar.financial.payment.card
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.endsWith
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.messageContains
+import it.neckar.open.resources.getResourceSafe
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 
+/**
+ * Holds [CardNumber] to the conformance corpus `CardNumber.cases.json`, which the Vitest of `validateCardNumberShape` in
+ * `@neckar-hub/typescript-utils/payment-formats` reads as well.
+ */
 class CardNumberTest {
-  @Test
-  fun `masks a 16-digit PAN keeping the last four visible`() {
-    assertThat(CardNumber("4111 1111 1111 1111").value).isEqualTo("**** **** **** 1111")
+
+  private val corpus: Corpus = Json.decodeFromString(javaClass.getResourceSafe("/CardNumber.cases.json").readText())
+
+  @TestFactory
+  fun `invoke decides every conformance case`(): List<DynamicTest> = corpus.cases.map { case ->
+    DynamicTest.dynamicTest("\"${case.input}\"") {
+      if (case.violation == null) {
+        assertThat(CardNumber(case.input).value).isEqualTo(case.canonical)
+      } else {
+        assertFailure { CardNumber(case.input) }
+          .isInstanceOf(IllegalArgumentException::class)
+          .messageContains(case.violation.messageFragment)
+      }
+    }
   }
 
   @Test
-  fun `masks a 15-digit Amex PAN`() {
-    // 378282246310005 is a well-known Amex test PAN (15 digits).
-    assertThat(CardNumber("3782 822463 10005").value).isEqualTo("*** **** **** 0005")
-  }
-
-  @Test
-  fun `masks a 14-digit Diners PAN`() {
-    // 30569309025904 is a well-known Diners Club test PAN (14 digits).
-    assertThat(CardNumber("3056 930902 5904").value).isEqualTo("** **** **** 5904")
+  fun `the corpus holds a case for every violation the test names`() {
+    assertThat(corpus.cases.mapNotNull { it.violation }.toSet()).isEqualTo(CardNumberFormatViolation.entries.toSet())
   }
 
   @Test
@@ -60,9 +76,15 @@ class CardNumberTest {
     }
   }
 
-  @Test
-  fun `re-constructing an already masked value is idempotent`() {
-    val masked = CardNumber("3782 822463 10005").value
-    assertThat(CardNumber(masked).value).isEqualTo(masked)
+  /** The violations the corpus names; [CardNumber] throws with a message containing [messageFragment]. */
+  @Serializable
+  private enum class CardNumberFormatViolation(val messageFragment: String) {
+    InvalidDigitCount("digits"),
   }
+
+  @Serializable
+  private data class Corpus(val purpose: String, val frontendDetectable: List<CardNumberFormatViolation>, val cases: List<Case>)
+
+  @Serializable
+  private data class Case(val input: String, val canonical: String? = null, val violation: CardNumberFormatViolation? = null)
 }

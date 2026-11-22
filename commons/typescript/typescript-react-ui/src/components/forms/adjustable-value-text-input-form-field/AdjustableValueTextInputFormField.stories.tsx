@@ -11,12 +11,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AdjustableValueTextInputFormField, adjustableValueTextSchema } from "./AdjustableValueTextInputFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / AdjustableValueTextInputFormField",
+  component: AdjustableValueTextInputFormField,
 } satisfies Meta;
 
 export default meta;
@@ -38,10 +35,6 @@ type FormValues = z.infer<typeof formSchema>;
 interface Args {
   hint: string;
 }
-
-/**
- * Stories
- */
 
 export const AdjustableValueTextInputFormFieldStory: StoryObj<Args> = {
   name: "AdjustableValueTextInputFormField",

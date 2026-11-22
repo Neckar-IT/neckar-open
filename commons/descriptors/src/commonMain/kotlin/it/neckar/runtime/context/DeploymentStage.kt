@@ -41,6 +41,12 @@ enum class DeploymentStage {
   Development,
 
   /**
+   * Quality assurance / dedicated testing environment.
+   * Used for automated/manual testing with controlled data sets.
+   */
+  QA,
+
+  /**
    * Pre-production environment mirroring Production setup and configuration.
    * Used for final integration, performance, and acceptance testing.
    */
@@ -56,19 +62,7 @@ enum class DeploymentStage {
    * Live, customer-facing production environment — stable, secured,
    * with real customer data and strict policies.
    */
-  Production,
-
-  /**
-   * Quality assurance / dedicated testing environment.
-   * Used for automated/manual testing with controlled data sets.
-   */
-  QA,
-
-  /**
-   * Isolated environment for experiments, proof-of-concepts, or user sandboxes.
-   * No guarantee of data persistence or stability.
-   */
-  Sandbox;
+  Production;
 
   fun isDev(): Boolean {
     return this == Development

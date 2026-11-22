@@ -5,7 +5,7 @@
 import type { CustomIconProps } from "./CustomIconProps";
 
 /**
- * Terraced House Icon
+ * Terraced house: a row of houses sharing their side walls.
  */
 
 export function TerracedHouseIcon(props: React.ComponentProps<"svg"> & CustomIconProps): React.ReactElement {

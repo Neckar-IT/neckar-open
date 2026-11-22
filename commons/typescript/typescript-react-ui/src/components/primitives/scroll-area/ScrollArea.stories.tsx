@@ -7,12 +7,9 @@ import { Fragment } from "react";
 import { Separator } from "../separator";
 import { ScrollArea as ScrollAreaComponent } from "./ScrollArea";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / ScrollArea",
+  component: ScrollAreaComponent,
 } satisfies Meta;
 
 export default meta;
@@ -23,11 +20,7 @@ export default meta;
 
 const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${(a.length - i).toString()}`);
 
-/**
- * Stories
- */
-
-export const ScrollArea: StoryObj<typeof meta> = {
+export const ScrollArea: StoryObj = {
   render: () => {
     return (
       <ScrollAreaComponent className="h-72 w-48 rounded-md border">

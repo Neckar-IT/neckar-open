@@ -15,21 +15,14 @@ import {
   CommandShortcut,
 } from "./Command";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Command",
+  component: CommandRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Command: StoryObj<typeof meta> = {
+export const Command: StoryObj = {
   render: () => {
     return (
       <CommandRoot className="w-96 rounded-lg border shadow-md">

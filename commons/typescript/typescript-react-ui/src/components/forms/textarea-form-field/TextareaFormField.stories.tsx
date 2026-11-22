@@ -12,12 +12,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { TextareaFormField } from "./TextareaFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / TextareaFormField",
+  component: TextareaFormField,
 } satisfies Meta;
 
 export default meta;
@@ -43,10 +40,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const TextareaFormFieldStory: StoryObj<Args> = {
   name: "TextareaFormField",

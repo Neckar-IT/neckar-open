@@ -1,0 +1,12 @@
+// The emitting variant of `tsconfig.json`: `dist/src/vitestSetup.js` for the Vitest runs of the script packages,
+// `dist/src/scriptMoney.d.ts` as the input of `generate-globals.mjs`.
+{
+  "extends": "./tsconfig.json",
+  "include": ["./src"],
+  "exclude": ["./src/**/*.test.ts"],
+  "compilerOptions": {
+    "noEmit": false,
+    "declarationMap": false,
+    "outDir": "./dist"
+  }
+}

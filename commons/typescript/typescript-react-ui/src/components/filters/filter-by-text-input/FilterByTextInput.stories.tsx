@@ -6,12 +6,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { FilterByTextInput } from "./FilterByTextInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Filters / FilterByTextInput",
+  component: FilterByTextInput,
   decorators: [
     (Story) => (
       <div className="mx-auto w-80">
@@ -23,11 +20,7 @@ const meta = {
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const FilterByTextInputStory: StoryObj<typeof meta> = {
+export const FilterByTextInputStory: StoryObj = {
   name: "FilterByTextInput",
   render: () => {
     const [value, setValue] = useState<string | undefined>(undefined);

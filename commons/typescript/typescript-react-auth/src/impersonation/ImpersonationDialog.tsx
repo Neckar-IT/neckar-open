@@ -135,7 +135,7 @@ function ImpersonationCandidateLabel({ candidate }: { candidate: ImpersonationCa
 
   return (
     <span>
-      <span className="block">{formatUserName(candidate) || candidate.email}</span>
+      <span className="block">{formatUserName(candidate, candidate.email)}</span>
       <span className="text-muted-foreground block text-xs">
         {candidate.email} · {candidate.tenantName ?? t("impersonation.withoutTenant")}
       </span>

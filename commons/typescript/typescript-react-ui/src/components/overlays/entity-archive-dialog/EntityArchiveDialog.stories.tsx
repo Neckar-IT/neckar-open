@@ -9,12 +9,9 @@ import { Button } from "../../primitives/button";
 import { EntityArchiveDialog } from "./EntityArchiveDialog";
 import { EntityArchiveUsage } from "./EntityArchiveUsage";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Overlays / EntityArchiveDialog",
+  component: EntityArchiveDialog,
 } satisfies Meta;
 
 export default meta;
@@ -85,7 +82,7 @@ function EntityArchiveDialogStoryBody({ usage }: { usage?: React.ReactNode }): R
   );
 }
 
-export const EntityArchiveDialogStory: StoryObj<typeof meta> = {
+export const EntityArchiveDialogStory: StoryObj = {
   name: "EntityArchiveDialog",
   render: () => <EntityArchiveDialogStoryBody />,
 };
@@ -93,7 +90,7 @@ export const EntityArchiveDialogStory: StoryObj<typeof meta> = {
 /**
  * The `usage` block (here a list of dependent records) renders below the description, outside it.
  */
-export const EntityArchiveDialogWithUsageStory: StoryObj<typeof meta> = {
+export const EntityArchiveDialogWithUsageStory: StoryObj = {
   name: "EntityArchiveDialog (with usage)",
   render: () => (
     <EntityArchiveDialogStoryBody
@@ -110,7 +107,7 @@ export const EntityArchiveDialogWithUsageStory: StoryObj<typeof meta> = {
   ),
 };
 
-export const EntityArchiveDialogWithEntityArchiveUsageStory: StoryObj<typeof meta> = {
+export const EntityArchiveDialogWithEntityArchiveUsageStory: StoryObj = {
   name: "EntityArchiveDialog (with EntityArchiveUsage)",
   render: () => (
     <EntityArchiveDialogStoryBody

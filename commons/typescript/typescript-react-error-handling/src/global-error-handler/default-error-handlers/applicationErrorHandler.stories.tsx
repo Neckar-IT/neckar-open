@@ -6,19 +6,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { makeAxiosError } from "../axiosErrorFixture";
 import { UnexpectedErrorPage, type UnexpectedErrorPageProps } from "./components/UnexpectedErrorPage";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Error Handling / Default Error Handlers",
+  component: UnexpectedErrorPage,
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const ExpectedApplicationError: StoryObj<UnexpectedErrorPageProps> = {
   args: {

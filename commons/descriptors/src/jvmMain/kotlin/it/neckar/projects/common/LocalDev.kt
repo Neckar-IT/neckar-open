@@ -28,7 +28,7 @@
 package it.neckar.projects.common
 
 /**
- * The suffix and the address of every host of the local dev setup, e.g. `patterns3.localdev` on `10.254.254.1`.
+ * The suffix and the address of every host of the local dev setup, e.g. `patterns3.localdev` on `10.11.12.13`.
  */
 object LocalDev {
   /**
@@ -37,9 +37,9 @@ object LocalDev {
   const val Suffix: String = "localdev"
 
   /**
-   * The loopback address every local host resolves to, on `lo` as `/32`.
+   * The address every local host resolves to, on `lo` as `/32`; the machine and its containers reach it, no other machine does.
    */
-  const val Address: String = "10.254.254.1"
+  const val Address: String = "10.11.12.13"
 
   /**
    * The local host of [subdomain], e.g. `s3-console` for `s3-console.localdev`.

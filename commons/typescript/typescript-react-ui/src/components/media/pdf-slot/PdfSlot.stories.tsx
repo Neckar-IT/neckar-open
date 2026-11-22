@@ -3,11 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { PdfSlot, type PdfSlotDocument } from "./PdfSlot";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Media / PdfSlot",
+  component: PdfSlot,
 } satisfies Meta;
 
 export default meta;
@@ -21,9 +19,6 @@ interface Args {
   maximumSize: number;
 }
 
-/**
- * Stories
- */
 export const PdfSlotStory: StoryObj<Args> = {
   name: "Pdf Slot",
   args: {
@@ -75,12 +70,12 @@ function HeldUpload({ uploadProgress }: { uploadProgress: UploadProgress }): Rea
   );
 }
 
-export const PdfSlotTransferStory: StoryObj<typeof meta> = {
+export const PdfSlotTransferStory: StoryObj = {
   name: "Pdf Slot Transfer (62 %)",
   render: () => <HeldUpload uploadProgress={{ kind: "uploading", fraction: 0.62 }} />,
 };
 
-export const PdfSlotProcessingStory: StoryObj<typeof meta> = {
+export const PdfSlotProcessingStory: StoryObj = {
   name: "Pdf Slot Processing",
   render: () => <HeldUpload uploadProgress={{ kind: "processing" }} />,
 };

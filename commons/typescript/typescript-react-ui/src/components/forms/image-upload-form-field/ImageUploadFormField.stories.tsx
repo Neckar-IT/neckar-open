@@ -11,12 +11,9 @@ import { Button } from "../../primitives/button";
 import { Form } from "../form";
 import { ImageUploadFormField } from "./ImageUploadFormField";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Forms / ImageUploadFormField",
+  component: ImageUploadFormField,
   decorators: [
     (Story) => (
       <div className="mx-auto max-w-screen-sm">
@@ -49,10 +46,6 @@ const formSchema = zod.object({
 });
 
 type FormSchema = zod.infer<typeof formSchema>;
-
-/**
- * Stories
- */
 
 export const ImageUploadFormFieldStory: StoryObj<Args> = {
   name: "ImageUploadFormField",

@@ -9,19 +9,12 @@ import { Separator } from "../../primitives/separator";
 import { exampleTags } from "./exampleTags";
 import { TagPicker, type TagPickerProps } from "./TagPicker";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / TagPicker",
-} satisfies Meta<Omit<TagPickerProps, "value" | "onChange" | "options">>;
+  component: TagPicker,
+} satisfies Meta<typeof TagPicker>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const TagPickerStory: StoryObj<Omit<TagPickerProps, "value" | "onChange" | "options">> = {
   name: "TagPicker",

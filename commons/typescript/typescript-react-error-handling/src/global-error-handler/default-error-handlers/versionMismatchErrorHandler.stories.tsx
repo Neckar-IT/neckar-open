@@ -5,20 +5,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { VersionMismatchPage } from "./versionMismatchErrorHandler";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Error Handling / Default Error Handlers",
+  component: VersionMismatchPage,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const VersionMismatchErrorHandler: StoryObj<typeof meta> = {
+export const VersionMismatchErrorHandler: StoryObj = {
   render: () => <VersionMismatchPage />,
 };

@@ -8,12 +8,9 @@ import { Input } from "../../primitives/input";
 import { DataSliceToolbar } from "./DataSliceToolbar";
 import { DataSliceView, type DataSliceViewProps } from "./DataSliceView";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Layout / DataSliceView",
+  component: DataSliceView,
   args: {
     toolbar: <DataSliceToolbar filters={<Input placeholder="Search" />} actions={<Button>Create New</Button>} />,
     children: (
@@ -35,10 +32,6 @@ const meta = {
 } satisfies Meta<DataSliceViewProps>;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Default: StoryObj<DataSliceViewProps> = {
   render: (args: DataSliceViewProps) => {
@@ -100,7 +93,7 @@ export const NoHeader: StoryObj<DataSliceViewProps> = {
   },
 };
 
-export const Pending: StoryObj<typeof meta> = {
+export const Pending: StoryObj = {
   render: () => (
     <DataSliceView pending toolbar={<DataSliceToolbar filters={<Input placeholder="Search" />} actions={<Button>Create New</Button>} />}>
       <div className="flex h-80 items-center justify-center">

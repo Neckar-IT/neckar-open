@@ -34,21 +34,14 @@ import {
   DropdownMenuTrigger,
 } from "./DropdownMenu";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / DropdownMenu",
+  component: DropdownMenuRoot,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const DropdownMenu: StoryObj<typeof meta> = {
+export const DropdownMenu: StoryObj = {
   render: () => {
     return (
       <DropdownMenuRoot>

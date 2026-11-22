@@ -33,6 +33,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import it.neckar.ktor.jwt.KeycloakConfiguration
+import it.neckar.open.http.Url
+import it.neckar.rest.jwt.JwtAudience
 import org.junit.jupiter.api.Test
 
 /**
@@ -61,6 +64,43 @@ class ClasspathJwksSeedTest {
   @Test
   fun `answers null for a realm the image carries no seed for`() {
     assertThat(ClasspathJwksSeed("a-realm-nobody-configured").read()).isNull()
+  }
+
+  @Test
+  fun `no classpath seed for the issuer of the local Keycloak`() {
+    assertThat(ClasspathJwksSeed.forIssuer(issuer = "https://auth.localdev/realms/internal", realmName = "internal")).isNull()
+  }
+
+  @Test
+  fun `the classpath seed of the realm for an issuer of the mirrored Keycloak`() {
+    val seed = ClasspathJwksSeed.forIssuer(issuer = "https://auth.neckar.it/realms/customers", realmName = "customers")
+
+    assertThat(seed?.resourcePath).isEqualTo("jwks/customers.json")
+  }
+
+  @Test
+  fun `no classpath seed for a host that only begins like the mirrored Keycloak`() {
+    assertThat(ClasspathJwksSeed.forIssuer(issuer = "https://auth.neckar.it.example.com/realms/internal", realmName = "internal")).isNull()
+  }
+
+  @Test
+  fun `a service of the local Keycloak starts with no held key set`() {
+    val manager = KeycloakConfiguration(realmUrl = Url.Absolute("https://auth.localdev/realms/internal"), clientId = JwtAudience("patterns.neckar.it"))
+      .jwksKeyManager(persistence = JwksPersistence.None)
+
+    manager.loadHeldSet()
+
+    assertThat(manager.held).isNull()
+  }
+
+  @Test
+  fun `a service of the mirrored Keycloak starts with the key set of the seed`() {
+    val manager = KeycloakConfiguration(realmUrl = Url.Absolute("https://auth.neckar.it/realms/internal"), clientId = JwtAudience("patterns.neckar.it"))
+      .jwksKeyManager(persistence = JwksPersistence.None)
+
+    manager.loadHeldSet()
+
+    assertThat(manager.held).isNotNull()
   }
 
   @Test

@@ -9,12 +9,9 @@ import { CodeBlock } from "../../data-display/code-block";
 import { Button } from "../../primitives/button";
 import { NumberInput } from "./NumberInput";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Inputs / Number Input",
+  component: NumberInput,
 } satisfies Meta;
 
 export default meta;
@@ -35,10 +32,6 @@ interface Args {
   conversionFactor: number;
   hideClearButton: boolean;
 }
-
-/**
- * Stories
- */
 
 export const Playground: StoryObj<Args> = {
   args: {
@@ -80,7 +73,7 @@ const unitOptions = [
 ];
 const isInvalidOptions = [true, false];
 
-export const Variants: StoryObj<typeof meta> = {
+export const Variants: StoryObj = {
   render: () => {
     const [value, setValue] = useState<number | undefined>(4.2);
 
@@ -130,7 +123,7 @@ export const Variants: StoryObj<typeof meta> = {
  * With +/- buttons, the text should be centered in the input field.
  */
 
-export const TextAlignment: StoryObj<typeof meta> = {
+export const TextAlignment: StoryObj = {
   render: () => {
     const [value, setValue] = useState<number | undefined>(2026);
 
@@ -167,7 +160,7 @@ export const TextAlignment: StoryObj<typeof meta> = {
  * when the clear button appears/disappears.
  */
 
-export const ClearButtonLayoutShift: StoryObj<typeof meta> = {
+export const ClearButtonLayoutShift: StoryObj = {
   render: () => {
     const [value1, setValue1] = useState<number | undefined>(undefined);
     const [value2, setValue2] = useState<number | undefined>(2026);
@@ -199,7 +192,7 @@ export const ClearButtonLayoutShift: StoryObj<typeof meta> = {
  * Story to demonstrate the order of add-ons and step buttons: addOnLeft, minus, input, plus, addOnRight.
  */
 
-export const AddOns: StoryObj<typeof meta> = {
+export const AddOns: StoryObj = {
   render: () => {
     const [value, setValue] = useState<number | undefined>(4.2);
 

@@ -79,9 +79,10 @@ class JwksKeyManager(
   private val store: JwksStore = JwksStore(),
   private val persistence: JwksPersistence = JwksPersistence.None,
   /**
-   * The JWKS file built into the image, or `null` for a service that ships none.
+   * The JWKS file built into the image, or `null` for a service that ships none. No default: the realm name alone names a
+   * seed for every Keycloak, see [ClasspathJwksSeed.forIssuer].
    */
-  private val seed: JwksSeed? = ClasspathJwksSeed(realmName),
+  private val seed: JwksSeed?,
   private val planner: JwksRefreshPlanner = JwksRefreshPlanner(),
   /**
    * How often the regular cycle fetches. The upper bound on how long a rotation stays invisible —

@@ -13,8 +13,6 @@ import {
 } from "./AuthScreens";
 
 /**
- * Meta Information
- *
  * Every screen an auth provider renders instead of the application. Authenticating,
  * AuthServiceNotReachable and LoginFailed belong to the Keycloak provider alone; the rest are
  * shared with `ProxyAuthProvider`.
@@ -25,10 +23,6 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 export const Authenticating: StoryObj<typeof meta> = {
   name: "Authenticating",

@@ -6,12 +6,9 @@ import type { TextKey } from "@neckar-hub/typescript-react-i18n";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ErrorIndicator as ErrorIndicatorComponent } from "./ErrorIndicator";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Feedback / ErrorIndicator",
+  component: ErrorIndicatorComponent,
 } satisfies Meta;
 
 export default meta;
@@ -23,10 +20,6 @@ export default meta;
 interface Args {
   textKey: TextKey;
 }
-
-/**
- * Stories
- */
 
 export const ErrorIndicator: StoryObj<Args> = {
   args: {

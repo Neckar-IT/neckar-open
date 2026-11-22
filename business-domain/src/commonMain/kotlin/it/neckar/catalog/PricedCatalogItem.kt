@@ -36,6 +36,7 @@ import kotlin.time.Instant
  * Catalog items can be selected in various catalogs.
  */
 interface PricedCatalogItem : CatalogItem, HasPriceTimeline {
+  override val id: CatalogItem.Id
 
   /**
    * Creates a reference to this catalog item at the given date.

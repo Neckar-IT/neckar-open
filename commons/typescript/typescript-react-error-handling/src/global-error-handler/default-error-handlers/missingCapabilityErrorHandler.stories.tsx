@@ -6,19 +6,12 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { makeAxiosError } from "../axiosErrorFixture";
 import { PermissionDeniedPage, type PermissionDeniedPageProps } from "./missingCapabilityErrorHandler";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Error Handling / Default Error Handlers",
+  component: PermissionDeniedPage,
 } satisfies Meta;
 
 export default meta;
-
-/**
- * Stories
- */
 
 /**
  * The page a user lands on when the server refuses a request for lack of a capability.

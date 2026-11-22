@@ -79,9 +79,12 @@ function Harness(options: HarnessOptions): React.ReactElement {
     ...options,
   });
   return (
-    <button type="button" onClick={action.onTrigger}>
-      {action.label}
-    </button>
+    <>
+      <button type="button" disabled={action.disabled} onClick={action.onTrigger}>
+        {action.label}
+      </button>
+      {action.disabledReason}
+    </>
   );
 }
 
@@ -244,6 +247,13 @@ describe("useUpsertAction", () => {
 
     await waitFor(() => expect(confirmBeforeSave).toHaveBeenCalledWith({ name: "Penguin Books" }));
     expect(mutation).not.toHaveBeenCalled();
+  });
+
+  it("returns a disabled action with its reason", async () => {
+    renderAction({ disabled: true, disabledReason: "Archived" });
+
+    expect(await screen.findByRole("button", { name: "Save" })).toBeDisabled();
+    expect(screen.getByText("Archived")).toBeDefined();
   });
 
   it("requires the text and the mapping of every answer the endpoint sends, and accepts a mapping of a good-only endpoint", () => {

@@ -6,6 +6,7 @@ import { HighlightText } from "./HighlightText";
 
 const meta = {
   title: "Text / HighlightSource",
+  component: HighlightSource,
 } satisfies Meta;
 
 export default meta;

@@ -3,11 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CheckCircle2Icon } from "lucide-react";
 import { type HeaderContext, type TableConfig, DataTable } from "./DataTable";
 
-/**
- * Meta Information
- */
 const meta = {
   title: "Data display / Table",
+  component: DataTable,
   decorators: [
     (Story) => (
       <WithMemoryRouter>
@@ -84,11 +82,7 @@ const invoices: Invoice[] = [
   },
 ];
 
-/**
- * Stories
- */
-
-export const DefaultStory: StoryObj<typeof meta> = {
+export const DefaultStory: StoryObj = {
   name: "Default",
   render: () => {
     const config: TableConfig<Invoice, "invoice" | "totalAmount"> = {
@@ -137,7 +131,7 @@ export const DefaultStory: StoryObj<typeof meta> = {
   },
 };
 
-export const WithRenderFunctionHeaderStory: StoryObj<typeof meta> = {
+export const WithRenderFunctionHeaderStory: StoryObj = {
   name: "Render Function Header",
   render: () => {
     const config: TableConfig<Invoice, "invoice" | "totalAmount"> = {
@@ -213,7 +207,7 @@ const customers: Customer[] = [
  * column is clipped at its column boundary so the date column to its right stays at its
  * configured position — visually aligned with the date header.
  */
-export const LongContentStory: StoryObj<typeof meta> = {
+export const LongContentStory: StoryObj = {
   name: "Long Content Alignment",
   render: () => {
     const config: TableConfig<Customer, "email" | "orderDate"> = {
@@ -255,7 +249,7 @@ export const LongContentStory: StoryObj<typeof meta> = {
   },
 };
 
-export const WithCustomColumnWidthsStory: StoryObj<typeof meta> = {
+export const WithCustomColumnWidthsStory: StoryObj = {
   name: "With Custom Widths",
   render: () => {
     const config: TableConfig<Invoice, "invoice" | "totalAmount"> = {

@@ -1,0 +1,19 @@
+{
+  "purpose": "Conformance corpus for it.neckar.open.tenancy.Slug. Read by the Kotlin SlugTest and the Vitest of tenantUpsertRequestSchema in patterns admin-ui, so a divergence of the two implementations fails both builds.",
+  "cases": [
+    { "input": "neckar-it", "valid": true },
+    { "input": "müller-2", "valid": true },
+    { "input": "n", "valid": true },
+    { "input": "neckar-2-nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", "valid": true },
+    { "input": "", "valid": false },
+    { "input": "   ", "valid": false },
+    { "input": "1-neckar", "valid": false },
+    { "input": "-neckar", "valid": false },
+    { "input": "neckar it", "valid": false },
+    { "input": "neckar_it", "valid": false },
+    { "input": "\ud835\udc9cbc", "valid": false },
+    { "input": "ab\ud835\udc9c", "valid": false },
+    { "input": "mu\u0308ller", "valid": false },
+    { "input": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", "valid": false }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "purpose": "Conformance corpus for it.neckar.financial.payment.card.CardNumber; canonical is the masked value Kotlin stores. Read by the Kotlin CardNumberTest and the Vitest of validateCardNumberShape in @neckar-hub/typescript-utils/payment-formats, so a divergence of the two implementations fails both builds.",
+  "frontendDetectable": ["InvalidDigitCount"],
+  "cases": [
+    { "input": "4111 1111 1111 1111", "canonical": "**** **** **** 1111" },
+    { "input": "4111-1111-1111-1111", "canonical": "**** **** **** 1111" },
+    { "input": "3782 822463 10005", "canonical": "*** **** **** 0005" },
+    { "input": "3056 930902 5904", "canonical": "** **** **** 5904" },
+    { "input": "4222222222222", "canonical": "* **** **** 2222" },
+    { "input": "4111111111111111110", "canonical": "*** **** **** **** 1110" },
+    { "input": "**** **** **** 1111", "canonical": "**** **** **** 1111" },
+    { "input": "*** **** **** 0005", "canonical": "*** **** **** 0005" },
+    { "input": "** **** **** 5904", "canonical": "** **** **** 5904" },
+    { "input": "\u001f**** **** **** 1111\u001f", "canonical": "**** **** **** 1111" },
+    { "input": "4111111111111111111\ud835\udfce", "canonical": "*** **** **** **** 1111" },
+    { "input": "٤١١١ 1111 1111 1111", "canonical": "**** **** **** 1111" },
+
+    { "input": "", "violation": "InvalidDigitCount" },
+    { "input": "   ", "violation": "InvalidDigitCount" },
+    { "input": "4111 1111 1111", "violation": "InvalidDigitCount" },
+    { "input": "41111111111111111111", "violation": "InvalidDigitCount" },
+    { "input": "*1111", "violation": "InvalidDigitCount" }
+  ]
+}

@@ -14,6 +14,7 @@ import { FormCard, FormCardContent, FormCardFooter } from "./FormCard";
 
 const meta = {
   title: "Forms / Form",
+  component: FormCard,
 } satisfies Meta;
 
 export default meta;
@@ -71,12 +72,12 @@ function PersonFormCard({ rootError }: { rootError?: string }): React.ReactEleme
   );
 }
 
-export const FormCardStory: StoryObj<typeof meta> = {
+export const FormCardStory: StoryObj = {
   name: "FormCard",
   render: () => <PersonFormCard />,
 };
 
-export const FormCardWithRootErrorStory: StoryObj<typeof meta> = {
+export const FormCardWithRootErrorStory: StoryObj = {
   name: "FormCard with root error",
   render: () => <PersonFormCard rootError="The age does not match the birth date on file." />,
 };

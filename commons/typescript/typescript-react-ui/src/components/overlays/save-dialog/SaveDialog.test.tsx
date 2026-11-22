@@ -2,7 +2,7 @@
  * Imports
  */
 
-import { render, screen } from "@test/test-utils";
+import { act, render, screen, tooltipTriggerOf } from "@test/test-utils";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ActionLockProvider } from "../../actions/ActionLockProvider";
@@ -17,7 +17,7 @@ import { SaveDialog } from "./SaveDialog";
  */
 
 describe("SaveDialog", () => {
-  it("locks the submit button under an action lock", () => {
+  it("locks the submit button under an action lock and names the reason", async () => {
     render(
       <ActionLockProvider reason="Sie sind offline.">
         <SaveDialog textKeys={{ title: "Rechnung stornieren" }} onOpenChange={vi.fn()} onSubmit={vi.fn()}>
@@ -25,8 +25,68 @@ describe("SaveDialog", () => {
         </SaveDialog>
       </ActionLockProvider>,
     );
+    const submit = screen.getByRole("button", { name: "Submit" });
+
+    // Focus skips the hover delay, which the modal dialog in jsdom can stretch past the timeout of findByRole.
+    act(() => tooltipTriggerOf(submit).focus());
+
+    expect(submit).toBeDisabled();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Sie sind offline.");
+  });
+
+  it("submits on Enter", async () => {
+    const onSubmit = vi.fn();
+    render(
+      <SaveDialog textKeys={{ title: "Rechnung stornieren" }} onOpenChange={vi.fn()} onSubmit={onSubmit}>
+        <p>Body</p>
+      </SaveDialog>,
+    );
+
+    await userEvent.keyboard("{Enter}");
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+  });
+
+  it("ignores Enter under an action lock", async () => {
+    const onSubmit = vi.fn();
+    render(
+      <ActionLockProvider reason="Sie sind offline.">
+        <SaveDialog textKeys={{ title: "Rechnung stornieren" }} onOpenChange={vi.fn()} onSubmit={onSubmit}>
+          <p>Body</p>
+        </SaveDialog>
+      </ActionLockProvider>,
+    );
+
+    await userEvent.keyboard("{Enter}");
+
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("disables the submit button and ignores Enter while the caller disables the submission", async () => {
+    const onSubmit = vi.fn();
+    render(
+      <SaveDialog textKeys={{ title: "Rechnung stornieren" }} onOpenChange={vi.fn()} onSubmit={onSubmit} disabledSubmission={true}>
+        <p>Body</p>
+      </SaveDialog>,
+    );
+
+    await userEvent.keyboard("{Enter}");
 
     expect(screen.getByRole("button", { name: "Submit" })).toBeDisabled();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("ignores Enter while the submission is pending", async () => {
+    const onSubmit = vi.fn();
+    render(
+      <SaveDialog textKeys={{ title: "Rechnung stornieren" }} onOpenChange={vi.fn()} onSubmit={onSubmit} isPending={true}>
+        <p>Body</p>
+      </SaveDialog>,
+    );
+
+    await userEvent.keyboard("{Enter}");
+
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it("heads the dialog with the given title key", () => {

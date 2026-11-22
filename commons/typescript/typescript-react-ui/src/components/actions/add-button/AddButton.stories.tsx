@@ -7,21 +7,14 @@ import { Button } from "../../primitives/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../../primitives/dialog";
 import { AddButton } from "./AddButton";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Actions / AddButton",
+  component: AddButton,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const AddButtonStory: StoryObj<typeof meta> = {
+export const AddButtonStory: StoryObj = {
   name: "Add Button",
   render: () => {
     return <AddButton dialog={ExampleDialog} title="This is the title" />;

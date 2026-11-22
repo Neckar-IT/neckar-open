@@ -3,6 +3,8 @@ import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
 import it.neckar.projects.Projects
 import it.neckar.projects.project
+import it.neckar.projects.sharing.OpenSharedFiles
+import it.neckar.projects.sharing.resolvedFiles
 
 description = """Money / currency value-types (Money, MoneyFraction, VatRate, PricePerHour, ...)"""
 
@@ -38,4 +40,15 @@ kotlin {
       }
     }
   }
+}
+
+// ScriptMoneyCorpusTest holds Money to the corpus the cent functions of script-money are tested against.
+val scriptMoneyCases by resolvedFiles(OpenSharedFiles.ScriptMoneyCases)
+
+dependencies {
+  scriptMoneyCases(project(Projects.open.commons.scriptMoney))
+}
+
+tasks.named<ProcessResources>("jvmTestProcessResources") {
+  from(scriptMoneyCases)
 }

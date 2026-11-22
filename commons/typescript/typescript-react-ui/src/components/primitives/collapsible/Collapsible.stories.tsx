@@ -8,21 +8,14 @@ import { useState } from "react";
 import { Button } from "../button";
 import { Collapsible as CollapsibleComponent, CollapsibleContent, CollapsibleTrigger } from "./Collapsible";
 
-/**
- * Meta Information
- */
-
 const meta = {
   title: "Primitives / Collapsible",
+  component: CollapsibleComponent,
 } satisfies Meta;
 
 export default meta;
 
-/**
- * Stories
- */
-
-export const Collapsible: StoryObj<typeof meta> = {
+export const Collapsible: StoryObj = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
 

@@ -55,6 +55,3 @@ object CompanyLegalInformationExample {
     registrationNumber = RegistrationNumber("HRA 778899"),
   )
 }
-
-val CompanyLegalInformation.Companion.Example: CompanyLegalInformationExample
-  get() = CompanyLegalInformationExample

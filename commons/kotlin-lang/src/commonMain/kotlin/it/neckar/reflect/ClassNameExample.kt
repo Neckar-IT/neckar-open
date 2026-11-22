@@ -49,6 +49,3 @@ object ClassNameExample {
   val phoneNumber: ClassName = ClassName("it.neckar.contact.PhoneNumber")
   val url: ClassName = ClassName("it.neckar.open.http.Url")
 }
-
-val ClassName.Companion.Example: ClassNameExample
-  get() = ClassNameExample

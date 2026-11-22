@@ -10,6 +10,7 @@ import {
 
 const meta = {
   title: "Data display / DescriptionList",
+  component: DescriptionList,
 } satisfies Meta;
 
 export default meta;
@@ -30,7 +31,7 @@ const mockItems = [
 
 const mockStackedValues = ["SMA Solar Technology", "Fronius", "Kostal"];
 
-export const DescriptionListStory: StoryObj<typeof meta> = {
+export const DescriptionListStory: StoryObj = {
   name: "Description List",
   render: () => {
     return (

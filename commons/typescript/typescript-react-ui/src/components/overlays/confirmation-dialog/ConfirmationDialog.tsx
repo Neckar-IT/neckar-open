@@ -3,8 +3,10 @@
  */
 
 import type { TextKey } from "@neckar-hub/typescript-react-i18n";
+import { isPromiseLike } from "@neckar-hub/typescript-utils/promise-utils";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
 import { ActionButton } from "../../actions/ActionButton";
+import { withActionFailedToast } from "../../feedback";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -51,6 +53,9 @@ export interface ConfirmationDialogProps {
    * renders as a `<p>` and announces on open.
    */
   children?: React.ReactNode;
+  /**
+   * Runs the action. A rejected promise goes to `withActionFailedToast`, labelled with the confirm button's text.
+   */
   onConfirm: () => void | Promise<void>;
   open?: boolean;
   onOpenChange: (open: boolean) => void;
@@ -73,7 +78,6 @@ export interface ConfirmationDialogProps {
  * to `destructive` and makes the severity obvious at the call site.
  *
  * @prop open - Whether the dialog is open or not (if omitted, the dialog is always open and you need to use conditional rendering to show/hide it)
- * @prop onConfirm - Callback to confirm the action (can be async, then the dialog will handle the pending state automatically)
  */
 
 export function ConfirmationDialog({
@@ -95,7 +99,13 @@ export function ConfirmationDialog({
   const cancelKey: TextKey = textKeys?.cancel ?? "confirmationDialog.cancel";
   const confirmKey: TextKey = textKeys?.confirm ?? "confirmationDialog.confirm";
 
-  const { run, isPending } = usePendingAction(onConfirm, { externalPending });
+  const confirmLabel: string = t(confirmKey);
+  const confirm = (): void | Promise<void> => {
+    const result = onConfirm();
+    // `withActionFailedToast` decides the feedback for the rejection, so it ends here instead of escaping the click handler.
+    return isPromiseLike<void>(result) ? withActionFailedToast(confirmLabel, result).catch(() => undefined) : result;
+  };
+  const { run, isPending } = usePendingAction(confirm, { externalPending });
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -111,7 +121,7 @@ export function ConfirmationDialog({
           <AlertDialogCancel disabled={isPending}>{t(cancelKey)}</AlertDialogCancel>
           {/* An ActionButton, so an `ActionLockProvider` lock (e.g. offline) disables the confirmation too. */}
           <ActionButton
-            action={{ icon: undefined, label: t(confirmKey), loading: isPending, onTrigger: () => void run() }}
+            action={{ icon: undefined, label: confirmLabel, loading: isPending, onTrigger: () => void run() }}
             variant={variant}
           />
         </AlertDialogFooter>

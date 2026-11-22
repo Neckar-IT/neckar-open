@@ -3,15 +3,16 @@ import { TextSkeleton as TextSkeletonComponent } from "./TextSkeleton";
 
 const meta = {
   title: "Feedback / TextSkeleton",
+  component: TextSkeletonComponent,
 } satisfies Meta;
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
+export const Default: StoryObj = {
   render: () => <TextSkeletonComponent />,
 };
 
-export const InlineWithText: StoryObj<typeof meta> = {
+export const InlineWithText: StoryObj = {
   render: () => (
     <p>
       Loading title: <TextSkeletonComponent /> — rest of the sentence.
@@ -19,7 +20,7 @@ export const InlineWithText: StoryObj<typeof meta> = {
   ),
 };
 
-export const CustomWidth: StoryObj<typeof meta> = {
+export const CustomWidth: StoryObj = {
   render: () => (
     <div className="space-y-2">
       <TextSkeletonComponent className="w-12" />

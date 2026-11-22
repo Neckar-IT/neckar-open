@@ -587,10 +587,9 @@ class Inflector {
     inflect.addSingularize("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis")
     inflect.addSingularize("(^analy)ses$", "$1sis")
     inflect.addSingularize("(^analy)sis$", "$1sis") // already singular, but ends in 's'
-    inflect.addSingularize("([^f])ves$", "$1fe")
-    inflect.addSingularize("(hive)s$", "$1")
-    inflect.addSingularize("(tive)s$", "$1")
-    inflect.addSingularize("([lr])ves$", "$1f")
+    // Any other word ending in "ves" loses only the "s" through "s$" ("drives" -> "drive"); `singularize` in spec-generator's backend_model.py applies the same rules
+    inflect.addSingularize("(shel|wol|hal|cal|lea|thie|loa|sel)ves$", "$1f")
+    inflect.addSingularize("((?:kn|w)i)ves$", "$1fe")
     inflect.addSingularize("([^aeiouy]|qu)ies$", "$1y")
     inflect.addSingularize("(s)eries$", "$1eries")
     inflect.addSingularize("(m)ovies$", "$1ovie")
