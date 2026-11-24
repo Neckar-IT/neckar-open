@@ -12,8 +12,8 @@ import { z } from "zod";
  *   offers quick-select shortcuts (morgen / nächste Woche / nächster Monat) next to the calendar.
  *
  * Flat `ZodObject` (not `z.discriminatedUnion`) because the commons `FormField*` components
- * require a plain ZodObject. `validFrom` presence for `"scheduled"` is checked in the action
- * hook, which also rebuilds the payload as the sealed REST shape.
+ * require a plain ZodObject. `useTimelineEntryFormResolver` requires `validFrom` for
+ * `"scheduled"`; `timelineEntryTiming` maps the fields onto the sealed REST shape.
  *
  * `validFrom` is `nullish`: `DateTimePickerFormField` reports a cleared date as `null` and a form
  * that never touched the field holds `undefined`. Accepting only one of them would reject the

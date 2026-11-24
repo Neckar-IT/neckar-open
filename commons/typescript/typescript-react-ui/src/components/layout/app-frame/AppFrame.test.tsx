@@ -33,24 +33,22 @@ afterEach(() => {
 });
 
 describe("AppMain", () => {
-  it("renders the fixed h-12 header with breadcrumbs and offsets the content by mt-12 from tablet width", () => {
+  it("renders the sticky h-12 header with breadcrumbs from tablet width", () => {
     renderAppMain();
 
     const header = screen.getByRole("banner");
-    expect(header).toHaveClass("h-12", "fixed");
+    expect(header).toHaveClass("h-12", "sticky");
     expect(screen.getByRole("navigation", { name: "breadcrumb" })).toBeVisible();
-    expect(screen.getByRole("main")).toHaveClass("mt-12");
     expect(screen.queryByText("Patterns")).toBeNull();
   });
 
-  it("renders the brand with the app name and no content offset on mobile", () => {
+  it("renders the brand with the app name on mobile", () => {
     setViewportWidth(390);
 
     renderAppMain();
 
     expect(screen.getByText("Patterns")).toBeVisible();
     expect(screen.getByRole("banner")).not.toHaveClass("h-12");
-    expect(screen.getByRole("main")).not.toHaveClass("mt-12");
     expect(screen.queryByRole("navigation", { name: "breadcrumb" })).toBeNull();
   });
 

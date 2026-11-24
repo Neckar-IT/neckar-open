@@ -1,0 +1,14 @@
+{
+  "product": "open",
+  "version": "11.0.1",
+  "releasedOn": "2026-11-20",
+  "triggeredBy": {
+    "type": "Decision",
+    "by": "Human"
+  },
+  "targets": [
+    "maven-central",
+    "github-mirror-main"
+  ],
+  "predecessor": "open-11.0.0"
+}

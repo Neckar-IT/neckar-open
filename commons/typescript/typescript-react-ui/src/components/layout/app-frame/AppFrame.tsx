@@ -1,4 +1,3 @@
-import { cn } from "cn";
 import { type LucideIcon, MenuIcon } from "lucide-react";
 import { type PropsWithChildren, type ReactElement, type ReactNode, useRef } from "react";
 import { useEmbeddedTranslation } from "../../../localization/useEmbeddedTranslation";
@@ -41,8 +40,8 @@ interface AppDesktopHeaderProps {
 }
 
 /**
- * The fixed header of height `h-12` with sidebar toggle and breadcrumbs; renders from tablet width only. Content below
- * it takes its top offset from [useAppHeaderOffsetClassName].
+ * The header of height `h-12` with sidebar toggle and breadcrumbs; renders from tablet width only. It sticks to the top
+ * of the content column, so it is as wide as the column next to the sidebar.
  */
 export function AppDesktopHeader({ breadcrumbs }: AppDesktopHeaderProps): ReactElement | null {
   const { isMobile } = useSidebar();
@@ -52,13 +51,13 @@ export function AppDesktopHeader({ breadcrumbs }: AppDesktopHeaderProps): ReactE
   }
 
   return (
-    <header className="bg-background fixed top-0 z-50 flex h-12 w-full items-center gap-2 border-b">
-      <div className="flex items-center gap-2 px-8">
+    <header className="bg-background sticky top-0 z-50 flex h-12 items-center gap-2 border-b">
+      <div className="flex min-w-0 flex-1 items-center gap-2 px-8">
         <SidebarToggleButton />
 
         {breadcrumbs !== undefined && breadcrumbs !== null && (
           <>
-            <Separator className="mr-2 h-4" orientation="vertical" />
+            <Separator className="mr-2 h-4 data-vertical:self-center" orientation="vertical" />
             {breadcrumbs}
           </>
         )}
@@ -68,12 +67,12 @@ export function AppDesktopHeader({ breadcrumbs }: AppDesktopHeaderProps): ReactE
 }
 
 /**
- * The top margin that keeps content below the fixed `h-12` header of [AppDesktopHeader]; empty on mobile, where the
- * header is part of the flow.
+ * The column next to the sidebar inside a `SidebarProvider` that holds the page frame.
+ *
+ * `min-w-0` ends it at the viewport also with wide content, and the sticky [AppDesktopHeader] is as wide as the column.
  */
-export function useAppHeaderOffsetClassName(): string {
-  const { isMobile } = useSidebar();
-  return isMobile ? "" : "mt-12";
+export function AppContentColumn({ children }: PropsWithChildren): ReactElement {
+  return <div className="flex w-full min-w-0 flex-col">{children}</div>;
 }
 
 interface AppMainProps extends PropsWithChildren {
@@ -89,7 +88,6 @@ interface AppMainProps extends PropsWithChildren {
  */
 export function AppMain({ appName, brandIcon: BrandIcon, breadcrumbs, children }: AppMainProps): ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
-  const offsetClassName = useAppHeaderOffsetClassName();
 
   useAutoPageTitle(containerRef, { appName });
 
@@ -104,7 +102,7 @@ export function AppMain({ appName, brandIcon: BrandIcon, breadcrumbs, children }
     <div ref={containerRef} className="flex min-h-screen flex-1 flex-col">
       <AppMobileHeader brand={brand} />
       <AppDesktopHeader breadcrumbs={breadcrumbs} />
-      <main className={cn("flex flex-1 flex-col px-8 py-4", offsetClassName)}>
+      <main className="flex flex-1 flex-col px-8 py-4">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col">{children}</div>
       </main>
     </div>

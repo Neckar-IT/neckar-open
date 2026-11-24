@@ -1,6 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { timelineEntryTimingDefaultValues, timelineEntryTimingSchema } from "../value-timeline";
+import { timelineEntryTimingDefaultValues, timelineEntryTimingSchema, useTimelineEntryFormResolver } from "../value-timeline";
 
 /**
  * Form schema for a new price timeline entry: the shared timing fields
@@ -43,5 +42,5 @@ export function priceTimelineEntryUpsertDefaultValuesFrom(template: { price: num
 }
 
 export function usePriceTimelineEntryFormResolver() {
-  return zodResolver(priceTimelineEntryUpsertRequestSchema);
+  return useTimelineEntryFormResolver(priceTimelineEntryUpsertRequestSchema);
 }

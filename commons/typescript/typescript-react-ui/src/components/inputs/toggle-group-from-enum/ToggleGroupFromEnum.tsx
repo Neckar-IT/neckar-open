@@ -18,8 +18,8 @@ interface ToggleGroupFromEnumProps<T extends Record<string, string | number>>
   /**
    * Name of the enum the items come from, e.g. `"MonitoringSystem"`.
    *
-   * Qualifies the translation lookup — see {@link enumTranslationKeys}. Pass it whenever a value
-   * name of this enum also occurs in another one; leaving it out keeps the shared flat key.
+   * Qualifies the translation lookup — see {@link enumTranslationKeys}. Without it the lookup
+   * reads the flat `enums.<value>` alone.
    */
   enumName?: string;
 }

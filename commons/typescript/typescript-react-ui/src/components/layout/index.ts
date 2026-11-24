@@ -4,7 +4,7 @@ export { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../primitiv
 export { ScrollArea } from "../primitives/scroll-area";
 export { Separator } from "../primitives/separator";
 export { VisuallyHidden } from "../primitives/visually-hidden";
-export { AppDesktopHeader, AppMain, AppMobileHeader, useAppHeaderOffsetClassName } from "./app-frame";
+export { AppContentColumn, AppDesktopHeader, AppMain, AppMobileHeader } from "./app-frame";
 export { BadgeBar } from "./badge-bar";
 export { ButtonBar } from "./button-bar";
 export { DataContainer } from "./data-container";

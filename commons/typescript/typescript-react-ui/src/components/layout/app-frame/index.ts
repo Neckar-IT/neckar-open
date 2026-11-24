@@ -1,1 +1,1 @@
-export { AppDesktopHeader, AppMain, AppMobileHeader, useAppHeaderOffsetClassName } from "./AppFrame";
+export { AppContentColumn, AppDesktopHeader, AppMain, AppMobileHeader } from "./AppFrame";

@@ -51,6 +51,9 @@
       "nextWeek": "Next week",
       "nextMonth": "Next month"
     },
+    "validationErrors": {
+      "validFromRequired": "Please select a date and time."
+    },
     "since": "since",
     "from": "from"
   },

@@ -1,8 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { parseIsoDurationHours } from "@neckar-hub/typescript-utils/duration";
 import type { ArticleConditions, PriceWithProfit } from "@neckar-hub/typescript-utils/openapi-types";
 import { z } from "zod";
-import { timelineEntryTimingDefaultValues, timelineEntryTimingSchema } from "../value-timeline";
+import { timelineEntryTimingDefaultValues, timelineEntryTimingSchema, useTimelineEntryFormResolver } from "../value-timeline";
 
 /**
  * Plain object schema of the "add conditions entry" form: the shared timing fields
@@ -137,5 +136,5 @@ const articleConditionsTimelineEntryUpsertResolverSchema = articleConditionsTime
 });
 
 export function useArticleConditionsTimelineEntryFormResolver() {
-  return zodResolver(articleConditionsTimelineEntryUpsertResolverSchema);
+  return useTimelineEntryFormResolver(articleConditionsTimelineEntryUpsertResolverSchema);
 }

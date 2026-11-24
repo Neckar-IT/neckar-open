@@ -29,22 +29,23 @@ export function BreadcrumbItem({ className, ...props }: React.ComponentProps<typ
 }
 
 /**
- * Separator icon centred on the line: an icon has no text baseline.
+ * Separator icon centred on the line: an icon has no text baseline. It keeps its width when the items shrink.
  */
 export function BreadcrumbSeparator({ className, ...props }: React.ComponentProps<typeof ShadcnBreadcrumbSeparator>): React.ReactElement {
-  return <ShadcnBreadcrumbSeparator className={cn("self-center", className)} {...props} />;
+  return <ShadcnBreadcrumbSeparator className={cn("shrink-0 self-center", className)} {...props} />;
 }
 
 /**
- * Link truncated at `max-w-48`, so a long entity name keeps the rest of the trail visible.
+ * Link that ends with an ellipsis once its item is narrower than the text, e.g. an item with `min-w-0` in a full row, so a
+ * long entity name keeps the rest of the trail visible.
  */
 export function BreadcrumbLink({ className, ...props }: React.ComponentProps<typeof ShadcnBreadcrumbLink>): React.ReactElement {
-  return <ShadcnBreadcrumbLink className={cn("max-w-48 truncate", className)} {...props} />;
+  return <ShadcnBreadcrumbLink className={cn("truncate", className)} {...props} />;
 }
 
 /**
- * Current page truncated at `max-w-48`, like `BreadcrumbLink`.
+ * Current page that ends with an ellipsis once its item is narrower than the text, like `BreadcrumbLink`.
  */
 export function BreadcrumbPage({ className, ...props }: React.ComponentProps<typeof ShadcnBreadcrumbPage>): React.ReactElement {
-  return <ShadcnBreadcrumbPage className={cn("max-w-48 truncate", className)} {...props} />;
+  return <ShadcnBreadcrumbPage className={cn("truncate", className)} {...props} />;
 }

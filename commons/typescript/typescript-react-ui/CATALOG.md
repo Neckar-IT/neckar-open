@@ -172,7 +172,7 @@ Import: `@neckar-hub/typescript-react-ui/navigation`
 | Component | Description |
 | --- | --- |
 | `Breadcrumb` | Navigational landmark showing the current page's position within the site hierarchy. |
-| `Breadcrumbs` | Breadcrumb navigation trail. |
+| `Breadcrumbs` | Breadcrumb navigation trail, at most as wide as the row it grows into. |
 | `MultiStep` | Stepped wizard layout with a step list, current step content, and previous/next navigation buttons. |
 | `Pagination` | Custom Pagination Component, inspired by shadcn's Task Table Pagination (https://ui.shadcn.com/examples/tasks) |
 | `Sidebar` | Collapsible navigation panel that adapts to a slide-in Sheet on mobile; wrap in SidebarProvider. |
@@ -189,7 +189,8 @@ Import: `@neckar-hub/typescript-react-ui/layout`
 | Component | Description |
 | --- | --- |
 | `Accordion` | Collapsible panel set where one or multiple items can be expanded to reveal their content. |
-| `AppDesktopHeader` | The fixed header of height `h-12` with sidebar toggle and breadcrumbs; renders from tablet width only. |
+| `AppContentColumn` | The column next to the sidebar inside a `SidebarProvider` that holds the page frame. |
+| `AppDesktopHeader` | The header of height `h-12` with sidebar toggle and breadcrumbs; renders from tablet width only. |
 | `AppMain` | The content column of a page: [AppMobileHeader] with icon and app name as brand, [AppDesktopHeader], the page content centered at `max-w-7xl`, and the document title derived by `useAutoPageTitle`. |
 | `AppMobileHeader` | The brand bar with the menu toggle of an app inside a `SidebarProvider`; renders on mobile only. [AppMain] renders it itself; an app with its own page frame places it above its route outlet, so the menu stays reachable on every page. |
 | `BadgeBar` | Horizontal bar laying out badges with configurable alignment; it shrinks below its content inside a flex cell, so a text item in it can truncate. |

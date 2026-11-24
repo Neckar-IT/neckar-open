@@ -40,7 +40,7 @@ Auf dem Tag `open-<X.Y.Z>` veröffentlicht der Job `📦 Publish open to Maven C
 Die Pipeline des Release-MR führt den Job `📦 Verify open Maven Central publication` in [`gitlab-ci.d/mr.yml`](../../../gitlab-ci.d/mr.yml) aus, für `buildplatform` den Job `📦 Verify buildplatform Maven Central publication`:
 
 1. [`verify-maven-central-publication.sh`](../../../gitlab-ci.d/scripts/verify-maven-central-publication.sh) checkt den Commit mit dem Trailer `Release-Tag:` aus, den die Tag-Pipeline baut.
-2. Das Skript führt die Gradle-Argumente des Publish-Jobs aus `gitlab-ci.d/tag.yml` aus, mit `publishToMavenLocal` statt `publishToMavenCentral`. Ein Wegwerf-Key signiert, denn der Signing-Key liegt in `secret/ci/protected` und ist nur auf geschützten Refs lesbar.
+2. Das Skript führt die Gradle-Argumente des Publish-Jobs aus `gitlab-ci.d/tag.yml` aus, mit `publishMavenCentralPublicationsToMavenLocal` statt `publishToMavenCentral`. Diesen Task hat nur ein Projekt, das `publishToMavenCentral()` deklariert; `publishToMavenLocal` hat jedes Projekt mit `maven-publish`. Ein Wegwerf-Key signiert, denn der Signing-Key liegt in `secret/ci/protected` und ist nur auf geschützten Refs lesbar.
 3. [`check-maven-central-publication.py`](../../../gitlab-ci.d/scripts/check-maven-central-publication.py) prüft jedes POM auf die Regeln, nach denen Maven Central ein Deployment ablehnt.
 4. [`create-gitlab-release.sh`](../../../gitlab-ci.d/scripts/create-gitlab-release.sh) schreibt mit `--dry-run` den Payload des GitLab Release nach `build-reports/maven-central-verification/`.
 

@@ -217,7 +217,7 @@ internal fun KaClassSymbol.isMessagingType(): Boolean {
  * True when the simple name of [this] — or of any enclosing class — ends with one of [suffixes].
  *
  * The enclosing walk carries a class's signature to every type nested in it, so that
- * `CreateBookResponse.Good` counts as REST and `TenantSupport.StoreResult.Stored` as infrastructure.
+ * `CreateBookResponse.Good` counts as REST and `TenantAdminSupport.StoreResult.Stored` as infrastructure.
  */
 private fun KaClassSymbol.hasNameSignature(suffixes: Set<String>): Boolean {
   var currentClassId = classId ?: return false
@@ -270,8 +270,8 @@ private fun String.containsSegment(segment: String): Boolean = ".$this.".contain
 
 /**
  * True when the class carries [LayerConventions.ScriptBoundaryFqn] or its name or an enclosing class
- * name ends with one of [LayerConventions.InfrastructureSuffixes]: `TenantSupport.StoreResult.Stored`
- * belongs to `TenantSupport`.
+ * name ends with one of [LayerConventions.InfrastructureSuffixes]: `TenantAdminSupport.StoreResult.Stored`
+ * belongs to `TenantAdminSupport`.
  */
 internal fun KaClassSymbol.isInfrastructureClass(): Boolean {
   if (hasAnnotationFqn(LayerConventions.ScriptBoundaryFqn)) return true

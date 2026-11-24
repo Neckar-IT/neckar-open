@@ -1,4 +1,4 @@
-import { trimAsKotlin } from "./trimAsKotlin";
+import { trimAsKotlin } from "../lang";
 
 /** Names the violations of `it.neckar.financial.payment.card.CardNumber`, which publishes no violation enum. */
 export const CardNumberFormatViolation = {

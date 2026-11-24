@@ -1,10 +1,14 @@
+import { I18nProvider } from "@neckar-hub/typescript-react-i18n";
 import { findOptionalFormSchemaFieldsRejectingEmptyValue } from "@neckar-hub/typescript-utils/zod-utils";
+import { renderHook } from "@testing-library/react";
+import { createElement, type ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { bareConditions, conditionsWithAccessory, materialOnlyConditions, withoutAccessoryConditions } from "./conditionsFixtures";
 import { toFullArticleConditions } from "./toArticleConditions";
 import {
   articleConditionsTimelineEntryUpsertDefaultValues,
   articleConditionsTimelineEntryUpsertRequestSchema,
+  useArticleConditionsTimelineEntryFormResolver,
 } from "./useArticleConditionsTimelineEntryFormResolver";
 
 describe("articleConditionsTimelineEntryUpsertRequestSchema", () => {
@@ -112,5 +116,22 @@ describe("articleConditionsTimelineEntryUpsertDefaultValues from the conditions 
     expect(toFullArticleConditions(articleConditionsTimelineEntryUpsertRequestSchema.parse(defaultValues))).toEqual(
       conditionsWithAccessory,
     );
+  });
+});
+
+describe("useArticleConditionsTimelineEntryFormResolver", () => {
+  it("reports a scheduled entry without validFrom at validFrom", async () => {
+    const wrapper = ({ children }: { children: ReactNode }) => createElement(I18nProvider, { options: { lng: "de" } }, children);
+    const resolver = renderHook(() => useArticleConditionsTimelineEntryFormResolver(), { wrapper }).result.current;
+    const values = {
+      ...articleConditionsTimelineEntryUpsertDefaultValues({ withAccessory: false, withInstallationTime: false }, { conditions: null }),
+      type: "scheduled" as const,
+      partPurchasePrice: 12000,
+      partSellingPrice: 16800,
+    };
+
+    const result = await resolver(values, undefined, { fields: {}, shouldUseNativeValidation: false });
+
+    expect(result.errors.validFrom?.message).toBe("Bitte Datum und Uhrzeit auswählen.");
   });
 });
