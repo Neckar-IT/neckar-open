@@ -7,7 +7,7 @@ const languageResources = {
   en,
 };
 
-/** The namespace `<Trans>` needs, since it resolves keys outside the embedded `t`. */
+/** The namespace a key names when something other than the embedded `t` resolves it: `<Trans>` or the caller's own `t`. */
 export const embeddedTranslationNamespace = "ui-components";
 
 export function useEmbeddedTranslation() {

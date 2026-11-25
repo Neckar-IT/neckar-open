@@ -41,7 +41,10 @@ describe("usePriceTimelineEntryFormResolver", () => {
     const wrapper = ({ children }: { children: ReactNode }) => createElement(I18nProvider, { options: { lng: "de" } }, children);
     const resolver = renderHook(() => usePriceTimelineEntryFormResolver(), { wrapper }).result.current;
 
-    const result = await resolver({ type: "scheduled", validFrom: null, price: 500 }, undefined, { fields: {}, shouldUseNativeValidation: false });
+    const result = await resolver({ type: "scheduled", validFrom: null, price: 500 }, undefined, {
+      fields: {},
+      shouldUseNativeValidation: false,
+    });
 
     expect(result.errors.validFrom?.message).toBe("Bitte Datum und Uhrzeit auswählen.");
   });

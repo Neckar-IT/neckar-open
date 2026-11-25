@@ -163,7 +163,7 @@ class McpRoutingTest {
       installJsonWithMcpMessages {
         explicitNulls = true
       }
-      McpRouting(serverName = ExampleServerName, serverTitle = McpServerTitle("Example Server"), websiteUrl = Url.Absolute("https://example.com"), allowedHosts = listOf("localhost", "127.0.0.1"), authentication = McpAuthentication.None) {
+      McpRouting(serverName = ExampleServerName, serverTitle = McpServerTitle("Example Server"), websiteUrl = Url.Absolute("https://example.com"), allowedHosts = listOf("localhost", "127.0.0.1"), authentication = McpAuthentication.None, instructions = null, prompts = emptyList()) {
         addHelloTool(ExampleServerName, DeploymentStage.Demo)
       }.configure(this)
     }

@@ -31,7 +31,7 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
- * Type-safe wrapper for a domain name (e.g., `"elektromeister.neckar.it"`, `"neckar.it"`).
+ * Type-safe wrapper for a domain name (e.g., `"app.turboangebot.de"`, `"neckar.it"`).
  * No protocol, no path, no port.
  */
 @JvmInline

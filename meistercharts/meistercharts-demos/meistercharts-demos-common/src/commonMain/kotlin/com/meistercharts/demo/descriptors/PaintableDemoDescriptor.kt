@@ -263,12 +263,12 @@ class PaintableDemoDescriptor : MeisterchartsDemoDescriptor<() -> Paintable> {
         PredefinedConfiguration(Uuid.parse("242bec3f-d595-442f-803f-a9679b2fe0ac"), { LabelPaintable({ _, _ -> "Hello World!" }) }, "Label"),
 
         //PredefinedConfiguration(uuidFrom("0ee78961-a333-48f6-b2db-97765bbcece7"), {
-        //  PathPaintableProvider(path = SVGPathParser.from(ElektroMeisterResources.SwitchSvg).parse(), pathSize = Size.PX_24, Color.orange).get(Size.PX_24)
-        //}, "Elektromeister: Switch"),
+        //  PathPaintableProvider(path = SVGPathParser.from(TurboangebotResources.SwitchSvg).parse(), pathSize = Size.PX_24, Color.orange).get(Size.PX_24)
+        //}, "Turboangebot: Switch"),
         //
         //PredefinedConfiguration(uuidFrom("f6a4a651-a1e9-4af6-9ec9-71b5102e9946"), {
-        //  PathPaintableProvider(path = SVGPathParser.from(ElektroMeisterResources.LightsSvg).parse(), pathSize = Size.PX_24, Color.orange).get(Size.PX_24)
-        //}, "Elektromeister: Lights"),
+        //  PathPaintableProvider(path = SVGPathParser.from(TurboangebotResources.LightsSvg).parse(), pathSize = Size.PX_24, Color.orange).get(Size.PX_24)
+        //}, "Turboangebot: Lights"),
         //
         PredefinedConfiguration(Uuid.parse("efd233c3-db8e-48d1-8d49-6f84cb8d2d37"), { BalloonTooltipPaintable(RectanglePaintable(Size.PX_60, Color.orange)) }, "Balloon Tooltip"),
         PredefinedConfiguration(Uuid.parse("9b9a70cc-21f1-48a8-b399-2a0f4dc344bb"), {

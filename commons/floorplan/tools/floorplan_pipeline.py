@@ -181,7 +181,7 @@ def extract_rooms(dxf_path, out_json_path):
     return out_json_path if os.path.exists(out_json_path) else None
 
 
-_BACKGROUND_CLI_CLASS = "it.neckar.elektromeister.floorplan.dxf.FloorBackgroundCliKt"
+_BACKGROUND_CLI_CLASS = "it.neckar.turboangebot.floorplan.dxf.FloorBackgroundCliKt"
 _BACKGROUND_TIMEOUT_SECONDS = 120
 
 

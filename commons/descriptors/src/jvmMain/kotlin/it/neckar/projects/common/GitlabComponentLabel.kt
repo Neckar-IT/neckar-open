@@ -33,7 +33,7 @@ import kotlin.jvm.JvmInline
  * Type-safe wrapper for a GitLab label following the `Component::*` naming convention.
  * Used to associate merge requests with a specific product.
  *
- * Example: `"Component::Elektromeister"`.
+ * Example: `"Component::Turboangebot"`.
  */
 @JvmInline
 value class GitlabComponentLabel(val value: String) {

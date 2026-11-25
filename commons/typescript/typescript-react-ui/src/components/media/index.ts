@@ -20,7 +20,15 @@ export {
   TerracedHouseIcon,
 } from "./custom-icons";
 export { FileSlot, type FileSlotProps } from "./file-slot";
-export { FileKindTile, FileUploadSlot, type FileUploadSlotContext, type FileUploadSlotProps } from "./file-upload-slot";
+export {
+  FileKindTile,
+  type FileUploadRejection,
+  fileUploadRejectionMessage,
+  FileUploadSlot,
+  type FileUploadSlotContext,
+  type FileUploadSlotProps,
+  isRequestBodyTooLarge,
+} from "./file-upload-slot";
 export { IconWithTooltip } from "./icon-with-tooltip";
 export { Image } from "./image";
 export { ImageSlot, type ImageSlotProps } from "./image-slot";

@@ -106,7 +106,7 @@ class BareMoneyOutsidePricePackagesTest {
   fun `accepts a bare Money outside the price packages`() {
     val findings = rule.lint(
       """
-      package it.neckar.elektromeister.pv.loanterms
+      package it.neckar.turboangebot.pv.loanterms
 
       import it.neckar.financial.currency.Money
 

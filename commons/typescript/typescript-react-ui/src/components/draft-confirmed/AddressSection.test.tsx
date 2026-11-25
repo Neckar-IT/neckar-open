@@ -62,4 +62,31 @@ describe("AddressSection", () => {
     expect(screen.queryByRole("button", { name: "Capture" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Confirm" })).toBeInTheDocument();
   });
+
+  it("marks the heading with the alert icon for validation errors", () => {
+    render(
+      <AddressSection
+        {...labels}
+        address={null}
+        editAction={{ icon: null, label: "Capture", onTrigger: vi.fn() }}
+        confirmAction={confirmAction}
+        validationErrors={[{ message: "The address is not confirmed" }]}
+      />,
+    );
+
+    expect(screen.getByText("Business address").parentElement?.querySelector("svg")).not.toBeNull();
+  });
+
+  it("leaves the heading unmarked without validation errors", () => {
+    render(
+      <AddressSection
+        {...labels}
+        address={null}
+        editAction={{ icon: null, label: "Capture", onTrigger: vi.fn() }}
+        confirmAction={confirmAction}
+      />,
+    );
+
+    expect(screen.getByText("Business address").parentElement?.querySelector("svg")).toBeNull();
+  });
 });

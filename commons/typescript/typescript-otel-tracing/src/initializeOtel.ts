@@ -25,7 +25,7 @@ function buildOtlpLogsUrl(): string {
 }
 
 export interface OtelConfig {
-  /** Service name — must match the docker-compose service/container name (e.g., "patterns", "elektromeister") */
+  /** Service name — must match the docker-compose service/container name (e.g., "patterns", "turboangebot") */
   serviceName: string;
   /** Optional service version, defaults to "unknown" */
   serviceVersion?: string;

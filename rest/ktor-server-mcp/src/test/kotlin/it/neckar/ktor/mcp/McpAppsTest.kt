@@ -56,7 +56,7 @@ class McpAppsTest {
       installJsonWithMcpMessages {
         explicitNulls = true
       }
-      McpRouting(serverName = McpServerName("example"), serverTitle = McpServerTitle("Example Server"), websiteUrl = Url.Absolute("https://example.com"), allowedHosts = listOf("localhost"), authentication = McpAuthentication.None) {
+      McpRouting(serverName = McpServerName("example"), serverTitle = McpServerTitle("Example Server"), websiteUrl = Url.Absolute("https://example.com"), allowedHosts = listOf("localhost"), authentication = McpAuthentication.None, instructions = null, prompts = emptyList()) {
         addMcpApp(ExampleApp, name = "Example", description = "Shows the example result", html = ExampleHtml)
         addTool(name = "example", description = "An example", inputSchema = ToolSchema(), meta = mcpAppToolMeta(ExampleApp)) {
           CallToolResult(content = emptyList())

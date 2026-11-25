@@ -76,7 +76,7 @@ object AuthEndpoints {
    *
    * Example:
    * ```
-   * val emAuth = AuthEndpoints.forBaseUrl(Url.pattern("api/elektromeister/auth"))
+   * val emAuth = AuthEndpoints.forBaseUrl(Url.pattern("api/turboangebot/auth"))
    * routing {
    *   get(emAuth.Login) { ... }
    * }

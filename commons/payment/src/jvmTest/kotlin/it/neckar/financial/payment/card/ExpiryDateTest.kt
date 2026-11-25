@@ -27,41 +27,77 @@
  */
 package it.neckar.financial.payment.card
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotEmpty
 import it.neckar.open.resources.getResourceSafe
+import it.neckar.open.time.VirtualNowProvider
+import it.neckar.open.time.nowProvider
+import it.neckar.open.time.resetNowProvider
+import kotlin.time.Instant
 import kotlinx.datetime.YearMonth
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
 /**
- * Holds the wire form of [ExpiryDate] to `ExpiryDate.cases.json`, which the Vitest of `parseExpiryDate` and `formatExpiryDate` in
+ * Holds [ExpiryDate] to `ExpiryDate.cases.json`, which the Vitest of `parseExpiryDate`, `formatExpiryDate` and `validateExpiryDateShape` in
  * `@neckar-hub/typescript-utils/payment-formats` reads as well.
  */
 class ExpiryDateTest {
 
   private val corpus: Corpus = Json.decodeFromString(javaClass.getResourceSafe("/ExpiryDate.cases.json").readText())
 
+  @BeforeEach
+  fun fixNow() {
+    nowProvider = VirtualNowProvider(Instant.parse(corpus.now).toEpochMilliseconds().toDouble())
+  }
+
+  @AfterEach
+  fun resetNow() {
+    resetNowProvider()
+  }
+
   @TestFactory
-  fun `encodes year and month as the wire form`(): List<DynamicTest> = corpus.cases.map { case ->
-    DynamicTest.dynamicTest(case.wire) {
-      assertThat(Json.encodeToString(ExpiryDate(case.year, case.month))).isEqualTo(Json.encodeToString(case.wire))
+  fun `encodes year and month as the wire form`(): List<DynamicTest> = corpus.cases.mapNotNull { case ->
+    val wire = case.wire ?: return@mapNotNull null
+    DynamicTest.dynamicTest(wire) {
+      assertThat(Json.encodeToString(ExpiryDate(case.year, case.month))).isEqualTo(Json.encodeToString(wire))
     }
   }
 
   @TestFactory
-  fun `decodes the wire form into year and month`(): List<DynamicTest> = corpus.cases.map { case ->
-    DynamicTest.dynamicTest(case.wire) {
-      val decoded: ExpiryDate = Json.decodeFromString(Json.encodeToString(case.wire))
+  fun `decodes the wire form into year and month`(): List<DynamicTest> = corpus.cases.mapNotNull { case ->
+    val wire = case.wire ?: return@mapNotNull null
+    DynamicTest.dynamicTest(wire) {
+      val decoded: ExpiryDate = Json.decodeFromString(Json.encodeToString(wire))
       assertThat(decoded.yearMonth).isEqualTo(YearMonth(case.year, case.month))
     }
   }
 
-  @Serializable
-  private data class Corpus(val purpose: String, val cases: List<Case>)
+  @TestFactory
+  fun `refuses a month before now`(): List<DynamicTest> {
+    val inPast = corpus.cases.filter { it.violation == InPast }
+    assertThat(inPast).isNotEmpty()
+    return inPast.map { case ->
+      DynamicTest.dynamicTest("${case.year}-${case.month}") {
+        assertFailure { ExpiryDate(case.year, case.month) }.isInstanceOf<IllegalArgumentException>()
+      }
+    }
+  }
 
   @Serializable
-  private data class Case(val wire: String, val year: Int, val month: Int)
+  private data class Corpus(val purpose: String, val now: String, val frontendDetectable: List<String>, val cases: List<Case>)
+
+  @Serializable
+  private data class Case(val wire: String? = null, val year: Int, val month: Int, val violation: String? = null)
+
+  private companion object {
+    const val InPast: String = "InPast"
+  }
 }

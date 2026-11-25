@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 
 const images: string[] = [
-  "elektromeister/elektromeister-service@2f5a9c1d3e7b",
+  "turboangebot.de/turboangebot-service@2f5a9c1d3e7b",
   "docker.io/postgres@898c60cb390d",
   "quay.io/keycloak/keycloak@1f3a6b2c4d5e",
   "agents.neckar.it/agents-job-runner@895348e22f47",

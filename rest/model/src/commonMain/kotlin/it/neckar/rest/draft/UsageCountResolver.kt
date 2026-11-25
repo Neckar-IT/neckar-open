@@ -32,7 +32,7 @@ import it.neckar.open.tenancy.Tenant
 /**
  * Resolves usage counts for an entity — how many entities of other types reference it.
  *
- * Passed as a constructor parameter to the elektromeister Supports, whose `create` factory builds it over the referencing accesses.
+ * Passed as a constructor parameter to the turboangebot Supports, whose `create` factory builds it over the referencing accesses.
  *
  * @param ID the ID type of the entity being queried
  * @param T the enum type that identifies the referencing entity types

@@ -31,7 +31,7 @@ import kotlin.jvm.JvmInline
 
 /**
  * Type-safe wrapper for a Git tag prefix used for releases.
- * Example: `"elektromeister"` → tags like `elektromeister-2026-04-10`.
+ * Example: `"turboangebot"` → tags like `turboangebot-2026-04-10`.
  */
 @JvmInline
 value class GitTagPrefix(val value: String) {

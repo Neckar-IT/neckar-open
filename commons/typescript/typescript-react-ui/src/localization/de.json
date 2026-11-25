@@ -279,6 +279,11 @@
     "bytesOfTotal": "{{loaded}} von {{total}}",
     "tooLarge": "{{fileName}} ist {{size}} groß; erlaubt sind höchstens {{maximum}}."
   },
+  "fileUploadRejection": {
+    "tooLarge": "Die Datei ist größer als {{maximum}}.",
+    "wrongContentType": "Die Datei hat den Typ {{actual}}. Erlaubt sind {{expected}}.",
+    "unreadable": "Die Datei lässt sich nicht lesen."
+  },
   "imageSlot": {
     "empty": "Noch kein Bild hochgeladen",
     "wrongType": "{{fileName}} hat keinen erlaubten Typ; erlaubt sind {{types}}.",

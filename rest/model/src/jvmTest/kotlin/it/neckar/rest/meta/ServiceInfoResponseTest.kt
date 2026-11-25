@@ -92,7 +92,7 @@ class ServiceInfoResponseTest {
       runtimeContext = RuntimeContextDetails(
         deploymentStage = DeploymentStage.Production,
         executionEnvironment = ExecutionEnvironment.Docker,
-        hostname = Hostname("elektromeister.neckar.it"),
+        hostname = Hostname("app.turboangebot.de"),
         debugMode = false,
         inUnitTest = false,
       ),

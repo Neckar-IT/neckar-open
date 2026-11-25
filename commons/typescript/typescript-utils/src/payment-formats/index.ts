@@ -1,5 +1,10 @@
 export { CardNetworks, isKnownCardNetwork, knownCardNetworks, type CardNetwork } from "./cardNetworks";
 export { formatExpiryDate, formatExpiryDateForDisplay, parseExpiryDate, type ExpiryDateParts } from "./expiryDate";
+export {
+  ExpiryDateFormatViolation,
+  validateExpiryDateShape,
+  type ExpiryDateShapeValidationResult,
+} from "./validateExpiryDateShape";
 export { normalizeToAlphanumericUppercase } from "./normalizeToAlphanumericUppercase";
 export { BIC_LONG_LENGTH, BIC_SHORT_LENGTH, BicFormatViolation, validateBicShape, type BicShapeValidationResult } from "./validateBicShape";
 export {

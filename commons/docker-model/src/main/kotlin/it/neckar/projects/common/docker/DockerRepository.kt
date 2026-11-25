@@ -44,7 +44,7 @@ value class DockerRepository(val value: String) : Comparable<DockerRepository> {
   }
 
   /**
-   * The first path segment: `elektromeister/elektromeister-ui` → `elektromeister`, `mea.neckar.it` →
+   * The first path segment: `turboangebot.de/turboangebot-ui` → `turboangebot`, `mea.neckar.it` →
    * `mea.neckar.it`. In this build's registry that segment is the product — a DNS name or the
    * product directory the module sits in.
    */

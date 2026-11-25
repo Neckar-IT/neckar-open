@@ -37,12 +37,12 @@ class GitLabPackageRegistryTest {
   fun `download url of the latest version`() {
     assertThat(
       neckarHub.downloadUrl(
-        packageName = GitLabPackageRegistry.PackageName("elektromeister-db-snapshot"),
+        packageName = GitLabPackageRegistry.PackageName("turboangebot-db-snapshot"),
         version = GitLabPackageRegistry.PackageVersion.Latest,
-        fileName = GitLabPackageRegistry.PackageFileName("elektromeister-prod.mongodump.gz"),
+        fileName = GitLabPackageRegistry.PackageFileName("turboangebot-prod.mongodump.gz"),
       ).value,
     ).isEqualTo(
-      "https://git.neckar.it/api/v4/projects/47/packages/generic/elektromeister-db-snapshot/latest/elektromeister-prod.mongodump.gz",
+      "https://git.neckar.it/api/v4/projects/47/packages/generic/turboangebot-db-snapshot/latest/turboangebot-prod.mongodump.gz",
     )
   }
 
@@ -50,12 +50,12 @@ class GitLabPackageRegistryTest {
   fun `download url of a history version`() {
     assertThat(
       neckarHub.downloadUrl(
-        packageName = GitLabPackageRegistry.PackageName("elektromeister-dev-db-snapshot"),
+        packageName = GitLabPackageRegistry.PackageName("turboangebot-dev-db-snapshot"),
         version = GitLabPackageRegistry.PackageVersion("2.3.2-2026-06-08T01-03-28"),
-        fileName = GitLabPackageRegistry.PackageFileName("elektromeister-dev.mongodump.gz"),
+        fileName = GitLabPackageRegistry.PackageFileName("turboangebot-dev.mongodump.gz"),
       ).value,
     ).isEqualTo(
-      "https://git.neckar.it/api/v4/projects/47/packages/generic/elektromeister-dev-db-snapshot/2.3.2-2026-06-08T01-03-28/elektromeister-dev.mongodump.gz",
+      "https://git.neckar.it/api/v4/projects/47/packages/generic/turboangebot-dev-db-snapshot/2.3.2-2026-06-08T01-03-28/turboangebot-dev.mongodump.gz",
     )
   }
 

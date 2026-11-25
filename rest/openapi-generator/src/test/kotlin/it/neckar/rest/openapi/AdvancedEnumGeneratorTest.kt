@@ -386,7 +386,7 @@ class AdvancedEnumGeneratorTest {
               "hostname" : {
                 "type" : "string",
                 "x-source-kotlin-type" : "kotlin.String",
-                "const" : "dev.elektromeister.neckar.it"
+                "const" : "dev.app.turboangebot.de"
               },
               "name" : {
                 "type" : "string",
@@ -483,7 +483,7 @@ class AdvancedEnumGeneratorTest {
                   "hostname" : {
                     "type" : "string",
                     "x-source-kotlin-type" : "kotlin.String",
-                    "const" : "dev.elektromeister.neckar.it"
+                    "const" : "dev.app.turboangebot.de"
                   },
                   "name" : {
                     "type" : "string",
@@ -582,7 +582,7 @@ class AdvancedEnumGeneratorTest {
               "hostname" : {
                 "type" : "string",
                 "x-source-kotlin-type" : "kotlin.String",
-                "const" : "dev.elektromeister.neckar.it"
+                "const" : "dev.app.turboangebot.de"
               },
               "name" : {
                 "type" : "string",
@@ -618,7 +618,7 @@ class AdvancedEnumGeneratorTest {
     /**
      * Contains the main branch of the service.
      */
-    Dev(hostname = "dev.elektromeister.neckar.it", environment = Environment.Development, foo = null),
+    Dev(hostname = "dev.app.turboangebot.de", environment = Environment.Development, foo = null),
     ;
 
     /**

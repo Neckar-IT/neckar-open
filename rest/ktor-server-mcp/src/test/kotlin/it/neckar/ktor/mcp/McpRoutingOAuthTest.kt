@@ -190,6 +190,8 @@ class McpRoutingOAuthTest {
         websiteUrl = Url.Absolute("https://example.com"),
         allowedHosts = listOf("localhost"),
         authentication = McpAuthentication.OAuth(providers = listOf(McpResourceTestProvider, TestProvider), authorizationServers = listOf(Url.Absolute("https://auth.example/realms/example")), scopes = listOf(OAuthScope("openid"), OAuthScope("profile")), capability = capability),
+instructions = null,
+prompts = emptyList(),
       ) { call ->
         addTool(name = "whoami", description = "Names the caller", inputSchema = ToolSchema()) {
           CallToolResult(content = listOf(TextContent(call.principal<UserIdPrincipal>()!!.name)))

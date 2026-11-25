@@ -44,7 +44,7 @@ sealed interface ServiceHostRegistry<out T : ServiceHost> {
 }
 
 /**
- * A service bound to a closed, compile-time-known set of [knownHosts] (e.g. Elektromeister,
+ * A service bound to a closed, compile-time-known set of [knownHosts] (e.g. Turboangebot,
  * Patterns). An unknown hostname is typically a configuration error. The resolution itself stays
  * with the implementation because the existing registries differ (some throw on unknown, some fall
  * back to localhost, some match additional fields).

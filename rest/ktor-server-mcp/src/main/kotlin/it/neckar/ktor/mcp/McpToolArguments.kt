@@ -94,3 +94,21 @@ fun JsonElement.jsonTypeName(): String = when (this) {
     else -> "a number"
   }
 }
+
+/**
+ * The argument [name] as `true` or `false`, or `null` without it; any other JSON value throws naming the found type.
+ */
+fun JsonObject.optionalBoolean(name: String): Boolean? {
+  val argument = this[name] ?: return null
+  return (argument as? JsonPrimitive)?.takeIf { it.isString.not() }?.booleanOrNull
+    ?: throw IllegalArgumentException("$name must be true or false, found ${argument.jsonTypeName()}")
+}
+
+/**
+ * The argument [name] as one of [values] by its name, or `null` without it; any other value throws listing [values].
+ */
+fun <E : Enum<E>> JsonObject.optionalEnum(name: String, values: List<E>, nameOf: (E) -> String = { it.name }): E? {
+  val text = optionalNonBlankString(name) ?: return null
+  return values.firstOrNull { nameOf(it) == text }
+    ?: throw IllegalArgumentException("$name must be one of ${values.joinToString(", ") { nameOf(it) }}, found \"$text\"")
+}

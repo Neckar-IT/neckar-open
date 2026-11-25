@@ -94,7 +94,7 @@ object MetaRoutingEndpoints {
    *
    * Example:
    * ```
-   * val emMeta = MetaRoutingEndpoints.forBaseUrl(Url.pattern("api/elektromeister"))
+   * val emMeta = MetaRoutingEndpoints.forBaseUrl(Url.pattern("api/turboangebot"))
    * routing {
    *   get(emMeta.Version) { ... }
    * }

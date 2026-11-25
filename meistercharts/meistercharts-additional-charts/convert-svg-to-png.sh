@@ -7,7 +7,7 @@
 set -e
 set -x
 
-cd src/commonMain/resources/elektromeister || exit 7
+cd src/commonMain/resources/turboangebot || exit 7
 
 pwd
 

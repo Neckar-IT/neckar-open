@@ -14,7 +14,7 @@ export const FullyInjectedDeploymentInfo: DeploymentInfo = {
   runtimeContext: {
     executionEnvironment: ExecutionEnvironment.Docker,
     deploymentStage: DeploymentStage.Demo,
-    serviceHost: "demo.elektromeister.neckar.it",
+    serviceHost: "demo.app.turboangebot.de",
     effectiveDeploymentStage: DeploymentStage.Demo,
   },
   build: {
@@ -48,7 +48,7 @@ export const PartiallyInjectedDeploymentInfo: DeploymentInfo = {
   runtimeContext: {
     executionEnvironment: ExecutionEnvironment.Docker,
     deploymentStage: undefined,
-    serviceHost: "dev.elektromeister.neckar.it",
+    serviceHost: "dev.app.turboangebot.de",
     effectiveDeploymentStage: DeploymentStage.Production,
   },
   build: {

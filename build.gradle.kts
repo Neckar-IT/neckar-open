@@ -2,6 +2,8 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import it.neckar.gradle.BuildplatformPlugins
 import it.neckar.gradle.ansiConsole
+import it.neckar.gradle.publishing.MavenCentralPublicationRules
+import it.neckar.gradle.publishing.MavenCentralPublishingPlugin
 import it.neckar.projects.Projects
 import it.neckar.projects.isPublishedModule
 
@@ -35,6 +37,9 @@ allprojects {
   }
 }
 
+// verifyMavenCentralPublishing for the published modules below; the plugin makes every publish task sign, snapshots included.
+apply(plugin = BuildplatformPlugins.MavenCentralPublishing)
+
 // Collect published coordinates for the final summary
 val publishedArtifacts = mutableListOf<String>()
 
@@ -53,13 +58,6 @@ subprojects {
 
   apply(plugin = "com.vanniktech.maven.publish")
 
-  // The release verification publishes to a local repository what publishToMavenCentral uploads: this task name exists in no other project.
-  tasks.register("publishMavenCentralPublicationsToMavenLocal") {
-    group = PublishingPlugin.PUBLISH_TASK_GROUP
-    description = "Publishes the Maven Central publications of this project to the local Maven repository"
-    dependsOn(tasks.named(MavenPublishPlugin.PUBLISH_LOCAL_LIFECYCLE_TASK_NAME))
-  }
-
   // The published modules are Kotlin — their javadoc JARs contain nothing but a manifest and only
   // exist because Maven Central requires the artifact. Modules without any Java source skip the task
   // as NO-SOURCE; a module whose only Java source is a package-private interop helper (meistercharts-fx:
@@ -69,22 +67,12 @@ subprojects {
     isFailOnError = false
   }
 
-  // Force signing for all publications including snapshots. The tag pipeline signs with the in-memory key that
-  // signAllPublications() reads from signingInMemoryKey; a workstation without it signs through the local GPG agent.
-  val signsInMemory: Boolean = providers.gradleProperty("signingInMemoryKey").isPresent
-  afterEvaluate {
-    extensions.findByType<SigningExtension>()?.apply {
-      if (signsInMemory.not()) {
-        useGpgCmd()
-      }
-      isRequired = true
-    }
-  }
-
   // Track staged artifacts for the final summary
   tasks.withType<PublishToMavenRepository>().configureEach {
     notCompatibleWithConfigurationCache("adds its coordinates to publishedArtifacts of the build script, which publishingSummary prints")
     doLast {
+      // verifyMavenCentralPublishing stages nothing.
+      if (repository.name == MavenCentralPublishingPlugin.RepositoryName) return@doLast
       val coords = "${publication.groupId}:${publication.artifactId}:${publication.version}"
       synchronized(publishedArtifacts) {
         publishedArtifacts.add(coords)
@@ -120,11 +108,7 @@ subprojects {
     doLast {
       // Read at execution: the java publication of a JVM-only module sets the destination after this block.
       val pomFile = (this as GenerateMavenPom).destination
-      val versionless = Regex("<dependency>(.*?)</dependency>", RegexOption.DOT_MATCHES_ALL).findAll(pomFile.readText())
-        .map { it.groupValues[1] }
-        .filterNot { it.contains("<version>") }
-        .map { Regex("<artifactId>(.*?)</artifactId>").find(it)?.groupValues?.get(1) ?: it.trim() }
-        .toList()
+      val versionless: List<String> = MavenCentralPublicationRules.dependenciesWithoutVersion(pomFile)
       check(versionless.isEmpty()) { "$pomFile names dependencies without a version: ${versionless.joinToString()}" }
     }
   }
@@ -213,7 +197,10 @@ tasks.register("verifyPublishedModuleDescriptions") {
 
 // Print a final summary after the build completes
 val taskNames = gradle.startParameter.taskNames
-val isMavenCentral = taskNames.any { it.contains("MavenCentral", ignoreCase = true) }
+// The tasks of MavenCentralPublishingPlugin upload nothing: no deployment id to capture, no summary to print.
+val isMavenCentral = taskNames.any {
+  it.contains("MavenCentral", ignoreCase = true) && it.contains(MavenCentralPublishingPlugin.RepositoryName).not() && it.endsWith(MavenCentralPublishingPlugin.VerifyTaskName).not()
+}
 val isMavenLocal = taskNames.any { it.contains("MavenLocal", ignoreCase = true) }
 
 if (isMavenCentral || isMavenLocal) {

@@ -28,13 +28,13 @@
 package it.neckar.projects.common
 
 /**
- * One production domain of a product (e.g., "elektromeister.neckar.it" or "meistercharts.com") with
- * its localhost subdomain for local development (e.g., "elektromeister").
+ * One production domain of a product (e.g., "app.turboangebot.de" or "meistercharts.com") with
+ * its localhost subdomain for local development (e.g., "turboangebot").
  *
  * Environment-specific domains are derived from the production domain:
- * - Dev: "dev.elektromeister.neckar.it"
- * - Demo: "demo.elektromeister.neckar.it"
- * - Localdev: "elektromeister.localdev"
+ * - Dev: "dev.app.turboangebot.de"
+ * - Demo: "demo.app.turboangebot.de"
+ * - Localdev: "app.turboangebot.localdev"
  *
  * The `productDeclaration { }` of the product generates one implementation per domain into the
  * Kotlin/JVM project that declares the product and into every module whose `serviceDeclaration { }`
@@ -44,13 +44,13 @@ interface DomainDescriptor {
 
   /**
    * The production domain of the product.
-   * Examples: "elektromeister.neckar.it", "meistercharts.com", "auto-merge.neckar.it"
+   * Examples: "app.turboangebot.de", "meistercharts.com", "auto-merge.neckar.it"
    */
   val domain: Domain
 
   /**
    * The subdomain used for localhost development.
-   * Examples: "elektromeister", "meistercharts", "auto-merge"
+   * Examples: "turboangebot", "meistercharts", "auto-merge"
    */
   val localhostSubdomain: String
     get() {
@@ -87,21 +87,21 @@ interface DomainDescriptor {
 
   /**
    * The full local domain.
-   * Example: "elektromeister.localdev"
+   * Example: "app.turboangebot.localdev"
    */
   val localhostDomain: Domain
     get() = Domain(LocalDev.host(localhostSubdomain))
 
   /**
    * The dev environment domain.
-   * Example: "dev.elektromeister.neckar.it"
+   * Example: "dev.app.turboangebot.de"
    */
   val devDomain: Domain
     get() = Domain("dev.${domain.value}")
 
   /**
    * The demo environment domain.
-   * Example: "demo.elektromeister.neckar.it"
+   * Example: "demo.app.turboangebot.de"
    */
   val demoDomain: Domain
     get() = Domain("demo.${domain.value}")

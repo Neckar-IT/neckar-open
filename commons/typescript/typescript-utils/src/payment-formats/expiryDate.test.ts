@@ -1,20 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { formatExpiryDate, formatExpiryDateForDisplay, parseExpiryDate } from "./expiryDate";
-import { loadPaymentFormatCases } from "./paymentFormatsTestSupport";
+import { expiryDateCorpus } from "./expiryDateCorpus";
 
-interface ExpiryDateCorpus {
-  purpose: string;
-  cases: { wire: string; year: number; month: number }[];
-}
-
-const corpus = loadPaymentFormatCases<ExpiryDateCorpus>("commons/payment/src/jvmTest/resources/ExpiryDate.cases.json");
+const wireCases = expiryDateCorpus.cases.flatMap(({ wire, year, month }) => (wire == null ? [] : [{ wire, year, month }]));
 
 describe("expiryDate against its corpus", () => {
-  it.each(corpus.cases)("parses $wire", ({ wire, year, month }) => {
+  it.each(wireCases)("parses $wire", ({ wire, year, month }) => {
     expect(parseExpiryDate(wire)).toEqual({ year, month });
   });
 
-  it.each(corpus.cases)("formats $year/$month as $wire", ({ wire, year, month }) => {
+  it.each(wireCases)("formats $year/$month as $wire", ({ wire, year, month }) => {
     expect(formatExpiryDate({ year, month })).toBe(wire);
   });
 });

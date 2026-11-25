@@ -159,7 +159,7 @@ class ContainerRoundTripTest {
   fun ignoresUnknownFieldsOfTheTypeEntry() {
     val bytes = rawContainer(
       "meta/version" to "1.0.0",
-      "meta/type/1.0.0" to """{"name": "it.neckar.backup.archive", "version": "2.3.0", "description": "Backup elektromeister"}""",
+      "meta/type/1.0.0" to """{"name": "it.neckar.backup.archive", "version": "2.3.0", "description": "Backup turboangebot"}""",
     )
 
     ContainerReader(bytes.toSource(), backupExpectation).use { reader ->

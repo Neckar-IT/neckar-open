@@ -3,8 +3,8 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { useForm, useWatch } from "react-hook-form";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AdjustableValueTextExtended } from "../components/inputs/adjustable-value-text-input/AdjustableValueTextInput";
-import { companionQueryKey } from "./useConnectFormCompanion";
 import { type DisplayNameCompanionResponse, useConnectDisplayNameCompanion } from "./useConnectDisplayNameCompanion";
+import { companionQueryKey } from "./useConnectFormCompanion";
 
 const fetchSpy = vi.fn<(input: { firstName: string | null; lastName: string | null }) => Promise<DisplayNameCompanionResponse>>();
 

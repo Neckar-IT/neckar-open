@@ -127,13 +127,13 @@ fun Application.installProductCors(
         // Vite dev server
         allowHost("localhost:${port.value}", listOf("http", "https"))
       }
-      // Traefik local dev (e.g., "elektromeister.localdev")
+      // Traefik local dev (e.g., "app.turboangebot.localdev")
       allowHost(domain.localhostDomain.value, listOf("http", "https"))
-      // Production (e.g., "elektromeister.neckar.it")
+      // Production (e.g., "app.turboangebot.de")
       allowHost(domain.domain.value, listOf("https"))
-      // Dev environment (e.g., "dev.elektromeister.neckar.it")
+      // Dev environment (e.g., "dev.app.turboangebot.de")
       allowHost(domain.devDomain.value, listOf("https"))
-      // Demo environment (e.g., "demo.elektromeister.neckar.it")
+      // Demo environment (e.g., "demo.app.turboangebot.de")
       allowHost(domain.demoDomain.value, listOf("https"))
     }
 

@@ -56,7 +56,7 @@ class OpenApiMetaDataServersTest {
       description = "Test",
       servers = listOf(
         Url.absolute("http://localhost:10900/"),
-        Url.absolute("http://elektromeister.localdev/"),
+        Url.absolute("http://app.turboangebot.localdev/"),
         Url.absolute("http://127.0.0.1:8080/"),
         Url.absolute("http://10.0.0.5/"),
         Url.absolute("http://192.168.1.10/"),

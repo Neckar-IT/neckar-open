@@ -49,7 +49,7 @@ value class Hostname(val value: String) {
     get() = value.substringBefore('.')
 
   /**
-   * The name a constant takes for this host: `worker-01-host` → `Worker01Host`, `dev.elektromeister.neckar.it` → `DevElektromeister`.
+   * The name a constant takes for this host: `worker-01-host` → `Worker01Host`, `dev.app.turboangebot.de` → `DevTurboangebot`.
    * The `Host` part stays: `auth.neckar.it` is Keycloak, `auth-host.neckar.it` the machine under it.
    */
   val constantName: String

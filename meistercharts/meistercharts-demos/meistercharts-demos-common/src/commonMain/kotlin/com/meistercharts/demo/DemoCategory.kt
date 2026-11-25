@@ -45,7 +45,7 @@ enum class DemoCategory(
    */
   NeckarIT(Visibility.Public),
 
-  Elektromeister(Visibility.Public),
+  Turboangebot(Visibility.Public),
 
   /**
    * Contains framework-related demos

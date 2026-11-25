@@ -69,6 +69,23 @@ class AccessReturnsNoCollectionTest {
   }
 
   @Test
+  fun `flags a function with a context parameter that returns a collection`() {
+    val findings = rule.lintWithContext(
+      environment,
+      """
+      package it.neckar.example
+
+      class BookReviewAccess(bookReviewCollection: CollectionPerTenant<BookReviewEntity>) {
+        context(tx: ActiveTransaction)
+        suspend fun countActiveByBookIdPerRating(bookId: Book.Id, tenantId: Tenant.Id): List<RatingCount> = TODO()
+      }
+      """.trimIndent(),
+    )
+
+    assertThat(findings.map { it.message.substringBefore(" returns") }).containsExactlyInAnyOrder("BookReviewAccess.countActiveByBookIdPerRating")
+  }
+
+  @Test
   fun `accepts a flow, a page and a single result`() {
     val findings = rule.lintWithContext(
       environment,

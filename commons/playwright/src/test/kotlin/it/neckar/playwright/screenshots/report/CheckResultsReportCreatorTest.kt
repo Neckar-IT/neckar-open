@@ -49,13 +49,13 @@ class CheckResultsReportCreatorTest {
     val reportFile = CheckResultsReportCreator(configuration).createReport(
       listOf(
         passed(configuration, "https://neckar.it"),
-        failed("https://dev.elektromeister.neckar.it/projects", "Socket timeout has expired"),
+        failed("https://dev.app.turboangebot.de/projects", "Socket timeout has expired"),
       )
     )
 
     val report = reportFile.readText()
     assertThat(report).contains("https://neckar.it")
-    assertThat(report).contains("https://dev.elektromeister.neckar.it/projects")
+    assertThat(report).contains("https://dev.app.turboangebot.de/projects")
     assertThat(report).contains("Socket timeout has expired")
   }
 

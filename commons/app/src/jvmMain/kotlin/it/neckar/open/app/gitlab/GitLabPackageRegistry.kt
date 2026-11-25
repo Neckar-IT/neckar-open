@@ -60,7 +60,7 @@ data class GitLabPackageRegistry(
   }
 
   /**
-   * The name of a generic package, e.g. `elektromeister-db-snapshot`.
+   * The name of a generic package, e.g. `turboangebot-db-snapshot`.
    */
   @JvmInline
   value class PackageName(val value: String) {
@@ -95,7 +95,7 @@ data class GitLabPackageRegistry(
   }
 
   /**
-   * The name of one file within a generic package, e.g. `elektromeister-prod.mongodump.gz`.
+   * The name of one file within a generic package, e.g. `turboangebot-prod.mongodump.gz`.
    */
   @JvmInline
   value class PackageFileName(val value: String) {

@@ -31,7 +31,7 @@ import io.ktor.http.*
 
 /**
  * The header key identifying which backend service produced the response, e.g.
- * `PatternService`, `ElektroMeisterService`, `GitLabCompanionService`.
+ * `PatternService`, `TurboangebotService`, `GitLabCompanionService`.
  *
  * Useful when multiple services sit behind the same reverse proxy and a response
  * looks wrong — the header pinpoints which one to inspect.

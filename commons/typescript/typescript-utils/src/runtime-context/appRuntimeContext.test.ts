@@ -30,12 +30,12 @@ describe("appRuntimeContext", () => {
   it("reads all three axes the deployment injected", () => {
     injectMeta(RuntimeContextMetaNames.executionEnvironment, ExecutionEnvironment.Docker);
     injectMeta(RuntimeContextMetaNames.deploymentStage, DeploymentStage.Demo);
-    injectMeta(RuntimeContextMetaNames.serviceHost, "demo.elektromeister.neckar.it");
+    injectMeta(RuntimeContextMetaNames.serviceHost, "demo.app.turboangebot.de");
 
     expect(appRuntimeContext()).toEqual({
       executionEnvironment: ExecutionEnvironment.Docker,
       deploymentStage: DeploymentStage.Demo,
-      serviceHost: "demo.elektromeister.neckar.it",
+      serviceHost: "demo.app.turboangebot.de",
     });
   });
 

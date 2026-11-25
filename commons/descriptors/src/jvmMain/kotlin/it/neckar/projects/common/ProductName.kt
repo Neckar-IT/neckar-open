@@ -31,7 +31,7 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
- * The `nickname` of a deployment (kebab-case), e.g. `elektromeister-demo`.
+ * The `nickname` of a deployment (kebab-case), e.g. `turboangebot-demo`.
  */
 @JvmInline
 @Serializable

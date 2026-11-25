@@ -20,13 +20,13 @@ export interface AvailableFeatureFlag {
 /**
  * Fetches the available feature flags from the server.
  *
- * @param baseUrl - The base URL of the service API (e.g., "/api/elektromeister")
+ * @param baseUrl - The base URL of the service API (e.g., "/api/turboangebot")
  * @param fetchFn - Optional fetch function (defaults to global fetch). Pass a custom fetch for testing or SSR.
  * @returns List of available feature flags
  *
  * @example
  * ```typescript
- * const flags = await fetchAvailableFeatureFlags("/api/elektromeister");
+ * const flags = await fetchAvailableFeatureFlags("/api/turboangebot");
  * // flags = [{ key: "slowUI", description: "Delay actions in the UI" }, ...]
  * ```
  */

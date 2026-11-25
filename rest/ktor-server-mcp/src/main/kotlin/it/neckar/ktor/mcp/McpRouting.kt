@@ -76,6 +76,14 @@ class McpRouting(
   val allowedHosts: List<String>,
   val authentication: McpAuthentication,
   /**
+   * Reported as `instructions` of `initialize`: what the server is for and how its tools fit together; a client puts it into the model's context.
+   */
+  val instructions: String?,
+  /**
+   * Listed by `prompts/list`; a server without prompts declares no prompts capability.
+   */
+  val prompts: List<McpPrompt>,
+  /**
    * Adds the tools to the server created for each request; the tools read the caller from the [ApplicationCall].
    */
   val registerTools: Server.(ApplicationCall) -> Unit,
@@ -169,15 +177,18 @@ class McpRouting(
   private fun createServer(call: ApplicationCall): Server {
     return Server(
       serverInfo = Implementation(name = serverName.value, version = VersionInformation.version, title = serverTitle.value, websiteUrl = websiteUrl.value),
+      instructionsProvider = instructions?.let { text -> { text } },
       options = ServerOptions(
         capabilities = ServerCapabilities(
           tools = ServerCapabilities.Tools(listChanged = false),
+          prompts = if (prompts.isEmpty()) null else ServerCapabilities.Prompts(listChanged = false),
           // Resources carry the HTML of MCP Apps (addMcpApp); a server without apps lists none.
           resources = ServerCapabilities.Resources(listChanged = false, subscribe = false),
           extensions = mapOf(mcpAppsExtension to JsonObject(emptyMap())),
         ),
       ),
     ) {
+      this@McpRouting.prompts.forEach { prompt -> addPrompt(prompt) }
       registerTools(call)
     }
   }

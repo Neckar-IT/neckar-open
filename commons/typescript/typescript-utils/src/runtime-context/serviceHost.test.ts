@@ -31,9 +31,9 @@ afterEach(() => {
 
 describe("serviceHost", () => {
   it("reports the injected hostname", () => {
-    inject("dev.elektromeister.neckar.it");
+    inject("dev.app.turboangebot.de");
 
-    expect(serviceHost()).toBe("dev.elektromeister.neckar.it");
+    expect(serviceHost()).toBe("dev.app.turboangebot.de");
   });
 
   it("reports nothing when no meta tag was injected", () => {
