@@ -38,22 +38,22 @@ import it.neckar.open.formatting.dateFormat
 import it.neckar.open.formatting.dateTimeFormat
 import it.neckar.open.formatting.dateTimeFormatShort
 import it.neckar.open.formatting.dateTimeFormatShortWithMillis
-import it.neckar.open.formatting.formatUtc
 import it.neckar.open.formatting.yearMonthFormat
 import it.neckar.open.i18n.I18nConfiguration
 import it.neckar.open.kotlin.lang.floor
-import it.neckar.open.kotlin.lang.isCloseToOrLessThan
 import it.neckar.open.kotlin.lang.log10
 import it.neckar.open.kotlin.lang.roundDownToBase
-import it.neckar.open.kotlin.lang.toIntCeil
-import it.neckar.open.kotlin.lang.toIntFloor
 import it.neckar.open.time.formatUtcForDebug
 import it.neckar.open.unit.other.Inclusive
 import it.neckar.open.unit.si.ms
 import it.neckar.open.unit.si.s
 import it.neckar.open.unit.time.a
 import it.neckar.open.unit.time.min
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
 import kotlin.math.pow
+import kotlin.math.ulp
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -61,12 +61,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 /**
- * Describes a time tick distance
- *
- * ATTENTION: The time zone is *not* supported if it is different from the local time zone.
- * JS does not support other time zones than the currently set.
- *
- * But: In the future we want to support other time zones somehow.
+ * Every computation runs in constant time per tick, within [TimeTickDistance.MinSupportedMillis] to [TimeTickDistance.MaxSupportedMillis].
  */
 sealed interface TimeTickDistance : Comparable<TimeTickDistance> {
   /**
@@ -76,9 +71,16 @@ sealed interface TimeTickDistance : Comparable<TimeTickDistance> {
   fun calculateTicks(
     start: @ms @Inclusive Double,
     end: @ms @Inclusive Double,
-    timeZone: TimeZone, //TODO remove time zone - or check if the timezone is valid!
+    timeZone: TimeZone,
   ): @ms DoubleArrayList {
-    require(start < end) { "Start <${start.formatUtc()}> must be smaller than end <${end.formatUtc()}>" }
+    require(start < end) { "Start <${start.formatUtcForDebug()}> must be smaller than end <${end.formatUtcForDebug()}>" }
+    require(start >= MinSupportedMillis && end <= MaxSupportedMillis) {
+      "Ticks between $start and $end leave the supported range $MinSupportedMillis..$MaxSupportedMillis"
+    }
+    val estimatedTicks = (end - start) / shortestMeanDistance()
+    require(estimatedTicks <= MaxTicks) {
+      "$estimatedTicks ticks of $this between ${start.formatUtcForDebug()} and ${end.formatUtcForDebug()} exceed $MaxTicks"
+    }
 
     val ticks = calculateTicksInternal(start, end, timeZone)
 
@@ -86,8 +88,8 @@ sealed interface TimeTickDistance : Comparable<TimeTickDistance> {
     if (ticks.isNotEmpty()) {
       @ms val firstTick: @ms Double = ticks.first()
 
-      require(firstTick.isCloseToOrLessThan(start, 1.0)) {
-        "First tick (${firstTick.formatUtc()}) must be before/same as start (${start.formatUtc()}) for $this. (start: ${start.formatUtc()} - end: ${end.formatUtc()}"
+      require(firstTick.isAtOrBefore(start)) {
+        "First tick (${firstTick.formatUtcForDebug()}) must be before/same as start (${start.formatUtcForDebug()}) for $this. (start: ${start.formatUtcForDebug()} - end: ${end.formatUtcForDebug()}"
       }
     }
 
@@ -156,6 +158,21 @@ sealed interface TimeTickDistance : Comparable<TimeTickDistance> {
   val timeMagnitude: TimeMagnitude
 
   companion object {
+    /**
+     * The largest number of ticks [calculateTicks] computes; a smaller distance for the same span throws.
+     */
+    const val MaxTicks: Int = 10_000
+
+    /**
+     * The first day of `Year.Min` plus one day, so that every time zone offset keeps the start inside `LocalDate`.
+     */
+    val MinSupportedMillis: @ms Double = LocalDate.MinMillis + TimeConstants.MillisPerDay
+
+    /**
+     * One day before `Year.Max` starts: the ticks of months and days step up to one distance past the end and stay inside `LocalDate`.
+     */
+    val MaxSupportedMillis: @ms Double = LocalDate(Year.Max, Month.January, DayOfMonth.FirstDay).toEpochDay() * TimeConstants.MillisPerDay - TimeConstants.MillisPerDay
+
     /**
      * Returns the ideal time tick distance for the given min tick distance - use when calculating ticks
      */
@@ -258,9 +275,18 @@ sealed interface TimeTickDistance : Comparable<TimeTickDistance> {
 }
 
 /**
- * Distance in years
+ * Distance in years; [yearNumbering] decides which years carry a tick.
  */
-class DistanceYears(val distanceInYears: @a Int) : TimeTickDistance {
+class DistanceYears(
+  val distanceInYears: @a Long,
+  val yearNumbering: YearNumbering = YearNumbering.Astronomical,
+) : TimeTickDistance {
+  constructor(distanceInYears: @a Int) : this(distanceInYears.toLong())
+
+  init {
+    require(distanceInYears in 1..MaxDistanceInYears) { "distanceInYears <$distanceInYears> outside 1..$MaxDistanceInYears" }
+  }
+
   override val timeMagnitude: TimeTickDistance.TimeMagnitude = TimeTickDistance.TimeMagnitude.Years
 
   override fun typicalDistanceForComparison(): @ms Double {
@@ -268,19 +294,20 @@ class DistanceYears(val distanceInYears: @a Int) : TimeTickDistance {
   }
 
   override fun calculateTicksInternal(start: Double, end: Double, timeZone: TimeZone): DoubleArrayList {
-    val startLocalDateExact = LocalDate.fromMillisCurrentTimeZone(start, timeZone).atStartOfYear()
-    val endLocalDate = LocalDate.fromMillisCurrentTimeZone(end, timeZone).atStartOfNextYear()
-
-    val startLocalDate = startLocalDateExact.withYear(
-      Year(startLocalDateExact.year.value.roundDownToBase(distanceInYears))
-    )
+    val startYear = LocalDate.fromMillisCurrentTimeZone(start, timeZone).year.value
+    val endYear = LocalDate.fromMillisCurrentTimeZone(end, timeZone).year.value + 1
 
     return DoubleArrayList().also {
-      var current = startLocalDate
+      var current = yearNumbering.tickAtOrBefore(startYear, distanceInYears)
+      if (current < Year.MinValue) {
+        // The first year of LocalDate stands in for the tick before it; the next tick lies on the grid again.
+        it.add(LocalDate(Year.Min, Month.January, DayOfMonth.FirstDay).toMillisAtStartOfDay(timeZone))
+        current = yearNumbering.nextTick(current, distanceInYears)
+      }
 
-      while (current <= endLocalDate) {
-        it.add(current.toMillisAtStartOfDay(timeZone))
-        current = current.plusYears(distanceInYears)
+      while (current <= endYear) {
+        it.add(LocalDate(Year(current), Month.January, DayOfMonth.FirstDay).toMillisAtStartOfDay(timeZone))
+        current = yearNumbering.nextTick(current, distanceInYears)
       }
     }
   }
@@ -288,19 +315,13 @@ class DistanceYears(val distanceInYears: @a Int) : TimeTickDistance {
   override fun formatAsOffset(millis: @ms Double, i18nConfiguration: I18nConfiguration): String {
     val localDate = LocalDate.fromMillisCurrentTimeZone(millis, i18nConfiguration.timeZone)
 
-    if (distanceInYears == 1) {
-      return localDate.year.value.toString()
-    }
-
-    val yearAsInt = localDate.year.value
-    val floored = yearAsInt / distanceInYears * distanceInYears
-
-    return floored.toString()
+    // The first year of LocalDate stands in for a tick before it.
+    return yearNumbering.tickAtOrBefore(localDate.year.value, distanceInYears).coerceAtLeast(Year.MinValue).toString()
   }
 
   override fun calculateEstimatedIndex(millis: @ms Double, timeZone: TimeZone): GlobalTimeIndex {
     val localDate = LocalDate.fromMillisCurrentTimeZone(millis, timeZone)
-    return GlobalTimeIndex(localDate.year.value / distanceInYears)
+    return GlobalTimeIndex(yearNumbering.tickIndex(localDate.year.value, distanceInYears).toGlobalIndexValue())
   }
 
   @Hot
@@ -308,8 +329,15 @@ class DistanceYears(val distanceInYears: @a Int) : TimeTickDistance {
     return DistanceDays(EveryDay)
   }
 
+  /**
+   * This distance with ticks at the years of [yearNumbering]
+   */
+  fun withYearNumbering(yearNumbering: YearNumbering): DistanceYears {
+    return DistanceYears(distanceInYears, yearNumbering)
+  }
+
   override fun toString(): String {
-    return "DistanceYears($distanceInYears)"
+    return "DistanceYears($distanceInYears, $yearNumbering)"
   }
 
   companion object {
@@ -319,8 +347,13 @@ class DistanceYears(val distanceInYears: @a Int) : TimeTickDistance {
       val magnitude = 10.0.pow(log10)
       val factor = factors.calculateFactor(minTickDistanceInYears / magnitude)
       val tickDistanceYears = magnitude * factor
-      return DistanceYears(tickDistanceYears.toIntCeil())
+      return DistanceYears(ceil(tickDistanceYears).toLong().coerceAtMost(MaxDistanceInYears))
     }
+
+    /**
+     * Ten billion years: the widest window of 30 billion years spans 3 ticks.
+     */
+    const val MaxDistanceInYears: @a Long = 10_000_000_000L
 
     val OneYear: DistanceYears = DistanceYears(1)
   }
@@ -353,7 +386,7 @@ class DistanceMonths(val distanceInMonths: Int) : TimeTickDistance {
 
       while (current <= endLocalDate) {
         it.add(current.toMillisAtStartOfDay(timeZone))
-        current = current.plusMonths(distanceInMonths)
+        current = current.plusMonths(distanceInMonths.toLong())
       }
     }
   }
@@ -364,7 +397,7 @@ class DistanceMonths(val distanceInMonths: Int) : TimeTickDistance {
 
   override fun calculateEstimatedIndex(millis: Double, timeZone: TimeZone): GlobalTimeIndex {
     val localDate = LocalDate.fromMillisCurrentTimeZone(millis, timeZone)
-    return GlobalTimeIndex(localDate.monthOfEpoche() / distanceInMonths)
+    return GlobalTimeIndex(localDate.monthOfEpoche().floorDiv(distanceInMonths.toLong()).toGlobalIndexValue())
   }
 
   @Hot
@@ -510,7 +543,7 @@ class DistanceDays(val ticksPerMonth: TicksPerMonth) : TimeTickDistance {
 
   override fun calculateTicksInternal(start: Double, end: Double, timeZone: TimeZone): DoubleArrayList {
     val startLocalDateExact = LocalDate.fromMillisCurrentTimeZone(start, timeZone)
-    val endLocalDate = LocalDate.fromMillisCurrentTimeZone(end, timeZone).plusDays(ticksPerMonth.worstCaseDaysDistance())
+    val endLocalDate = LocalDate.fromMillisCurrentTimeZone(end, timeZone).plusDays(ticksPerMonth.worstCaseDaysDistance().toLong())
 
     val startLocalDate = startLocalDateExact.withDay(
       ticksPerMonth.sameOrBelow(startLocalDateExact.dayOfMonth)
@@ -534,7 +567,7 @@ class DistanceDays(val ticksPerMonth: TicksPerMonth) : TimeTickDistance {
 
     val tickOfEpoche = monthOfEpoche * ticksPerMonth.ticksPerMonth() + dayOfMonth.value / ticksPerMonth.typicalCaseDaysDistance()
 
-    return GlobalTimeIndex(tickOfEpoche)
+    return GlobalTimeIndex(tickOfEpoche.toGlobalIndexValue())
   }
 
   @Hot
@@ -575,22 +608,7 @@ class DistanceHours(val distanceInHours: Int) : TimeTickDistance {
 
     val startLocalDateTime = startLocalDateTimeExact.atStartOfHour(startHour)
     @ms val startMillis = startLocalDateTime.toMillis(timeZone)
-
-    require(startMillis <= start) {
-      "startMillis: ${startMillis.formatUtcForDebug()} must be <= ${start.formatUtcForDebug()}"
-    }
-
-    return DoubleArrayList().also { list ->
-      @ms var current = startMillis
-      while (current <= end) {
-        list.add(current)
-        current += distanceInHours * TimeConstants.MillisPerHour
-
-        require(list.size < 1000) {
-          "List too large. Current ${current.formatUtcForDebug()}. End: ${end.formatUtcForDebug()}"
-        }
-      }
-    }
+    return fixedStepTicks(startMillis, end, distanceInHours * TimeConstants.MillisPerHour)
   }
 
   override fun formatAsOffset(millis: Double, i18nConfiguration: I18nConfiguration): String {
@@ -598,7 +616,7 @@ class DistanceHours(val distanceInHours: Int) : TimeTickDistance {
   }
 
   override fun calculateEstimatedIndex(millis: Double, timeZone: TimeZone): GlobalTimeIndex {
-    return GlobalTimeIndex((millis / TimeConstants.MillisPerHour).toInt())
+    return GlobalTimeIndex(floor(millis / TimeConstants.MillisPerHour).toLong().toGlobalIndexValue())
   }
 
   @Hot
@@ -633,20 +651,8 @@ class DistanceMinutes(val distanceInMinutes: @min Int) : TimeTickDistance {
   }
 
   override fun calculateTicksInternal(start: Double, end: Double, timeZone: TimeZone): DoubleArrayList {
-    @min val startMinuteOfEpoch = (start / TimeConstants.MillisPerMinute).toIntFloor().roundDownToBase(distanceInMinutes)
-    @ms val startMillis = startMinuteOfEpoch * TimeConstants.MillisPerMinute
-
-    return DoubleArrayList().also { list ->
-      @ms var current = startMillis
-      while (current <= end) {
-        list.add(current)
-        current += distanceInMinutes * TimeConstants.MillisPerMinute
-
-        require(list.size < 1000) {
-          "List too large. Current ${current.formatUtcForDebug()}. End: ${end.formatUtcForDebug()}"
-        }
-      }
-    }
+    @ms val step = distanceInMinutes * TimeConstants.MillisPerMinute
+    return fixedStepTicks(start.roundDownToBase(step), end, step)
   }
 
   override fun formatAsOffset(millis: Double, i18nConfiguration: I18nConfiguration): String {
@@ -654,8 +660,8 @@ class DistanceMinutes(val distanceInMinutes: @min Int) : TimeTickDistance {
   }
 
   override fun calculateEstimatedIndex(millis: Double, timeZone: TimeZone): GlobalTimeIndex {
-    @min val minuteOfEpoch = (millis / TimeConstants.MillisPerMinute).toIntFloor()
-    return GlobalTimeIndex(minuteOfEpoch / distanceInMinutes)
+    @min val minuteOfEpoch = floor(millis / TimeConstants.MillisPerMinute).toLong()
+    return GlobalTimeIndex(minuteOfEpoch.floorDiv(distanceInMinutes.toLong()).toGlobalIndexValue())
   }
 
   @Hot
@@ -691,19 +697,7 @@ class DistanceSeconds(val distanceInSeconds: @s Int) : TimeTickDistance {
 
   override fun calculateTicksInternal(start: Double, end: Double, timeZone: TimeZone): DoubleArrayList {
     @s val startSecondOfEpoch = (start / TimeConstants.MillisPerSecond).roundDownToBase(distanceInSeconds.toDouble())
-    @ms val startMillis = startSecondOfEpoch * TimeConstants.MillisPerSecond
-
-    return DoubleArrayList().also { list ->
-      @ms var current = startMillis
-      while (current <= end) {
-        list.add(current)
-        current += distanceInSeconds * TimeConstants.MillisPerSecond
-
-        require(list.size < 1000) {
-          "List too large. Current ${current.formatUtcForDebug()}. End: ${end.formatUtcForDebug()}"
-        }
-      }
-    }
+    return fixedStepTicks(startSecondOfEpoch * TimeConstants.MillisPerSecond, end, distanceInSeconds * TimeConstants.MillisPerSecond)
   }
 
   override fun formatAsOffset(millis: Double, i18nConfiguration: I18nConfiguration): String {
@@ -711,8 +705,8 @@ class DistanceSeconds(val distanceInSeconds: @s Int) : TimeTickDistance {
   }
 
   override fun calculateEstimatedIndex(millis: Double, timeZone: TimeZone): GlobalTimeIndex {
-    @s val startSecondOfEpoch = (millis / TimeConstants.MillisPerSecond) % Int.MAX_VALUE
-    return GlobalTimeIndex(startSecondOfEpoch.toIntFloor() / distanceInSeconds)
+    @s val secondOfEpoch = floor(millis / TimeConstants.MillisPerSecond).toLong()
+    return GlobalTimeIndex(secondOfEpoch.floorDiv(distanceInSeconds.toLong()).toGlobalIndexValue())
   }
 
   @Hot
@@ -751,23 +745,7 @@ class DistanceMillis(val distanceInMillis: @ms Double) : TimeTickDistance {
   }
 
   override fun calculateTicksInternal(start: Double, end: Double, timeZone: TimeZone): DoubleArrayList {
-    @ms val startMillis: Double = if (distanceInMillis < 0.0) {
-      start
-    } else {
-      start.roundDownToBase(distanceInMillis)
-    }
-
-    return DoubleArrayList().also { list ->
-      @ms var current = startMillis
-      while (current <= end) {
-        list.add(current)
-        current += distanceInMillis
-
-        require(list.size < 1000) {
-          "List too large. Current ${current.formatUtcForDebug()}. End: ${end.formatUtcForDebug()}"
-        }
-      }
-    }
+    return fixedStepTicks(start.roundDownToBase(distanceInMillis), end, distanceInMillis)
   }
 
   override fun formatAsOffset(millis: Double, i18nConfiguration: I18nConfiguration): String {
@@ -775,7 +753,7 @@ class DistanceMillis(val distanceInMillis: @ms Double) : TimeTickDistance {
   }
 
   override fun calculateEstimatedIndex(millis: Double, timeZone: TimeZone): GlobalTimeIndex {
-    return GlobalTimeIndex(((millis / this.distanceInMillis) % Int.MAX_VALUE).toInt())
+    return GlobalTimeIndex(floor(millis / distanceInMillis).toLong().toGlobalIndexValue())
   }
 
   @Hot
@@ -825,5 +803,65 @@ enum class Factors(val values: DoubleArray) {
       factor *= values.last()
     }
     return factor
+  }
+}
+
+/**
+ * Whether this tick lies at or before [start]; subtracting and adding a time zone offset far from 1970 moves a tick by the resolution of `Double`.
+ */
+private fun Double.isAtOrBefore(start: @ms Double): Boolean {
+  return this - start <= max(1.0, start.ulp)
+}
+
+/**
+ * The mean distance of neighbouring ticks in the shortest months, so that [TimeTickDistance.MaxTicks] bounds every span.
+ */
+private fun TimeTickDistance.shortestMeanDistance(): @ms Double {
+  return when (this) {
+    is DistanceDays -> ShortestMonthMillis / ticksPerMonth.ticksPerMonth()
+    is DistanceMonths -> ShortestMonthMillis * distanceInMonths
+    is DistanceYears, is DistanceHours, is DistanceMinutes, is DistanceSeconds, is DistanceMillis -> typicalDistanceForComparison()
+  }
+}
+
+private const val ShortestMonthMillis: @ms Double = 28 * TimeConstants.MillisPerDay
+
+/**
+ * Ticks at [firstTick] plus every multiple of [step] up to [end].
+ *
+ * Each tick is computed from its index: far from 1970 an addition below the resolution of `Double`
+ * leaves the value unchanged, and equal neighbors are dropped.
+ */
+private fun fixedStepTicks(firstTick: @ms Double, end: @ms Double, step: @ms Double): @ms DoubleArrayList {
+  require(step > 0.0) { "step must be > 0 but was <$step>" }
+  return DoubleArrayList().also { list ->
+    var index = 0L
+    while (true) {
+      @ms val tick = firstTick + index * step
+      if (tick > end) {
+        return@also
+      }
+      if (list.isEmpty() || list[list.size - 1] != tick) {
+        list.add(tick)
+      }
+      index++
+    }
+  }
+}
+
+/**
+ * The index within the range of `Int`; `rem` keeps the sign, so the indices below and above 0 stay neighbours.
+ */
+private fun Long.toGlobalIndexValue(): Int {
+  return rem(Int.MAX_VALUE.toLong()).toInt()
+}
+
+/**
+ * This distance with the ticks of [yearNumbering] if it is a [DistanceYears]
+ */
+fun TimeTickDistance.withYearNumbering(yearNumbering: YearNumbering): TimeTickDistance {
+  return when (this) {
+    is DistanceYears -> withYearNumbering(yearNumbering)
+    is DistanceMonths, is DistanceDays, is DistanceHours, is DistanceMinutes, is DistanceSeconds, is DistanceMillis -> this
   }
 }

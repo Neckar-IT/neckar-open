@@ -1,5 +1,6 @@
 import it.neckar.gradle.addKotlinDependencies
 import it.neckar.gradle.addKotlinTestDependencies
+import it.neckar.gradle.registerMultiplatformPerformanceTest
 import it.neckar.projects.Projects
 import it.neckar.projects.project
 
@@ -67,3 +68,6 @@ kotlin {
     }
   }
 }
+
+// Measures the tick computation per frame: `./gradlew :internal:open:meistercharts:meistercharts-core:performanceTest`
+registerMultiplatformPerformanceTest("performanceTest")

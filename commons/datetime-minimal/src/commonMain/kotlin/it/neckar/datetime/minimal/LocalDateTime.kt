@@ -28,6 +28,7 @@
 package it.neckar.datetime.minimal
 
 import it.neckar.open.unit.si.ms
+import kotlin.math.floor
 
 /**
  * Represents a local date + time
@@ -101,6 +102,13 @@ data class LocalDateTime(
     return format()
   }
 
+  /**
+   * The instant of this local date and time at the time zone [offset] (local minus UTC).
+   */
+  fun toMillis(offset: @ms Double): @ms Double {
+    return date.toEpochDay() * TimeConstants.MillisPerDay + time.millisOfDay() - offset
+  }
+
   companion object {
     /**
      * Creates a new instance
@@ -114,9 +122,47 @@ data class LocalDateTime(
         LocalTime(hour, minute, second, millis)
       )
     }
+
+    /**
+     * The date and time at [millis] shifted by the time zone [offset] (local minus UTC).
+     */
+    fun fromMillis(millis: @ms Double, offset: @ms Double): LocalDateTime {
+      val localMillis = millis + offset
+      LocalDate.requireMillisInRange(localMillis)
+      val epochDay = LocalDate.epochDayAt(localMillis)
+      // Beyond 292 million years from 1970 the remainder misses its day by the resolution of Double.
+      val millisOfDay = floor(localMillis - epochDay * TimeConstants.MillisPerDay).toInt().coerceIn(0, LocalTime.MillisPerDayInt - 1)
+      return LocalDateTime(LocalDate.ofEpochDay(epochDay), LocalTime.ofMillisOfDay(millisOfDay))
+    }
   }
 }
 
-expect fun LocalDateTime.Companion.fromMillisCurrentTimeZone(millis: @ms Double, expectedTimeZone: TimeZone): LocalDateTime
+/**
+ * The date and time at [millis] in [expectedTimeZone], with the offset from [timeZoneOffsetProvider].
+ */
+fun LocalDateTime.Companion.fromMillisCurrentTimeZone(millis: @ms Double, expectedTimeZone: TimeZone): LocalDateTime {
+  return fromMillis(millis, timeZoneOffsetProvider.offset(millis, expectedTimeZone))
+}
 
-expect fun LocalDateTime.toMillis(timeZone: TimeZone): @ms Double
+/**
+ * The instant of this local date and time in [timeZone].
+ *
+ * Resolves a transition like `java.time.ZonedDateTime.of`: a time in the gap moves forward by the
+ * length of the gap, a time in the overlap takes the earlier offset.
+ */
+fun LocalDateTime.toMillis(timeZone: TimeZone): @ms Double {
+  val localMillis = toMillis(offset = 0.0)
+  val offsetBefore = timeZoneOffsetProvider.offset(localMillis - TimeConstants.MillisPerDay, timeZone)
+  val offsetAfter = timeZoneOffsetProvider.offset(localMillis + TimeConstants.MillisPerDay, timeZone)
+
+  val candidateBefore = localMillis - offsetBefore
+  if (timeZoneOffsetProvider.offset(candidateBefore, timeZone) == offsetBefore) {
+    return candidateBefore
+  }
+  val candidateAfter = localMillis - offsetAfter
+  if (timeZoneOffsetProvider.offset(candidateAfter, timeZone) == offsetAfter) {
+    return candidateAfter
+  }
+  // Gap: neither offset maps back to this local time.
+  return candidateBefore
+}

@@ -30,11 +30,9 @@ package it.neckar.datetime.minimal
 import assertk.*
 import assertk.assertions.*
 import it.neckar.open.time.formatUtcForDebug
-import it.neckar.open.time.toISOString
 import it.neckar.open.unit.si.ms
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.util.DefaultTimeZone
-import java.time.ZoneOffset
 
 class LocalDateTest {
   val time: @ms Double = 1.546855919123123E12
@@ -71,22 +69,17 @@ class LocalDateTest {
     assertThat(localDate.format()).isEqualTo("2019-01-07")
   }
 
-  @DefaultTimeZone("Europe/Berlin")
   @Test
-  fun testUnbound() {
-    assertThat(LocalDate(2023, 12, 35).toZonedDateTimeAtStartOfDay(TimeZone.Berlin).toISOString()).isEqualTo("2024-01-04T00:00:00+01:00[Europe/Berlin]")
-    assertThat(LocalDate(2023, 12, -2).toZonedDateTimeAtStartOfDay(TimeZone.Berlin).toISOString()).isEqualTo("2023-11-28T00:00:00+01:00[Europe/Berlin]")
-
-    assertThat(LocalDate(2023, 12, 35).toZonedDateTimeAtStartOfDay(TimeZone.Berlin).withZoneSameInstant(ZoneOffset.UTC).toISOString()).isEqualTo("2024-01-03T23:00:00Z")
-    assertThat(LocalDate(2023, 12, -2).toZonedDateTimeAtStartOfDay(TimeZone.Berlin).withZoneSameInstant(ZoneOffset.UTC).toISOString()).isEqualTo("2023-11-27T23:00:00Z")
+  fun testInvalidDayOfMonth() {
+    assertFailure { LocalDate(2023, 12, 35) }.isInstanceOf<IllegalArgumentException>()
+    assertFailure { LocalDate(2023, 12, 0) }.isInstanceOf<IllegalArgumentException>()
   }
 
-  @DefaultTimeZone("Europe/Berlin")
   @Test
   fun testAtStartOfDay() {
-    assertThat(LocalDate(2023,12,35).toMillisAtStartOfDay(TimeZone.Berlin).formatUtcForDebug()).isEqualTo("2024-01-03T23:00:00.000Z")
-    assertThat(LocalDate(2023,12,35).toMillisAtStartOfDay(TimeZone.NewYork).formatUtcForDebug()).isEqualTo("2024-01-04T05:00:00.000Z")
-    assertThat(LocalDate(2023,12,35).toMillisAtStartOfDay(TimeZone.Tokyo).formatUtcForDebug()).isEqualTo("2024-01-03T15:00:00.000Z")
+    assertThat(LocalDate(2024, 1, 4).toMillisAtStartOfDay(TimeZone.Berlin).formatUtcForDebug()).isEqualTo("2024-01-03T23:00:00.000Z")
+    assertThat(LocalDate(2024, 1, 4).toMillisAtStartOfDay(TimeZone.NewYork).formatUtcForDebug()).isEqualTo("2024-01-04T05:00:00.000Z")
+    assertThat(LocalDate(2024, 1, 4).toMillisAtStartOfDay(TimeZone.Tokyo).formatUtcForDebug()).isEqualTo("2024-01-03T15:00:00.000Z")
   }
 
   @Test

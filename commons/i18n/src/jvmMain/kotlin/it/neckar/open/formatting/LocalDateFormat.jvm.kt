@@ -37,7 +37,7 @@ import java.time.format.FormatStyle
 
 actual class DefaultLocalDateFormat : LocalDateFormat {
   actual override fun format(localDate: LocalDate, i18nConfiguration: I18nConfiguration, whitespaceConfig: WhitespaceConfig): String {
-    val javaLocalDate = java.time.LocalDate.of(localDate.year.value, localDate.month.value, localDate.dayOfMonth.value)
+    val javaLocalDate = java.time.LocalDate.of(localDate.year.toInt(), localDate.month.value, localDate.dayOfMonth.value)
 
     val locale = i18nConfiguration.formatLocale.convert()
     val localizedDateTimePattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, null, Chronology.ofLocale(locale), locale)

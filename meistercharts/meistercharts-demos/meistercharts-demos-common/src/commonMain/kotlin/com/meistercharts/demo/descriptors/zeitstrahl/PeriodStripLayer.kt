@@ -30,7 +30,7 @@ import it.neckar.geometry.Direction
  * The period strip at the bottom, right of the tree column: sections of `ics` or `europe-history` after the rules of [PeriodStrip].
  */
 class PeriodStripLayer(
-  private val viewport: DeepTimeViewport,
+  private val viewport: ZeitstrahlPocViewport,
   private val loader: WindowLoader<PeriodizationId, ZeitstrahlPocSection>,
 ) : AbstractLayer() {
   override val type: LayerType = LayerType.Content

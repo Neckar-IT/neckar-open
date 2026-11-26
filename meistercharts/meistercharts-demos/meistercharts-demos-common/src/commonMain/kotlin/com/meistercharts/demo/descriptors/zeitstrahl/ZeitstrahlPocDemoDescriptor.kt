@@ -16,6 +16,12 @@
 package com.meistercharts.demo.descriptors.zeitstrahl
 
 import com.meistercharts.algorithms.layers.addClearBackground
+import com.meistercharts.algorithms.layers.axis.time.CalendarOffsetFormat
+import com.meistercharts.algorithms.layers.axis.time.CalendarTickFormat
+import com.meistercharts.algorithms.layers.axis.time.TimeAxisLayer
+import com.meistercharts.algorithms.layers.axis.time.TimeAxisViewportSource
+import com.meistercharts.algorithms.layers.axis.time.TimeViewportInteractionLayer
+import com.meistercharts.axis.time.YearNumbering
 import com.meistercharts.canvas.DirtyReason
 import com.meistercharts.demo.DemoCategory
 import com.meistercharts.demo.DemoQuality
@@ -25,8 +31,10 @@ import com.meistercharts.demo.PredefinedConfiguration
 import com.meistercharts.demo.VariabilityType
 import com.meistercharts.demo.button
 import com.meistercharts.demo.section
+import com.meistercharts.model.Insets
 import io.ktor.client.plugins.HttpTimeout
 import it.neckar.ktor.client.createHttpClient
+import it.neckar.open.provider.MultiProvider
 import it.neckar.open.time.nowMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -35,20 +43,20 @@ import kotlin.math.min
 import kotlin.uuid.Uuid
 
 /**
- * Proof of concept of zeitstrahl: the entries of the local MongoDB on a deep time axis from the Big Bang down to one day.
+ * Proof of concept of zeitstrahl: the entries of the local MongoDB on a time axis from the Big Bang down to one second.
  * Needs `zeitstrahl-poc-server` on port 8095, see `internal/personal/zeitstrahl/README.md`.
  */
 class ZeitstrahlPocDemoDescriptor : MeisterchartsDemoDescriptor<Nothing> {
   override val uuid: Uuid = Uuid.parse("ba1a35b2-b0dd-491f-aaaf-821d477db5b8")
   override val name: String = "Zeitstrahl PoC"
-  override val description: String = "Entries of the local zeitstrahl MongoDB from the Big Bang down to one day; needs zeitstrahl-poc-server on port 8095"
+  override val description: String = "Entries of the local zeitstrahl MongoDB from the Big Bang down to one second; needs zeitstrahl-poc-server on port 8095"
   override val category: DemoCategory = DemoCategory.ShowCase
   override val quality: DemoQuality = DemoQuality.Low
   override val variabilityType: VariabilityType = VariabilityType.Unstable
 
   override fun prepareDemo(configuration: PredefinedConfiguration<Nothing>?): MeisterchartsDemo {
     return MeisterchartsDemo(this) {
-      val viewport = DeepTimeViewport(presentSeconds = nowMillis() / 1000.0)
+      val viewport = ZeitstrahlPocViewport(presentSeconds = nowMillis() / 1000.0)
       val rowScale = RowScale()
 
       meistercharts {
@@ -80,8 +88,23 @@ class ZeitstrahlPocDemoDescriptor : MeisterchartsDemoDescriptor<Nothing> {
 
         configure {
           layers.addClearBackground()
-          layers.addLayer(DeepTimeViewportInteractionLayer(viewport, rowScale))
-          layers.addLayer(DeepTimeAxisLayer(viewport))
+          val timeAxisLayer = TimeAxisLayer {
+            viewportSource = TimeAxisViewportSource.Explicit(viewport.timeViewport)
+            absoluteTimestampTickFormat = CalendarTickFormat
+            offsetTickFormat = CalendarOffsetFormat
+            yearNumbering = YearNumbering.Calendar
+            margin = Insets.of(top = 0.0, right = 0.0, bottom = ZeitstrahlPocLayout.StripHeight, left = ZeitstrahlPocLayout.TreeWidth)
+            size = ZeitstrahlPocLayout.TimeAxisHeight
+            tickLabelMaxWidth = 150.0
+            tickLabelColor = { SignalColors.ink }
+            lineColor = { SignalColors.tickMark }
+            offsetTickLabelColor = { SignalColors.inkSoft }
+            offsetAreaFills = MultiProvider.modulo(SignalColors.surface, SignalColors.surfaceRaised)
+          }
+          layers.addLayer(TimeViewportInteractionLayer(viewport.timeViewport, visibleStartX = ZeitstrahlPocLayout.TreeWidth, onAltWheel = rowScale::zoomBy))
+          layers.addLayer(ZeitstrahlPocFrameLayer(viewport, timeAxisLayer))
+          layers.addLayer(timeAxisLayer)
+          layers.addLayer(ZeitstrahlPocAxisColumnLayer())
           layers.addLayer(ZeitstrahlPocLanesLayer(viewport, rowScale, lanes, createLaneLoader, createPartsLoader))
           layers.addLayer(PeriodStripLayer(viewport, sectionLoader))
         }
@@ -97,12 +120,12 @@ class ZeitstrahlPocDemoDescriptor : MeisterchartsDemoDescriptor<Nothing> {
     }
   }
 
-  /** The examples of `KONZEPT.md` and further windows down to one day. */
-  private fun jumps(viewport: DeepTimeViewport): List<ZeitstrahlPocJump> {
-    fun day(year: Long, month: Int, day: Int): Double = ProlepticGregorianCalendar.secondsOf(CivilDate(year, month, day))
-    fun millionYearsAgo(millionYears: Double): Double = DeepTimeFormat.secondsOfYearsBeforePresent(millionYears * 1e6)
+  /** The examples of `KONZEPT.md` and further windows down to one second. */
+  private fun jumps(viewport: ZeitstrahlPocViewport): List<ZeitstrahlPocJump> {
+    fun day(year: Long, month: Int, day: Int): Double = ZeitstrahlPocViewport.secondsOf(year, month, day)
+    fun millionYearsAgo(millionYears: Double): Double = ZeitstrahlPocViewport.secondsOfYearsBeforePresent(millionYears * 1e6)
     return listOf(
-      ZeitstrahlPocJump("Urknall bis heute", DeepTimeViewport.BigBangSeconds, viewport.presentSeconds),
+      ZeitstrahlPocJump("Urknall bis heute", ZeitstrahlPocViewport.BigBangSeconds, viewport.presentSeconds),
       ZeitstrahlPocJump("Kreide-Paläogen-Grenze", millionYearsAgo(73.0), millionYearsAgo(57.0)),
       ZeitstrahlPocJump("Letzte 10.000 Jahre", millionYearsAgo(0.01), viewport.presentSeconds),
       ZeitstrahlPocJump("Antike", day(-800, 1, 1), day(500, 1, 1)),

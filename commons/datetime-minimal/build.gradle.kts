@@ -6,17 +6,10 @@ import it.neckar.gradle.addKotlinTestDependencies
 
 import it.neckar.gradle.addAnnotationDependencies
 import it.neckar.gradle.addKotlinDependencies
+import it.neckar.gradle.registerMultiplatformPerformanceTest
 
-// Minimal, multiplatform calendar/time value types (LocalDate/LocalTime/LocalDateTime/TimeZone).
-//
-// USE THIS ONLY WHERE A Kotlin/JS TARGET IS INVOLVED (types shared into a Kotlin/JS frontend).
-// It exists purely because kotlinx-datetime historically was awkward on JS; it is deliberately
-// bare ("without any special checks") and has known rough edges (e.g. the JVM
-// fromMillisCurrentTimeZone system-timezone guard, "time zone ignored on JS").
-//
-// For JVM-only code (Ktor services with a TypeScript frontend, CLIs, migrations) PREFER
-// kotlinx.datetime — it has proper, tested timezone handling and serializes to the same ISO
-// wire form. See the KDoc on LocalDate for details.
+// Proleptic gregorian calendar from the Big Bang to year 15,000,000,000, computed in common code;
+// the platform only supplies the time zone offset (java.time, Temporal, Intl).
 
 plugins {
   kotlinxSerialization
@@ -26,6 +19,15 @@ plugins {
 description = "Minimal multiplatform date and time value types (LocalDate, LocalTime, LocalDateTime, TimeZone) with no platform dependencies."
 
 kotlin {
+  js {
+    nodejs {
+      testTask {
+        // TemporalParityTest compares 1.3 million days with Temporal.PlainDate.
+        useMocha { timeout = "120s" }
+      }
+    }
+  }
+
   addAnnotationDependencies(project)
   addKotlinDependencies(project)
   addKotlinTestDependencies(project)
@@ -36,6 +38,7 @@ kotlin {
         api(project(Projects.open.commons.kotlinLang))
         api(project(Projects.open.annotations))
         api(project(Projects.open.units.unit))
+        implementation(project(Projects.open.commons.kotlinCollections))
         implementation(libs.kotlinx.serialization.core)
       }
     }
@@ -61,7 +64,6 @@ kotlin {
     jvmMain {
       dependencies {
         api(project(Projects.open.annotations))
-        api(project(Projects.open.commons.time))
       }
     }
 
@@ -74,3 +76,6 @@ kotlin {
     }
   }
 }
+
+// Measures run time and allocations: `./gradlew :internal:open:commons:datetime-minimal:performanceTest`
+registerMultiplatformPerformanceTest("performanceTest")

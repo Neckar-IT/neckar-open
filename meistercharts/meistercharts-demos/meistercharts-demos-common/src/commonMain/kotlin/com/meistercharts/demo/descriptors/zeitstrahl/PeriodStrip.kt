@@ -22,11 +22,18 @@ package com.meistercharts.demo.descriptors.zeitstrahl
 object PeriodStrip {
   private const val MinMedianWidth: Double = 40.0
 
-  fun periodizationId(viewport: DeepTimeViewport): PeriodizationId {
-    return if (DeepTimeFormat.isDeepTimeWindow(viewport.centerSeconds, viewport.visibleSeconds)) PeriodizationId.Ics else PeriodizationId.EuropeHistory
+  /** Astronomical year of 10,000 BC; a window centered before it shows the ICS chart. */
+  private const val FirstHistoricalYear: Long = -9_999
+
+  /** A window wider than this shows the ICS chart. */
+  private const val MaxHistoricalWindowSeconds: Double = 50_000 * ZeitstrahlPocViewport.SecondsPerYear
+
+  fun periodizationId(viewport: ZeitstrahlPocViewport): PeriodizationId {
+    val deepTime = ZeitstrahlPocViewport.yearAt(viewport.centerSeconds).value < FirstHistoricalYear || viewport.visibleSeconds > MaxHistoricalWindowSeconds
+    return if (deepTime) PeriodizationId.Ics else PeriodizationId.EuropeHistory
   }
 
-  fun layout(sections: List<ZeitstrahlPocSection>, viewport: DeepTimeViewport): PeriodStripLayout {
+  fun layout(sections: List<ZeitstrahlPocSection>, viewport: ZeitstrahlPocViewport): PeriodStripLayout {
     val candidates = sections.filter { it.end - it.start < viewport.zoomLevel.maxDurationSeconds }
     val visibleByLevel = candidates
       .filter { viewport.overlaps(it.start, it.end) }

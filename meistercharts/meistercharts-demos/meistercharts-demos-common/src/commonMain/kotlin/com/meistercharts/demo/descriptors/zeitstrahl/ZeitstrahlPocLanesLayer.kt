@@ -18,6 +18,7 @@ package com.meistercharts.demo.descriptors.zeitstrahl
 import com.meistercharts.algorithms.layers.AbstractLayer
 import com.meistercharts.algorithms.layers.LayerPaintingContext
 import com.meistercharts.algorithms.layers.LayerType
+import com.meistercharts.algorithms.layers.axis.time.CalendarLabels
 import com.meistercharts.canvas.CanvasRenderingContext
 import com.meistercharts.canvas.ChartSupport
 import com.meistercharts.canvas.DirtyReason
@@ -46,7 +47,7 @@ import kotlin.math.min
  * share rows per band, most important first; an entry beyond the height of its lane stays hidden and counts in the lane title.
  */
 class ZeitstrahlPocLanesLayer(
-  private val viewport: DeepTimeViewport,
+  private val viewport: ZeitstrahlPocViewport,
   private val rowScale: RowScale,
   lanes: List<ZeitstrahlPocLane>,
   createLaneLoader: (ZeitstrahlPocLane) -> WindowLoader<ZoomLevel, ZeitstrahlPocEntry>,
@@ -83,7 +84,7 @@ class ZeitstrahlPocLanesLayer(
     val layouts = trees.map { tree -> TreeRows.layout(tree.entries) { entry -> occupiedRange(gc, entry, rowHeight) } }
     val heights = ZeitstrahlPocLayout.laneHeights(
       layouts.map { ZeitstrahlPocLayout.LaneTitleHeight + it.rowCount * rowHeight + ZeitstrahlPocLayout.LaneBottomPadding },
-      gc.height - ZeitstrahlPocLayout.StripHeight - ZeitstrahlPocLayout.LanesTop,
+      gc.height - ZeitstrahlPocLayout.StripHeight - ZeitstrahlPocLayout.TimeAxisHeight - ZeitstrahlPocLayout.LanesTop,
     )
 
     nodeHits.clear()
@@ -352,9 +353,9 @@ class ZeitstrahlPocLanesLayer(
 
   /** "1758–1794" */
   private fun lifeYears(entry: ZeitstrahlPocEntry): String {
-    val birth = ProlepticGregorianCalendar.civilDate(entry.start).year
-    val death = ProlepticGregorianCalendar.civilDate(entry.end).year
-    return "${DeepTimeFormat.historicalYear(birth)}–${DeepTimeFormat.historicalYear(death)}"
+    val birth = ZeitstrahlPocViewport.yearAt(entry.start)
+    val death = ZeitstrahlPocViewport.yearAt(entry.end)
+    return "${CalendarLabels.German.historicalYear(birth)}–${CalendarLabels.German.historicalYear(death)}"
   }
 
   private fun paintEvent(gc: CanvasRenderingContext, entry: ZeitstrahlPocEntry, rowTop: Double, rowHeight: Double) {

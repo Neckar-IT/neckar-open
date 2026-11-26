@@ -39,7 +39,7 @@ import it.neckar.open.exceptions.PermissionDeniedException
  * `installStatusPages` extracts [missingCapability] and forwards it to the
  * client as a structured attribute (`missingCapability`), allowing the
  * frontend to render a precise message ("Sie benötigen die Berechtigung
- * *Auftrag abschließen*") instead of a generic 403.
+ * *Bestellung abschließen*") instead of a generic 403.
  *
  * The error message is built from the capability key so that server-side
  * logs and stack traces remain self-describing without consulting the

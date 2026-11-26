@@ -558,6 +558,54 @@ class TimeTickDistanceTest {
     assertThat(12.roundDownToInt(6)).isEqualTo(7)
   }
 
+  @Test
+  fun testDaysAcrossTheSwitchToSummerTime() {
+    val start = 1.7746992E12
+    assertThat(start.formatUtcForDebug()).isEqualTo("2026-03-28T12:00:00.000Z")
+    val end = start + TimeConstants.MillisPerDay * 2
+
+    val timeTickDistance = DistanceDays(DistanceDays.TicksPerMonth.EveryDay)
+
+    // Europe/Berlin switches on 2026-03-29 at 01:00 UTC: midnight moves from 23:00 UTC to 22:00 UTC
+    val berlinTicks = timeTickDistance.calculateTicks(start, end, TimeZone.Berlin)
+    assertThat(berlinTicks[0].formatUtcForDebug()).isEqualTo("2026-03-27T23:00:00.000Z")
+    assertThat(berlinTicks[1].formatUtcForDebug()).isEqualTo("2026-03-28T23:00:00.000Z")
+    assertThat(berlinTicks[2].formatUtcForDebug()).isEqualTo("2026-03-29T22:00:00.000Z")
+    assertThat(berlinTicks[3].formatUtcForDebug()).isEqualTo("2026-03-30T22:00:00.000Z")
+
+    // America/New_York has summer time since 2026-03-08: midnight stays at 04:00 UTC
+    val newYorkTicks = timeTickDistance.calculateTicks(start, end, TimeZone.NewYork)
+    assertThat(newYorkTicks[0].formatUtcForDebug()).isEqualTo("2026-03-28T04:00:00.000Z")
+    assertThat(newYorkTicks[1].formatUtcForDebug()).isEqualTo("2026-03-29T04:00:00.000Z")
+    assertThat(newYorkTicks[2].formatUtcForDebug()).isEqualTo("2026-03-30T04:00:00.000Z")
+  }
+
+  @Test
+  fun testHoursAcrossTheSwitchToSummerTime() {
+    val start = 1.7747442E12
+    assertThat(start.formatUtcForDebug()).isEqualTo("2026-03-29T00:30:00.000Z")
+    val end = start + TimeConstants.MillisPerHour * 2
+
+    val timeTickDistance = DistanceHours(1)
+
+    // Local 01:00, the missing 02:00 and 03:00 in Europe/Berlin: one tick per hour of UTC
+    val berlinTicks = timeTickDistance.calculateTicks(start, end, TimeZone.Berlin)
+    assertThat(berlinTicks[0].formatUtcForDebug()).isEqualTo("2026-03-29T00:00:00.000Z")
+    assertThat(berlinTicks[1].formatUtcForDebug()).isEqualTo("2026-03-29T01:00:00.000Z")
+    assertThat(berlinTicks[2].formatUtcForDebug()).isEqualTo("2026-03-29T02:00:00.000Z")
+    assertThat(timeTickDistance.formatAsOffset(berlinTicks[1], I18nConfiguration.Germany)).contains("03:00")
+
+    val newYorkTicks = timeTickDistance.calculateTicks(start, end, TimeZone.NewYork)
+    assertThat(newYorkTicks[0].formatUtcForDebug()).isEqualTo("2026-03-29T00:00:00.000Z")
+    assertThat(newYorkTicks[1].formatUtcForDebug()).isEqualTo("2026-03-29T01:00:00.000Z")
+    assertThat(newYorkTicks[2].formatUtcForDebug()).isEqualTo("2026-03-29T02:00:00.000Z")
+
+    // Asia/Kolkata is 5:30 ahead of UTC: a full local hour lies at half past in UTC.
+    val kolkataTicks = timeTickDistance.calculateTicks(start, end, TimeZone("Asia/Kolkata"))
+    assertThat(kolkataTicks[0].formatUtcForDebug()).isEqualTo("2026-03-29T00:30:00.000Z")
+    assertThat(kolkataTicks[1].formatUtcForDebug()).isEqualTo("2026-03-29T01:30:00.000Z")
+  }
+
   private fun Int.roundDownToInt(base: Int): Int {
     return (this - 1).roundDownToBase(base) + 1
   }

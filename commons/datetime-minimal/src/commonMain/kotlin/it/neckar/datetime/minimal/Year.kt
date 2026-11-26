@@ -31,23 +31,37 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
- * A calendar year as a typed [Int] — a year of birth, of publication, of commissioning.
+ * A calendar year, counted astronomically: year 0 is 1 BC, `Year(-43)` is 44 BC.
  *
- * Deliberately unbounded: what counts as a plausible year is a property of the field that carries
- * one, not of the type. A PV facility's commissioning year sits between 1900 and 2200, an author's
- * year of birth does not, and a type that picked one of those ranges would be wrong for the other.
+ * The range [Min]..[Max] covers the age of the universe with margin; what counts as a plausible
+ * year for a single field (a year of birth, of commissioning) is a property of that field.
  */
 @JvmInline
 @Serializable
-value class Year(val value: Int) : Comparable<Year> {
+value class Year(val value: Long) : Comparable<Year> {
+  constructor(value: Int) : this(value.toLong())
+
+  init {
+    require(value in MinValue..MaxValue) {
+      "Year $value outside $MinValue..$MaxValue"
+    }
+  }
+
   /**
-   * Returns true if this year is a leap year.
-   *
-   * ATTENTION: This is a very basic implementation that only works for "normal" values.
-   * We ignore the introduction of leap years in 1582. And assume these have existed for all the time
+   * Proleptic gregorian leap year rule, applied to every year.
    */
   fun isLeapYear(): Boolean {
-    return (value % 4 == 0 && value % 100 != 0) || (value % 400 == 0)
+    return (value % 4L == 0L && value % 100L != 0L) || (value % 400L == 0L)
+  }
+
+  /**
+   * The value as [Int] for callers that only handle years of the common era range.
+   */
+  fun toInt(): Int {
+    require(value in Int.MIN_VALUE..Int.MAX_VALUE) {
+      "Year $value outside ${Int.MIN_VALUE}..${Int.MAX_VALUE}"
+    }
+    return value.toInt()
   }
 
   override fun compareTo(other: Year): Int {
@@ -55,6 +69,10 @@ value class Year(val value: Int) : Comparable<Year> {
   }
 
   operator fun plus(n: Int): Year {
+    return Year(value + n)
+  }
+
+  operator fun plus(n: Long): Year {
     return Year(value + n)
   }
 
@@ -68,5 +86,20 @@ value class Year(val value: Int) : Comparable<Year> {
 
   override fun toString(): String {
     return value.toString()
+  }
+
+  companion object {
+    /**
+     * The smallest supported year, before the Big Bang 13.787 billion years ago.
+     */
+    const val MinValue: Long = -15_000_000_000L
+
+    /**
+     * The largest supported year.
+     */
+    const val MaxValue: Long = 15_000_000_000L
+
+    val Min: Year = Year(MinValue)
+    val Max: Year = Year(MaxValue)
   }
 }

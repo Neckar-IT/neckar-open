@@ -35,8 +35,9 @@ import com.meistercharts.axis.time.DistanceYears
 import com.meistercharts.axis.time.GlobalTimeIndex
 import com.meistercharts.axis.time.TimeTickDistance
 import com.meistercharts.axis.time.TimeUnits
+import com.meistercharts.axis.time.YearNumbering
 import com.meistercharts.axis.time.valueAt
-import com.meistercharts.calc.TimeChartCalculator
+import com.meistercharts.axis.time.withYearNumbering
 import com.meistercharts.canvas.ConfigurationDsl
 import com.meistercharts.canvas.fill
 import com.meistercharts.canvas.fillRectCoordinates
@@ -49,6 +50,7 @@ import com.meistercharts.design.multiProvider
 import com.meistercharts.font.FontDescriptorFragmentProvider
 import com.meistercharts.model.Vicinity
 import com.meistercharts.time.TimeRange
+import com.meistercharts.time.TimeViewport
 import it.neckar.datetime.minimal.TimeConstants
 import it.neckar.geometry.Direction
 import it.neckar.geometry.Orientation
@@ -79,8 +81,9 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Paints a time axis at the bottom of the canvas
- * @property configuration - contains the timeRange the time range to be displayed at 100% zoom and with no translation
+ * Paints a time axis at the bottom of the canvas, from the Big Bang to a millisecond; before the year -271821 the labels need [CalendarTickFormat] and [CalendarOffsetFormat].
+ *
+ * Every position comes from the [TimeViewport] that [Configuration.viewportSource] names.
  * @param additionalConfiguration the style configuration that is applied
  */
 class TimeAxisLayer(
@@ -107,8 +110,20 @@ class TimeAxisLayer(
     return paintingVariables
   }
 
+  /**
+   * The viewport of [TimeAxisViewportSource.ContentAreaTimeRange], updated every frame.
+   */
+  private val contentAreaViewport: TimeViewport = TimeViewport()
+
   //Painting variable - stores intermediate results required for painting
   private val paintingVariables = object : TimeAxisPaintingVariablesImpl() {
+
+    var viewport: TimeViewport = contentAreaViewport
+
+    @Hot
+    override fun calculateTickLabelsMaxWidthHorizontal(): @px Double {
+      return configuration.tickLabelMaxWidth
+    }
 
     //TODO replace me
     var spaceForTickLabels: Double = Double.NaN
@@ -127,12 +142,34 @@ class TimeAxisLayer(
       calculateTitle(paintingContext, configuration)
 
       calculateAxisStartEnd(paintingContext, configuration)
-      calculateDomainStartEndValues(paintingContext, configuration)
+      viewport = resolveViewport(paintingContext)
+      // Outside the supported range a time has no tick.
+      startTimestamp = min(viewport.window2timeX(axisStart), viewport.window2timeX(axisEnd)).coerceIn(TimeTickDistance.MinSupportedMillis, TimeTickDistance.MaxSupportedMillis)
+      endTimestamp = max(viewport.window2timeX(axisStart), viewport.window2timeX(axisEnd)).coerceIn(TimeTickDistance.MinSupportedMillis, TimeTickDistance.MaxSupportedMillis)
 
       calculateTickLabelsMaxWidth(configuration)
       calculateLocations(paintingContext, configuration)
 
       calculateTickValues(paintingContext, configuration)
+    }
+
+    @Hot
+    private fun resolveViewport(paintingContext: LayerPaintingContext): TimeViewport {
+      return when (val source = configuration.viewportSource) {
+        TimeAxisViewportSource.ContentAreaTimeRange -> {
+          @HotAllocation("Once per frame per layer - calculator factory allocation. Fix candidate: cache in ChartState (TODO exists at the factory)")
+          val timeChartCalculator = paintingContext.chartSupport.timeChartCalculator(contentAreaTimeRange)
+          contentAreaViewport.also {
+            it.set(
+              centerMillis = timeChartCalculator.window2timeX(paintingContext.width / 2.0),
+              millisPerPixel = timeChartCalculator.zoomed2timeDeltaX(1.0),
+              windowWidth = paintingContext.width,
+            )
+          }
+        }
+
+        is TimeAxisViewportSource.Explicit -> source.viewport
+      }
     }
 
     /**
@@ -161,7 +198,7 @@ class TimeAxisLayer(
 
       @ms val guessedIdealTickDistance = (endTimestamp - startTimestamp) / guessedTickCount
 
-      if (guessedIdealTickDistance == 0.0) {
+      if (guessedIdealTickDistance <= 0.0) {
         //zoomed in way too far!
         offsetTickDistance = DistanceMillis.smallest
         offsetTickLabels.reset()
@@ -174,11 +211,8 @@ class TimeAxisLayer(
       /**
        * Calculate the offset ticks
        */
-      @HotAllocation("Once per frame per layer - calculator factory allocation. Fix candidate: cache in ChartState (TODO exists at the factory)")
-      val timeChartCalculator = paintingContext.chartSupport.timeChartCalculator(contentAreaTimeRange)
-
       @HotAllocation("Once per frame per layer - allocates the selected TimeTickDistance instance")
-      val newOffsetTickDistance = TimeTickDistance.forOffsets(endTimestamp - startTimestamp)
+      val newOffsetTickDistance = TimeTickDistance.forOffsets(endTimestamp - startTimestamp).withYearNumbering(style.yearNumbering)
       offsetTickDistance = newOffsetTickDistance
 
       @HotAllocation("Once per frame per layer - allocates the offset tick list (a handful of entries). Fix candidate: fill-into variant on TimeTickDistance")
@@ -187,17 +221,17 @@ class TimeAxisLayer(
       offsetTickLabels.prepare(offsetTicks.size)
       offsetTicks.fastForEachIndexed { index, value ->
         @HotAllocation("Once per offset tick per frame - formatted offset label string. Fix candidate: cache formatted labels per tick value; tick values only change on zoom/pan")
-        val formatted = newOffsetTickDistance.formatAsOffset(value, paintingContext.i18nConfiguration)
+        val formatted = configuration.offsetTickFormat.format(value, newOffsetTickDistance, paintingContext.i18nConfiguration)
         offsetTickLabels.set(index, value, formatted)
       }
 
       //The minimum tick distance that is supported
-      @Domain @ms val minTickDistance = timeChartCalculator.zoomed2timeDeltaX(calculateTickValueLabelWidth())
+      @Domain @ms val minTickDistance = calculateTickValueLabelWidth() * viewport.millisPerPixel
 
       val smallestPossibleTickDistance = newOffsetTickDistance.smallestPossibleTickDistance()
 
       @HotAllocation("Once per frame per layer - allocates the selected TimeTickDistance instance")
-      val timeTickDistance: TimeTickDistance = TimeTickDistance.forTicks(minTickDistance).coerceAtLeast(smallestPossibleTickDistance)
+      val timeTickDistance: TimeTickDistance = TimeTickDistance.forTicks(minTickDistance).coerceAtLeast(smallestPossibleTickDistance).withYearNumbering(style.yearNumbering)
 
       @HotAllocation("Once per frame per layer - allocates the tick list, size = visible tick count. Fix candidate: fill-into variant on TimeTickDistance")
       val allTicks: @ms DoubleArrayList = timeTickDistance.calculateTicks(startTimestamp, endTimestamp, paintingContext.timeZone)
@@ -229,8 +263,7 @@ class TimeAxisLayer(
 
   @Hot
   override fun paintTicksWithLabelsHorizontally(paintingContext: LayerPaintingContext, direction: Direction) {
-    @HotAllocation("Once per frame per layer - calculator factory allocation. Fix candidate: cache in ChartState (TODO exists at the factory)")
-    val timeChartCalculator = paintingContext.chartSupport.timeChartCalculator(paintingVariables.contentAreaTimeRange)
+    val viewport = paintingVariables.viewport
 
     //TODO why not in painting variables?
     val maxTickValueLabelWidth = calculateTickValueLabelWidth()
@@ -251,7 +284,7 @@ class TimeAxisLayer(
           return@fastForEachIndexed
         }
 
-        @Window val currentX = timeChartCalculator.time2windowX(tickValue)
+        @Window val currentX = viewport.time2windowX(tickValue)
 
         if (configuration.tickLength > 0.0 && configuration.tickLineWidth > 0.0) {
           when (textAnchor) {
@@ -271,7 +304,7 @@ class TimeAxisLayer(
     //Offset area
     gc.translate(0.0, paintingVariables.spaceForTickLabels + configuration.offsetAreaTickLabelGap)
     //to the top of the offset area
-    timeChartCalculator.paintOffsetAreaHorizontal(paintingContext)
+    viewport.paintOffsetAreaHorizontal(paintingContext)
   }
 
   /**
@@ -279,7 +312,7 @@ class TimeAxisLayer(
    * GC at the *top* of the offset area
    */
   @Hot
-  private fun TimeChartCalculator.paintOffsetAreaHorizontal(paintingContext: LayerPaintingContext) {
+  private fun TimeViewport.paintOffsetAreaHorizontal(paintingContext: LayerPaintingContext) {
     val timeZone = paintingContext.timeZone
     val gc = paintingContext.gc
 
@@ -375,7 +408,7 @@ class TimeAxisLayer(
       gc.font(configuration.offsetTickFont())
       gc.fill(configuration.offsetTickLabelColor)
       @HotAllocation("Once per frame per layer (no visible offset tick) - formatted offset label string")
-      val formattedOffset = paintingVariables.offsetTickDistance.formatAsOffset(millis, paintingContext.i18nConfiguration)
+      val formattedOffset = configuration.offsetTickFormat.format(millis, paintingVariables.offsetTickDistance, paintingContext.i18nConfiguration)
       @HotAllocation("Once per frame per layer (no visible offset tick) - platform text rendering")
       gc.fillText(formattedOffset, x, configuration.offsetAreaSize / 2.0, Direction.Center)
     }
@@ -403,10 +436,24 @@ class TimeAxisLayer(
   @ConfigurationDsl
   class Configuration(
     /**
-     * The time range that is spans the content area
+     * The time range that is spans the content area; the viewport of [TimeAxisViewportSource.ContentAreaTimeRange]
      */
     var contentAreaTimeRange: TimeRange = TimeRange.oneMinuteSinceReference,
   ) : AxisConfiguration() {
+
+    var viewportSource: TimeAxisViewportSource = TimeAxisViewportSource.ContentAreaTimeRange
+
+    var offsetTickFormat: TimeAxisOffsetFormat = TickDistanceOffsetFormat
+
+    /**
+     * The widest tick label; a wider label stays hidden, and the tick distance leaves room for it
+     */
+    var tickLabelMaxWidth: @px Double = 100.0
+
+    /**
+     * Which years carry a tick; [YearNumbering.Calendar] fits [CalendarTickFormat]
+     */
+    var yearNumbering: YearNumbering = YearNumbering.Astronomical
 
     init {
       //Ensure tick orientation outside

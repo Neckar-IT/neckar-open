@@ -21,7 +21,7 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 
 class PeriodStripTest {
-  private fun millionYearsAgo(millionYears: Double): Double = DeepTimeFormat.secondsOfYearsBeforePresent(millionYears * 1e6)
+  private fun millionYearsAgo(millionYears: Double): Double = ZeitstrahlPocViewport.secondsOfYearsBeforePresent(millionYears * 1e6)
 
   private fun section(title: String, level: Int, from: Double, to: Double): ZeitstrahlPocSection = ZeitstrahlPocSection(EntryId(title), title, level, millionYearsAgo(from), millionYearsAgo(to))
 
@@ -41,11 +41,14 @@ class PeriodStripTest {
     section("Thanetium", 4, 59.2, 56.0),
   )
 
+  /** A lanes region of 1500 px showing [fromSeconds] to [toSeconds]. */
+  private fun viewportOf(fromSeconds: Double, toSeconds: Double): ZeitstrahlPocViewport = ZeitstrahlPocViewport(presentSeconds = 1.8e9).apply {
+    timeViewport.updateWindowWidth(1500.0 + ZeitstrahlPocLayout.TreeWidth, ZeitstrahlPocLayout.TreeWidth)
+    showWindow(fromSeconds, toSeconds)
+  }
+
   private fun layoutFor(from: Double, to: Double, sections: List<ZeitstrahlPocSection> = ics): PeriodStripLayout {
-    val viewport = DeepTimeViewport(presentSeconds = 1.8e9).apply {
-      updateWindowWidth(1500.0)
-      showWindow(millionYearsAgo(from), millionYearsAgo(to))
-    }
+    val viewport = viewportOf(millionYearsAgo(from), millionYearsAgo(to))
     return PeriodStrip.layout(sections, viewport)
   }
 
@@ -81,15 +84,13 @@ class PeriodStripTest {
 
   @Test
   fun `the strip shows ics before 10,000 BC and for windows over 50,000 years, else europe-history`() {
-    fun periodizationIdFor(from: CivilDate, to: CivilDate): PeriodizationId = PeriodStrip.periodizationId(DeepTimeViewport(presentSeconds = 1.8e9).apply {
-      updateWindowWidth(1500.0)
-      showWindow(ProlepticGregorianCalendar.secondsOf(from), ProlepticGregorianCalendar.secondsOf(to))
-    })
+    fun periodizationIdFor(fromYear: Long, toYear: Long): PeriodizationId =
+      PeriodStrip.periodizationId(viewportOf(ZeitstrahlPocViewport.secondsOf(fromYear, 1, 1), ZeitstrahlPocViewport.secondsOf(toYear, 1, 1)))
 
-    assertThat(periodizationIdFor(CivilDate(-12_000, 1, 1), CivilDate(-11_000, 1, 1))).isEqualTo(PeriodizationId.Ics)
-    assertThat(periodizationIdFor(CivilDate(-28_000, 1, 1), CivilDate(30_000, 1, 1))).isEqualTo(PeriodizationId.Ics)
-    assertThat(periodizationIdFor(CivilDate(-20_000, 1, 1), CivilDate(10_000, 1, 1))).isEqualTo(PeriodizationId.EuropeHistory)
-    assertThat(periodizationIdFor(CivilDate(1785, 1, 1), CivilDate(1800, 1, 1))).isEqualTo(PeriodizationId.EuropeHistory)
+    assertThat(periodizationIdFor(-12_000, -11_000)).isEqualTo(PeriodizationId.Ics)
+    assertThat(periodizationIdFor(-28_000, 30_000)).isEqualTo(PeriodizationId.Ics)
+    assertThat(periodizationIdFor(-20_000, 10_000)).isEqualTo(PeriodizationId.EuropeHistory)
+    assertThat(periodizationIdFor(1785, 1800)).isEqualTo(PeriodizationId.EuropeHistory)
   }
 
   @Test

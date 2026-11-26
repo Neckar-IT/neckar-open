@@ -34,7 +34,7 @@ import kotlin.js.Date
 
 actual class DefaultLocalDateFormat actual constructor() : LocalDateFormat {
   actual override fun format(localDate: LocalDate, i18nConfiguration: I18nConfiguration, whitespaceConfig: WhitespaceConfig): String {
-    return Date(localDate.year.value, localDate.month.value - 1, localDate.dayOfMonth.value)
+    return Date(localDate.year.toInt(), localDate.month.value - 1, localDate.dayOfMonth.value)
       .toLocaleDateString(i18nConfiguration.formatLocale.locale, localeOptions(i18nConfiguration.timeZone))
   }
 }

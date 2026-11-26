@@ -51,7 +51,7 @@ class YearSlider(
         return 0
       }
 
-      return (years.last() - years.first()).value
+      return (years.last() - years.first()).toInt()
     }
 
 

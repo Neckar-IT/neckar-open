@@ -4,7 +4,7 @@
 ./gradlew :internal:open:commons:typescript:typescript-react-error-handling:storybook
 ```
 
-Der Job `🚀 Deploy affected` deployt die Stories jedes `main`-Commits, der `internal/open/commons/typescript/typescript-react-error-handling/` oder eine `workspace:*`-Dependency aus `internal/open/commons/typescript/typescript-react-error-handling/package.json` ändert, nach [https://error-handling.showcase.neckar.it](https://error-handling.showcase.neckar.it).
+Der Job `🚀 deliver main` deployt die Stories jedes `main`-Commits, der `internal/open/commons/typescript/typescript-react-error-handling/` oder eine `workspace:*`-Dependency aus `internal/open/commons/typescript/typescript-react-error-handling/package.json` ändert, nach [https://error-handling.showcase.neckar.it](https://error-handling.showcase.neckar.it).
 
 | Entry Point                                                        | Inhalt                                                                                                                               |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |

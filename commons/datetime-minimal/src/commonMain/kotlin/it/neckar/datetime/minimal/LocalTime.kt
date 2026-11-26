@@ -103,11 +103,41 @@ data class LocalTime(
     return format()
   }
 
+  /**
+   * Milliseconds since midnight.
+   */
+  fun millisOfDay(): Int {
+    return ((hour * 60 + minute) * 60 + second) * 1000 + millis
+  }
+
   companion object {
+    val Midnight: LocalTime = LocalTime(0, 0, 0, 0)
+
+    /**
+     * The time [millisOfDay] milliseconds after midnight.
+     */
+    fun ofMillisOfDay(millisOfDay: Int): LocalTime {
+      require(millisOfDay in 0 until MillisPerDayInt) {
+        "Millis of day $millisOfDay outside 0..${MillisPerDayInt - 1}"
+      }
+      return LocalTime(
+        hour = millisOfDay / 3_600_000,
+        minute = millisOfDay / 60_000 % 60,
+        second = millisOfDay / 1000 % 60,
+        millis = millisOfDay % 1000,
+      )
+    }
+
+    internal const val MillisPerDayInt: Int = 86_400_000
   }
 }
 
-expect fun LocalTime.Companion.fromMillisCurrentTimeZone(millis: @ms Double, expectedTimeZone: TimeZone): LocalTime
+/**
+ * The time at [millis] in [expectedTimeZone], with the offset from [timeZoneOffsetProvider].
+ */
+fun LocalTime.Companion.fromMillisCurrentTimeZone(millis: @ms Double, expectedTimeZone: TimeZone): LocalTime {
+  return LocalDateTime.fromMillisCurrentTimeZone(millis, expectedTimeZone).time
+}
 
 /**
  * Floor modulo — like Java's `Math.floorMod`. Always returns a non-negative result

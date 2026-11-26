@@ -31,50 +31,58 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 import it.neckar.datetime.minimal.LocalDate as MinimalLocalDate
 import kotlinx.datetime.LocalDate as KotlinxLocalDate
 
 /**
- * Proves that the minimal [MinimalLocalDate] and [KotlinxLocalDate] serialize to the *same* ISO
- * `yyyy-MM-dd` string for all realistic calendar days. This is the basis for swapping the type on
- * the wire and in MongoDB storage without a data migration: a document/JSON written with one type
- * reads back identically as the other.
- *
- * Known boundary: minimal `format()` does not zero-pad the year while kotlinx pads it to four digits,
- * so the two diverge for years below 1000. All real-world dates are >= 1000, so production is
- * unaffected — the boundary is pinned by [`diverge for years below 1000`] so it can never regress
- * silently.
+ * [MinimalLocalDate] and [KotlinxLocalDate] serialize to the same ISO 8601 string in the whole
+ * range of `kotlinx-datetime`, so the type can change on the wire and in MongoDB without a migration.
  */
 class LocalDateSerializationEquivalenceTest {
 
   @Test
-  fun `minimal and kotlinx LocalDate serialize identically for realistic dates`() {
+  fun `minimal and kotlinx LocalDate serialize identically from year -999999999 to 999999999`() {
     listOf(
-      Triple(2026, 5, 14), // the deliveryDate migration case
-      Triple(2026, 1, 1),
-      Triple(2026, 12, 31),
-      Triple(2026, 3, 4), // single-digit month and day -> zero padding must match
-      Triple(1000, 1, 1), // lowest realistic year
+      Triple(2026, 5, 14),
+      Triple(2026, 3, 4),
+      Triple(1000, 1, 1),
+      Triple(999, 1, 1),
+      Triple(0, 1, 1),
+      Triple(-43, 3, 15),
       Triple(9999, 12, 31),
+      Triple(10_000, 1, 1),
+      Triple(-999_999_999, 1, 1),
+      Triple(999_999_999, 12, 31),
     ).forEach { (year, month, day) ->
-      val minimalJson = Json.encodeToString(MinimalLocalDate.serializer(), MinimalLocalDate(year, month, day))
-      val kotlinxJson = Json.encodeToString(KotlinxLocalDate.serializer(), KotlinxLocalDate(year, month, day))
-      assertThat(minimalJson).isEqualTo(kotlinxJson)
+      assertSameJson(year, month, day)
+    }
+  }
+
+  @Test
+  fun `minimal and kotlinx LocalDate serialize identically across the range of kotlinx`() {
+    val random = Random(6434)
+    repeat(100_000) {
+      val year = random.nextInt(-999_999_999, 1_000_000_000)
+      val month = random.nextInt(1, 13)
+      val day = random.nextInt(1, Month(month).daysInMonth(Year(year)).value + 1)
+      assertSameJson(year, month, day)
     }
   }
 
   @Test
   fun `a value written by one type deserializes into the other`() {
-    val writtenByMinimal = Json.encodeToString(MinimalLocalDate.serializer(), MinimalLocalDate(2026, 5, 14))
-    assertThat(Json.decodeFromString(KotlinxLocalDate.serializer(), writtenByMinimal)).isEqualTo(KotlinxLocalDate(2026, 5, 14))
+    val writtenByMinimal = Json.encodeToString(MinimalLocalDate.serializer(), MinimalLocalDate(-43, 3, 15))
+    assertThat(Json.decodeFromString(KotlinxLocalDate.serializer(), writtenByMinimal)).isEqualTo(KotlinxLocalDate(-43, 3, 15))
 
-    val writtenByKotlinx = Json.encodeToString(KotlinxLocalDate.serializer(), KotlinxLocalDate(2026, 5, 14))
-    assertThat(Json.decodeFromString(MinimalLocalDate.serializer(), writtenByKotlinx)).isEqualTo(MinimalLocalDate(2026, 5, 14))
+    val writtenByKotlinx = Json.encodeToString(KotlinxLocalDate.serializer(), KotlinxLocalDate(12_345, 5, 14))
+    assertThat(Json.decodeFromString(MinimalLocalDate.serializer(), writtenByKotlinx)).isEqualTo(MinimalLocalDate(12_345, 5, 14))
   }
 
-  @Test
-  fun `minimal and kotlinx diverge for years below 1000 (documented boundary)`() {
-    assertThat(Json.encodeToString(MinimalLocalDate.serializer(), MinimalLocalDate(999, 1, 1))).isEqualTo("\"999-01-01\"")
-    assertThat(Json.encodeToString(KotlinxLocalDate.serializer(), KotlinxLocalDate(999, 1, 1))).isEqualTo("\"0999-01-01\"")
+  private fun assertSameJson(year: Int, month: Int, day: Int) {
+    val minimalJson = Json.encodeToString(MinimalLocalDate.serializer(), MinimalLocalDate(year, month, day))
+    val kotlinxJson = Json.encodeToString(KotlinxLocalDate.serializer(), KotlinxLocalDate(year, month, day))
+    assertThat(minimalJson).isEqualTo(kotlinxJson)
+    assertThat(Json.decodeFromString(MinimalLocalDate.serializer(), kotlinxJson)).isEqualTo(MinimalLocalDate(year, month, day))
   }
 }

@@ -18,14 +18,16 @@ package com.meistercharts.demo.descriptors.zeitstrahl
 import kotlin.math.min
 
 /**
- * Layout of the demo: the tree column on the left; the path, the axis on top, the period strip at the bottom and the lanes in between.
+ * Layout of the demo: the tree column on the left; from top to bottom the path, the lanes, the time axis and the period strip.
  */
 object ZeitstrahlPocLayout {
   /** The column `STRUKTUR`; it stays in place while the time zooms and pans. */
   const val TreeWidth: Double = 260.0
   const val PathHeight: Double = 40.0
-  const val AxisHeight: Double = 40.0
-  const val LanesTop: Double = PathHeight + AxisHeight
+  const val LanesTop: Double = PathHeight
+
+  /** The `TimeAxisLayer` above the period strip: tick labels and offset area. */
+  const val TimeAxisHeight: Double = 70.0
   const val StripBreadcrumbHeight: Double = 18.0
   const val StripRowHeight: Double = 20.0
 

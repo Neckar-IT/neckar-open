@@ -48,6 +48,7 @@ import it.neckar.projects.common.ServiceDescriptor
 import it.neckar.projects.common.ServiceName
 import it.neckar.runtime.context.RuntimeContext
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -263,9 +264,10 @@ fun KtorService.launchWithStartupSequence(
   serviceStateHolder: ServiceStateHolder,
 
   /**
-   * Runs after the server is bound and before the service is ready.
+   * Runs after the server is bound and before the service is ready. Receives the scope of the application,
+   * which lives until the server stops, for background jobs the sequence starts.
    */
-  startupSequence: suspend () -> Unit,
+  startupSequence: suspend (applicationScope: CoroutineScope) -> Unit,
 ) {
   logServiceStartup()
 
@@ -290,7 +292,7 @@ fun KtorService.launchWithStartupSequence(
 private fun KtorService.runStartupSequence(
   embeddedServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>,
   serviceStateHolder: ServiceStateHolder,
-  startupSequence: suspend () -> Unit,
+  startupSequence: suspend (applicationScope: CoroutineScope) -> Unit,
 ) {
   runBlocking {
     fun failStartup(e: Exception) {
@@ -307,7 +309,7 @@ private fun KtorService.runStartupSequence(
 
     val startup: Job = launch {
       try {
-        startupSequence()
+        startupSequence(embeddedServer.application)
         serviceStateHolder.transitionTo(ServiceState.Ready)
       } catch (e: CancellationException) {
         //Only the shutdown hook's cancel is a cancel; the sequence's own one, as from `withTimeout`, is a failure

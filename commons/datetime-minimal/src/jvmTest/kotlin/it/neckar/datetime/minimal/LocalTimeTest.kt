@@ -30,12 +30,9 @@ package it.neckar.datetime.minimal
 import assertk.*
 import assertk.assertions.*
 import it.neckar.open.time.formatUtcForDebug
-import it.neckar.open.time.millis2Instant
 import it.neckar.open.unit.si.ms
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.util.DefaultTimeZone
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 class LocalTimeTest {
   val time: @ms Double = 1546875919_123.987_345_678_901
@@ -44,13 +41,6 @@ class LocalTimeTest {
   @Test
   fun testIt() {
     assertThat(time.formatUtcForDebug()).isEqualTo("2019-01-07T15:45:19.123Z")
-
-    val instant = millis2Instant(time)
-    assertThat(instant.nano).isEqualTo(123_987_304) //not exact anymore!
-
-    val zonedDateTime = instant.atZone(ZoneId.systemDefault())
-    assertThat(zonedDateTime.format(DateTimeFormatter.ISO_DATE_TIME)).isEqualTo("2019-01-07T16:45:19.123987304+01:00[Europe/Berlin]")
-    assertThat(zonedDateTime.toLocalTime().toString()).isEqualTo("16:45:19.123987304")
 
     val localTime: LocalTime = LocalTime.fromMillisCurrentTimeZone(time, TimeZone.Berlin)
     assertThat(localTime.hour).isEqualTo(16)

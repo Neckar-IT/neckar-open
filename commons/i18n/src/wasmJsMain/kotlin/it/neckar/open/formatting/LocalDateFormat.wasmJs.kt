@@ -34,7 +34,7 @@ import it.neckar.open.kotlin.lang.WhitespaceConfig
 actual class DefaultLocalDateFormat actual constructor() : LocalDateFormat {
   actual override fun format(localDate: LocalDate, i18nConfiguration: I18nConfiguration, whitespaceConfig: WhitespaceConfig): String {
     return jsLocalDateToLocaleDateString(
-      localDate.year.value,
+      localDate.year.toInt(),
       localDate.month.value - 1,
       localDate.dayOfMonth.value,
       i18nConfiguration.formatLocale.locale,

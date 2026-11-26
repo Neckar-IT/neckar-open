@@ -46,7 +46,7 @@ object YearSerializer : KSerializer<Year> {
   override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Year", PrimitiveKind.STRING)
 
   override fun serialize(encoder: Encoder, value: Year) {
-    encoder.encodeInt(value.value)
+    encoder.encodeInt(value.toInt())
   }
 
   override fun deserialize(decoder: Decoder): Year {
