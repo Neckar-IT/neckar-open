@@ -12,12 +12,19 @@ export type FileUploadRejection =
  * The message of a refused file. `t` is the caller's; the texts live in the `ui-components` namespace, which
  * `ImageSlot` and `PdfSlot` load while rendering.
  */
-export function fileUploadRejectionMessage(rejection: FileUploadRejection, t: TFunction, formatFileSize: (bytes: number) => string): string {
+export function fileUploadRejectionMessage(
+  rejection: FileUploadRejection,
+  t: TFunction,
+  formatFileSize: (bytes: number) => string,
+): string {
   switch (rejection.type) {
     case "TooLarge":
       return t(`${embeddedTranslationNamespace}:fileUploadRejection.tooLarge`, { maximum: formatFileSize(rejection.maximum) });
     case "WrongContentType":
-      return t(`${embeddedTranslationNamespace}:fileUploadRejection.wrongContentType`, { expected: rejection.expected, actual: rejection.actual });
+      return t(`${embeddedTranslationNamespace}:fileUploadRejection.wrongContentType`, {
+        expected: rejection.expected,
+        actual: rejection.actual,
+      });
     case "Unreadable":
       return t(`${embeddedTranslationNamespace}:fileUploadRejection.unreadable`);
     default:

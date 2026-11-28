@@ -36,3 +36,4 @@ export { useDynamicTranslation } from "./utility-hooks/useDynamicTranslation";
 export { capabilityTranslationKey } from "./capability-translations/capabilityTranslationKey";
 export { enumTranslationKeys } from "./enum-translations/enumTranslationKeys";
 export { createGermanI18n } from "./german-instance/createGermanI18n";
+export { createGermanT } from "./german-instance/createGermanT";

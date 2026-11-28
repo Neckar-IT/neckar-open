@@ -30,7 +30,6 @@ package it.neckar.ktor.tracking
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -40,75 +39,61 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.context.Context
 import io.opentelemetry.sdk.OpenTelemetrySdk
 import io.opentelemetry.sdk.testing.exporter.InMemorySpanExporter
 import io.opentelemetry.sdk.trace.SdkTracerProvider
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor
+import io.opentelemetry.semconv.DbAttributes
+import io.opentelemetry.semconv.HttpAttributes
+import io.opentelemetry.semconv.UrlAttributes
+import it.neckar.ktor.installOpenTelemetry
 import it.neckar.rest.test.*
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 
 /**
- * Demonstrates manual OpenTelemetry tracing in a Ktor service — without the Java Agent.
+ * Demonstrates OpenTelemetry tracing in a Ktor service — without the Java Agent.
  *
- * ## Glossary
- *
- * - **Trace:** The complete journey of a request through the system. A trace has a unique
- *   `traceId` (32 hex characters) that connects all related operations across services.
- * - **Span:** A single named operation within a trace — e.g., "handle HTTP request",
- *   "query database", "call external API". Each span records start time, duration, status,
- *   and key-value attributes. Spans form a tree: one root span with child spans nested below.
- * - **Tracer:** Factory for creating spans. Scoped to an instrumentation name (e.g., module name)
- *   so that spans can be grouped by origin in the tracing backend.
- * - **Exporter:** Sends finished spans to a tracing backend. [InMemorySpanExporter] keeps them
- *   in memory for testing; in production, the OpenTelemetry Protocol (OTLP) exports them
- *   to Grafana Tempo.
- * - **SpanProcessor:** Sits between the tracer and the exporter. [SimpleSpanProcessor] forwards
- *   spans immediately (good for tests); in production, `BatchSpanProcessor` batches them.
- * - **Mapped Diagnostic Context (MDC):** A feature of the SLF4J (Simple Logging Facade for Java)
- *   / Logback logging framework that binds key-value pairs to the current thread. By putting
- *   `trace_id` into the Mapped Diagnostic Context, every log line within a request automatically
- *   includes the trace ID — enabling log↔trace correlation in Grafana (Loki logs link to
- *   Tempo traces).
- *
- * ## What this demo shows
- *
- * This test demonstrates explicit span creation and Mapped Diagnostic Context (MDC) injection
- * using the OpenTelemetry library instrumentation. In production, `opentelemetry-ktor-3.0`
- * handles HTTP span creation, and the `logback-mdc-1.0` instrumentation of the OpenTelemetry
- * Java agent handles MDC injection.
+ * - A hand-written interceptor puts the trace ID of its span into the Mapped Diagnostic Context.
+ * - [installOpenTelemetry] records one server span per request with the HTTP method, URL path and response status code.
+ * - A route handler creates a child span with `db.*` attributes inside the server span.
  */
 class ManualTracingDemoTest {
 
-  @Test
-  fun `manual span creation with MDC injection`() {
-    // Set up an in-memory OpenTelemetry instance.
-    // InMemorySpanExporter collects all finished spans so we can assert on them after the test.
-    val spanExporter = InMemorySpanExporter.create()
+  /**
+   * Creates an in-memory OpenTelemetry instance; [InMemorySpanExporter.getFinishedSpanItems] returns the recorded spans.
+   */
+  private fun createTestOpenTelemetry(spanExporter: InMemorySpanExporter): OpenTelemetrySdk {
     val tracerProvider: SdkTracerProvider = SdkTracerProvider.builder()
       .addSpanProcessor(SimpleSpanProcessor.create(spanExporter))
       .build()
-    val openTelemetry: OpenTelemetrySdk = OpenTelemetrySdk.builder()
+
+    return OpenTelemetrySdk.builder()
       .setTracerProvider(tracerProvider)
       .build()
+  }
 
-    // A Tracer is scoped to an instrumentation name (typically the module or library name).
-    // All spans created by this tracer carry this name as their "instrumentation scope".
+  /**
+   * A hand-written interceptor puts the trace ID of its span into the Mapped Diagnostic Context, where the route handler reads it.
+   */
+  @Test
+  fun `manual span creation with MDC injection`() {
+    val spanExporter = InMemorySpanExporter.create()
+    val openTelemetry: OpenTelemetrySdk = createTestOpenTelemetry(spanExporter)
+
     val tracer = openTelemetry.getTracer("it.neckar.ktor")
+    var traceIdInHandler: String? = null
 
     testApplication {
       application {
         // Intercept early in the pipeline (Monitoring phase) to wrap every request in a span.
-        // In production, opentelemetry-ktor-3.0 does this via KtorServerTelemetry plugin.
+        // In production, installOpenTelemetry does this via the KtorServerTelemetry plugin.
         intercept(ApplicationCallPipeline.Monitoring) {
           val span: Span = tracer.spanBuilder("${call.request.local.method.value} ${call.request.path()}")
             .setSpanKind(SpanKind.SERVER)
-            .setParent(Context.current())
             .startSpan()
 
-          // Inject trace context into MDC so that log statements within this request
-          // automatically include the trace ID. Without this, logs and traces are disconnected.
+          // Log statements on this thread carry the trace ID from the MDC.
           // In production, the Java agent's logback-mdc-1.0 instrumentation does this.
           MDC.put(MDCKeys.TraceId.value, span.spanContext.traceId)
           MDC.put(MDCKeys.SpanId.value, span.spanContext.spanId)
@@ -117,8 +102,7 @@ class ManualTracingDemoTest {
             proceed()
           } finally {
             span.end()
-            // Clean up MDC to prevent trace IDs from leaking into subsequent requests
-            // on the same thread (MDC is thread-local).
+            // MDC is thread-local; a leftover trace ID would leak into the next request on this thread.
             MDC.remove(MDCKeys.TraceId.value)
             MDC.remove(MDCKeys.SpanId.value)
           }
@@ -126,12 +110,8 @@ class ManualTracingDemoTest {
 
         routing {
           get("/api/demo") {
-            // Inside the route handler, MDC keys are available for the duration of the request.
-            // Any logger call here will automatically include trace_id in the log output.
-            val traceId: String? = MDCKeys.TraceId.get()
-            assertThat(traceId).isNotNull()
-
-            call.respondText("trace=$traceId", ContentType.Text.Plain)
+            traceIdInHandler = MDCKeys.TraceId.get()
+            call.respondText("trace=$traceIdInHandler", ContentType.Text.Plain)
           }
         }
       }
@@ -140,12 +120,87 @@ class ManualTracingDemoTest {
       assertThat(response).isOk()
     }
 
-    // After the request, the InMemorySpanExporter contains all finished spans.
+    assertThat(traceIdInHandler).isEqualTo(spanExporter.finishedSpanItems.single().traceId)
+  }
+
+  /**
+   * The `KtorServerTelemetry` plugin that [installOpenTelemetry] installs records one [SpanKind.SERVER] span per request
+   * with the attributes `http.request.method`, `url.path` and `http.response.status_code` of the
+   * [OpenTelemetry HTTP semantic conventions](https://opentelemetry.io/docs/specs/semconv/http/).
+   */
+  @Test
+  fun `the plugin records one server span per request`() {
+    val spanExporter = InMemorySpanExporter.create()
+    val openTelemetry: OpenTelemetrySdk = createTestOpenTelemetry(spanExporter)
+
+    testApplication {
+      application {
+        installOpenTelemetry(openTelemetry)
+        routing {
+          get("/api/books") {
+            call.respondText("[]", ContentType.Application.Json)
+          }
+        }
+      }
+
+      val response = client.get("/api/books")
+      assertThat(response).isOk()
+    }
+
     val spans = spanExporter.finishedSpanItems
     assertThat(spans).hasSize(1)
 
     val span = spans.single()
-    assertThat(span.name).isEqualTo("GET /api/demo")
     assertThat(span.kind).isEqualTo(SpanKind.SERVER)
+    assertThat(span.attributes.get(HttpAttributes.HTTP_REQUEST_METHOD)).isEqualTo("GET")
+    assertThat(span.attributes.get(UrlAttributes.URL_PATH)).isEqualTo("/api/books")
+    assertThat(span.attributes.get(HttpAttributes.HTTP_RESPONSE_STATUS_CODE)).isEqualTo(200L)
+  }
+
+  /**
+   * A span that a route handler starts becomes a child of the server span: both share the `traceId`, and the
+   * `parentSpanId` of the child is the `spanId` of the server span. The child keeps its attributes
+   * `db.system.name`, `db.operation.name` and `db.collection.name`.
+   */
+  @Test
+  fun `child spans track individual operations within a request`() {
+    val spanExporter = InMemorySpanExporter.create()
+    val openTelemetry: OpenTelemetrySdk = createTestOpenTelemetry(spanExporter)
+    val tracer = openTelemetry.getTracer("it.neckar.ktor")
+
+    testApplication {
+      application {
+        installOpenTelemetry(openTelemetry)
+        routing {
+          get("/api/books/{id}") {
+            // KtorServerTelemetry makes the server span Context.current() in the handler; the span builder takes it as parent.
+            val dbSpan: Span = tracer.spanBuilder("MongoDB findBookById")
+              .setAttribute(DbAttributes.DB_SYSTEM_NAME, "mongodb")
+              .setAttribute(DbAttributes.DB_OPERATION_NAME, "find")
+              .setAttribute(DbAttributes.DB_COLLECTION_NAME, "books")
+              .startSpan()
+
+            dbSpan.end()
+
+            call.respondText("""{"id": "123", "title": "Demo"}""", ContentType.Application.Json)
+          }
+        }
+      }
+
+      val response = client.get("/api/books/123")
+      assertThat(response).isOk()
+    }
+
+    val spans = spanExporter.finishedSpanItems
+    assertThat(spans).hasSize(2)
+
+    val dbSpan = spans.single { it.name == "MongoDB findBookById" }
+    val serverSpan = spans.single { it.kind == SpanKind.SERVER }
+
+    assertThat(dbSpan.traceId).isEqualTo(serverSpan.traceId)
+    assertThat(dbSpan.parentSpanId).isEqualTo(serverSpan.spanId)
+    assertThat(dbSpan.attributes.get(DbAttributes.DB_SYSTEM_NAME)).isEqualTo("mongodb")
+    assertThat(dbSpan.attributes.get(DbAttributes.DB_OPERATION_NAME)).isEqualTo("find")
+    assertThat(dbSpan.attributes.get(DbAttributes.DB_COLLECTION_NAME)).isEqualTo("books")
   }
 }

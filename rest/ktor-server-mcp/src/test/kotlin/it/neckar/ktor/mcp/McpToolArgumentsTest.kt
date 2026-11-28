@@ -41,6 +41,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
 import org.junit.jupiter.api.Test
+import kotlin.time.DurationUnit
 
 class McpToolArgumentsTest {
   private val schema: ToolSchema = ToolSchema(
@@ -105,6 +106,28 @@ class McpToolArgumentsTest {
       assertFailure { JsonObject(mapOf("limit" to value)).optionalInt("limit", 1..100) }
         .hasMessage("limit must be a whole number between 1 and 100, found $found")
     }
+  }
+
+  @Test
+  fun `a required whole number is read, a missing one refused`() {
+    assertThat(JsonObject(mapOf("limit" to JsonPrimitive(5))).requiredInt("limit", 1..100)).isEqualTo(5)
+    assertFailure { JsonObject(emptyMap()).requiredInt("limit", 1..100) }.hasMessage("limit is required")
+    assertFailure { JsonObject(mapOf("limit" to JsonPrimitive(0))).requiredInt("limit", 1..100) }
+      .hasMessage("limit must be a whole number between 1 and 100, found a whole number outside the range")
+  }
+
+  @Test
+  fun `a required boolean is read, a missing one refused`() {
+    assertThat(JsonObject(mapOf("archived" to JsonPrimitive(true))).requiredBoolean("archived")).isEqualTo(true)
+    assertThat(JsonObject(mapOf("archived" to JsonPrimitive(false))).requiredBoolean("archived")).isEqualTo(false)
+    assertFailure { JsonObject(emptyMap()).requiredBoolean("archived") }.hasMessage("archived is required")
+  }
+
+  @Test
+  fun `a required enum is read by its name, a missing one refused`() {
+    assertThat(JsonObject(mapOf("unit" to JsonPrimitive("seconds"))).requiredEnum("unit", DurationUnit.entries) { it.name.lowercase() })
+      .isEqualTo(DurationUnit.SECONDS)
+    assertFailure { JsonObject(emptyMap()).requiredEnum("unit", DurationUnit.entries) }.hasMessage("unit is required")
   }
 
   private fun request(arguments: JsonObject?): CallToolRequest {

@@ -61,10 +61,10 @@ fun JsonObject.optionalNonBlankString(name: String): String? {
 }
 
 /**
- * The argument [name] as text; a missing argument, any other JSON value or blank text throws naming the found type.
+ * Reads [name] like [optionalNonBlankString]; a missing argument throws `<name> is required`.
  */
 fun JsonObject.requiredNonBlankString(name: String): String {
-  return optionalNonBlankString(name) ?: throw IllegalArgumentException("$name is required")
+  return optionalNonBlankString(name) ?: throw missingArgument(name)
 }
 
 /**
@@ -74,6 +74,13 @@ fun JsonObject.optionalInt(name: String, range: IntRange): Int? {
   val argument = this[name] ?: return null
   return (argument as? JsonPrimitive)?.takeIf { it.isString.not() }?.intOrNull?.takeIf { it in range }
     ?: throw IllegalArgumentException("$name must be a whole number between ${range.first} and ${range.last}, found ${argument.numberKindOrTypeName()}")
+}
+
+/**
+ * Reads [name] like [optionalInt]; a missing argument throws `<name> is required`.
+ */
+fun JsonObject.requiredInt(name: String, range: IntRange): Int {
+  return optionalInt(name, range) ?: throw missingArgument(name)
 }
 
 private fun JsonElement.numberKindOrTypeName(): String {
@@ -105,10 +112,26 @@ fun JsonObject.optionalBoolean(name: String): Boolean? {
 }
 
 /**
- * The argument [name] as one of [values] by its name, or `null` without it; any other value throws listing [values].
+ * Reads [name] like [optionalBoolean]; a missing argument throws `<name> is required`.
+ */
+fun JsonObject.requiredBoolean(name: String): Boolean {
+  return optionalBoolean(name) ?: throw missingArgument(name)
+}
+
+/**
+ * The argument [name] as one of [values] by its name, or `null` without it; another name throws listing [values], any other JSON value naming the found type.
  */
 fun <E : Enum<E>> JsonObject.optionalEnum(name: String, values: List<E>, nameOf: (E) -> String = { it.name }): E? {
   val text = optionalNonBlankString(name) ?: return null
   return values.firstOrNull { nameOf(it) == text }
     ?: throw IllegalArgumentException("$name must be one of ${values.joinToString(", ") { nameOf(it) }}, found \"$text\"")
 }
+
+/**
+ * Reads [name] like [optionalEnum]; a missing argument throws `<name> is required`.
+ */
+fun <E : Enum<E>> JsonObject.requiredEnum(name: String, values: List<E>, nameOf: (E) -> String = { it.name }): E {
+  return optionalEnum(name, values, nameOf) ?: throw missingArgument(name)
+}
+
+private fun missingArgument(name: String): IllegalArgumentException = IllegalArgumentException("$name is required")

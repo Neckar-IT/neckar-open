@@ -42,4 +42,10 @@ describe("entityPropertyRenderer", () => {
     expect(screen.getByText("Dune").tagName).toBe("EM");
     expect(screen.queryByText("-")).toBeNull();
   });
+
+  it("wraps the element that render returns in a data-text-content span", () => {
+    render(<BookTitle book={{ title: "Dune" }} />);
+
+    expect(screen.getByText("Dune").parentElement).toHaveAttribute("data-text-content");
+  });
 });

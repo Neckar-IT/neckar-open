@@ -5,7 +5,7 @@
  */
 
 import { PlatformHeader } from "@neckar-hub/typescript-utils/platform-headers";
-import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
+import { AxiosError, AxiosHeaders, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 
 export interface AxiosErrorFixtureOptions {
   status?: number;
@@ -22,7 +22,7 @@ export function makeAxiosError(options: AxiosErrorFixtureOptions = {}): AxiosErr
     method: options.method ?? "get",
     url: options.url ?? "/api/example",
     data: options.requestData,
-    headers: {},
+    headers: new AxiosHeaders(),
   } as InternalAxiosRequestConfig;
 
   const response =

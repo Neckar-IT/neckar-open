@@ -24,9 +24,9 @@ describe("fileUploadRejectionMessage", () => {
   });
 
   it("names the expected and the actual content type", () => {
-    expect(fileUploadRejectionMessage({ type: "WrongContentType", expected: "application/pdf", actual: "text/plain" }, t, formatFileSize)).toBe(
-      "Die Datei hat den Typ text/plain. Erlaubt sind application/pdf.",
-    );
+    expect(
+      fileUploadRejectionMessage({ type: "WrongContentType", expected: "application/pdf", actual: "text/plain" }, t, formatFileSize),
+    ).toBe("Die Datei hat den Typ text/plain. Erlaubt sind application/pdf.");
   });
 
   it("reports an unreadable file", () => {
